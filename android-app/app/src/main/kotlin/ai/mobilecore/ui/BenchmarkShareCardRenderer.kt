@@ -37,17 +37,17 @@ object BenchmarkShareCardRenderer {
         canvas.drawRect(0f, 0f, WIDTH.toFloat(), HEIGHT.toFloat(), paint)
         paint.shader = null
 
-        drawText(canvas, paint, "TuiMa 推嘛", 72f, 82f, 62f, TuiMaShareTheme.deepInk, Typeface.BOLD)
-        drawText(canvas, paint, "本机 AI 性能成绩", 72f, 145f, 30f, TuiMaShareTheme.muted, Typeface.NORMAL)
+        drawText(canvas, paint, "TuiMa", 72f, 82f, 62f, TuiMaShareTheme.deepInk, Typeface.BOLD)
+        drawText(canvas, paint, "Desempenho de IA local", 72f, 145f, 30f, TuiMaShareTheme.muted, Typeface.NORMAL)
 
         paint.color = 0xEFFFFFFF.toInt()
         canvas.drawRoundRect(RectF(56f, 205f, 1024f, 1180f), 44f, 44f, paint)
 
         drawText(canvas, paint, NumberFormat.getIntegerInstance(Locale.US).format(snapshot.headlineScore), 96f, 350f, 112f, TuiMaShareTheme.blue, Typeface.BOLD)
         drawText(canvas, paint, "TuiMa", 96f, 410f, 40f, TuiMaShareTheme.deepInk, Typeface.BOLD)
-        drawText(canvas, paint, "标准分 ${snapshot.canonicalScore} / 1000", 96f, 476f, 34f, TuiMaShareTheme.mintDark, Typeface.BOLD)
+        drawText(canvas, paint, "Pontuação padrão ${snapshot.canonicalScore} / 1000", 96f, 476f, 34f, TuiMaShareTheme.mintDark, Typeface.BOLD)
 
-        drawText(canvas, paint, "本机 AI 能力：${insight.rating}", 96f, 564f, 38f, TuiMaShareTheme.deepInk, Typeface.BOLD)
+        drawText(canvas, paint, "Capacidade de IA local: ${insight.rating}", 96f, 564f, 38f, TuiMaShareTheme.deepInk, Typeface.BOLD)
         drawText(canvas, paint, insight.summary, 96f, 615f, 27f, TuiMaShareTheme.ink, Typeface.NORMAL)
         drawText(canvas, paint, insight.recommendation, 96f, 664f, 24f, TuiMaShareTheme.muted, Typeface.NORMAL, maxWidth = 880f)
 
@@ -64,9 +64,9 @@ object BenchmarkShareCardRenderer {
         }
 
         val profileLabel = when (snapshot.profile) {
-            "standard" -> "标准模式"
-            "stress" -> "压力模式（不入榜）"
-            else -> "快速模式（仅预览）"
+            "standard" -> "Modo padrão"
+            "stress" -> "Modo estresse (não entra no ranking)"
+            else -> "Modo rápido (apenas pré-visualização)"
         }
         val date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA).format(Date(snapshot.createdAtMs))
         drawText(
@@ -81,7 +81,7 @@ object BenchmarkShareCardRenderer {
             maxWidth = 936f
         )
         drawText(canvas, paint, date, 72f, 1272f, 23f, TuiMaShareTheme.muted, Typeface.NORMAL)
-        drawText(canvas, paint, "✓ 本机完成 · 原始内容不上传", 72f, 1320f, 26f, TuiMaShareTheme.mintDark, Typeface.BOLD)
+        drawText(canvas, paint, "✓ Concluído no dispositivo · Conteúdo original não enviado", 72f, 1320f, 26f, TuiMaShareTheme.mintDark, Typeface.BOLD)
 
         val directory = File(context.cacheDir, "shared-results").apply { mkdirs() }
         val file = File(directory, "tuima-${snapshot.runId.ifBlank { snapshot.createdAtMs.toString() }}.png")

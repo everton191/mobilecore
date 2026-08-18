@@ -50,7 +50,7 @@ sealed interface GalleryIndexState {
 sealed interface GalleryModelState {
     data class Missing(
         val clipModelName: String = "MobileCLIP",
-        val verifierModelName: String = "0.8B 小模型（可选）",
+        val verifierModelName: String = "Modelo pequeno 0.8B (opcional)",
     ) : GalleryModelState
 
     data class Preparing(
@@ -406,13 +406,13 @@ object GallerySearchPresenter {
         val resultMessage = when (val retrieval = state.retrieval) {
             GalleryRetrievalState.Idle -> when {
                 state.index is GalleryIndexState.Ready && state.index.indexedCount == 0 ->
-                    "没有发现可建立索引的照片。授权更多照片后再试。"
-                !state.canSearch -> "索引与 CLIP 模型就绪后，即可用自然语言搜索照片。"
-                else -> "试试“海边穿红衣服的人”或“有柱状图的会议照片”。"
+                    "Nenhuma foto encontrada para indexar. Autorize mais fotos e tente novamente."
+                !state.canSearch -> "Após o índice e o modelo CLIP estarem prontos, pesquise fotos com linguagem natural."
+                else -> "Tente 'pessoa de vermelho na praia' ou 'foto de reunião com gráfico de barras'."
             }
-            is GalleryRetrievalState.Searching -> "正在从本机向量索引计算 CLIP 余弦相似度。"
-            is GalleryRetrievalState.Results -> "“${retrieval.query}”返回余弦相似度最高的 ${ranked.size} 个候选"
-            is GalleryRetrievalState.NoMatch -> "本机索引没有返回可排序的候选照片。"
+            is GalleryRetrievalState.Searching -> "Calculando similaridade cosseno CLIP a partir do índice de vetores local."
+            is GalleryRetrievalState.Results -> "\"${retrieval.query}\" retornou ${ranked.size} candidatos com maior similaridade cosseno"
+            is GalleryRetrievalState.NoMatch -> "Índice local não retornou fotos candidatas ordenáveis."
             is GalleryRetrievalState.Failed -> retrieval.message
         }
         return GallerySearchUiModel(
@@ -421,14 +421,14 @@ object GallerySearchPresenter {
             query = state.query,
             queryEnabled = state.canSearch && !isSearching,
             searchEnabled = state.canSearch && state.query.isNotBlank() && !isSearching,
-            searchActionLabel = if (isSearching) "正在搜索" else "搜索本机照片",
-            searchHint = if (state.canSearch) "描述人物、物体、动物、颜色或场景" else "先完成相册索引与模型准备",
-            resultTitle = if (ranked.isNotEmpty()) "Top-${ranked.size} 结果" else if (resultQuery.isNotEmpty()) "搜索结果" else "开始搜索",
+            searchActionLabel = if (isSearching) "Pesquisando" else "Pesquisar fotos locais",
+            searchHint = if (state.canSearch) "Descreva pessoas, objetos, animais, cores ou cenários" else "Conclua primeiro o índice da galeria e preparação do modelo",
+            resultTitle = if (ranked.isNotEmpty()) "Top-${ranked.size} Resultados" else if (resultQuery.isNotEmpty()) "Resultados da busca" else "Iniciar busca",
             resultMessage = resultMessage,
             results = ranked,
             isSearching = isSearching,
             showNoMatch = noMatch,
-            privacyLabel = "MobileCore 不上传照片、查询或索引",
+            privacyLabel = "MobileCore não envia fotos, consultas ou índices",
             topK = safeTopK,
         )
     }
@@ -438,33 +438,33 @@ object GallerySearchPresenter {
         limitedPhotoAccess: Boolean,
     ): GalleryStatusUiModel = when (state) {
         GalleryIndexState.PermissionRequired -> GalleryStatusUiModel(
-            eyebrow = "相册索引 · 未授权",
-            title = "允许访问后建立本机索引",
-            detail = "只读取你授权的照片；原图、向量和查询都留在本机。",
-            actionLabel = "授权并建立索引",
+            eyebrow = "Índice de álbum · Não autorizado",
+            title = "Crie o índice local após permitir o acesso",
+            detail = "Lê apenas suas fotos autorizadas; imagens originais, vetores e consultas ficam no dispositivo.",
+            actionLabel = "Autorizar e criar índice",
             action = GalleryStatusAction.REQUEST_ACCESS,
         )
         is GalleryIndexState.AccessGranted -> GalleryStatusUiModel(
-            eyebrow = "相册索引 · 已授权",
-            title = if (state.persistedIndexDetected) "发现待验证的本机索引" else "尚未建立照片索引",
+            eyebrow = "Índice de álbum · Autorizado",
+            title = if (state.persistedIndexDetected) "Índice local pendente encontrado" else "Nenhum índice de fotos criado",
             detail = if (state.persistedIndexDetected) {
-                "准备 CLIP 后会校验并恢复已有索引；模型变化时必须重新建立。"
+                "Após preparar o CLIP, o índice existente será verificado e restaurado; deve ser reconstruído quando o modelo mudar."
             } else {
-                "扫描已授权照片并生成本机向量，过程中可随时取消并续建。"
+                "Varredura de fotos autorizadas e geração de vetores locais, pode ser cancelada e retomada a qualquer momento."
             },
-            actionLabel = if (limitedPhotoAccess) "选择更多并建立索引" else "建立照片索引",
+            actionLabel = if (limitedPhotoAccess) "Selecionar mais e criar índice" else "Criar índice de fotos",
             action = if (limitedPhotoAccess) {
                 GalleryStatusAction.SELECT_MORE_PHOTOS
             } else {
                 GalleryStatusAction.RETRY_INDEX
             },
-            secondaryActionLabel = if (state.persistedIndexDetected) "清除已有索引" else null,
+            secondaryActionLabel = if (state.persistedIndexDetected) "Limpar índice existente" else null,
             secondaryAction = if (state.persistedIndexDetected) GalleryStatusAction.CLEAR_INDEX else null,
         )
         is GalleryIndexState.Scanning -> GalleryStatusUiModel(
-            eyebrow = "相册索引 · 扫描中",
-            title = "正在发现可搜索照片",
-            detail = "已发现 ${state.discoveredCount} 张照片，扫描完成后自动生成向量。",
+            eyebrow = "Índice de álbum · Varrendo",
+            title = "Descobrindo fotos pesquisáveis",
+            detail = "${state.discoveredCount} fotos encontradas, vetores serão gerados automaticamente após a conclusão da verificação.",
             progressPercent = null,
             isBusy = true,
         )
@@ -475,48 +475,48 @@ object GallerySearchPresenter {
                 0
             }
             GalleryStatusUiModel(
-                eyebrow = "相册索引 · 索引中",
-                title = "正在生成图像向量",
+                eyebrow = "Índice de álbum · Indexando",
+                title = "Gerando vetores de imagem",
                 detail = buildString {
-                    append("${state.processedCount} / ${state.totalCount} 张 · $progress%")
-                    if (state.skippedCount > 0) append(" · 已跳过 ${state.skippedCount} 张")
+                    append("${state.processedCount} / ${state.totalCount} imagens · $progress%")
+                    if (state.skippedCount > 0) append(" · ${state.skippedCount} imagens puladas")
                 },
                 progressPercent = progress,
-                actionLabel = "取消并保存进度",
+                actionLabel = "Cancelar e salvar progresso",
                 action = GalleryStatusAction.CANCEL_INDEX,
                 isBusy = true,
             )
         }
         is GalleryIndexState.Ready -> GalleryStatusUiModel(
-            eyebrow = "相册索引 · 已就绪",
-            title = if (state.indexedCount > 0) "${state.indexedCount} 张照片可搜索" else "暂时没有可搜索照片",
+            eyebrow = "Índice de álbum · Pronto",
+            title = if (state.indexedCount > 0) "${state.indexedCount} fotos pesquisáveis" else "Nenhuma foto pesquisável temporariamente",
             detail = if (state.indexedCount > 0) {
                 buildString {
-                    append("可增量更新；照片和向量不会上传云端。")
-                    if (state.skippedCount > 0) append(" 本次跳过 ${state.skippedCount} 张无法读取的照片。")
+                    append("Pode atualizar incrementalmente; fotos e vetores não serão enviados para a nuvem.")
+                    if (state.skippedCount > 0) append(" ${state.skippedCount} fotos ilegíveis puladas desta vez.")
                 }
             } else {
-                "授权更多照片后重新建立索引。"
+                "Autorize mais fotos e recrie o índice."
             },
             actionLabel = when {
-                limitedPhotoAccess -> "选择更多并更新索引"
-                state.indexedCount == 0 -> "重新扫描"
-                else -> "更新索引"
+                limitedPhotoAccess -> "Selecionar mais e atualizar índice"
+                state.indexedCount == 0 -> "Verificar novamente"
+                else -> "Atualizar índice"
             },
             action = if (limitedPhotoAccess) {
                 GalleryStatusAction.SELECT_MORE_PHOTOS
             } else {
                 GalleryStatusAction.RETRY_INDEX
             },
-            secondaryActionLabel = "清除索引",
+            secondaryActionLabel = "Limpar índice",
             secondaryAction = GalleryStatusAction.CLEAR_INDEX,
             isSuccess = state.indexedCount > 0,
         )
         is GalleryIndexState.Failed -> GalleryStatusUiModel(
-            eyebrow = "相册索引 · 失败",
-            title = "本机索引未完成",
+            eyebrow = "Índice de álbum · Falhou",
+            title = "Índice local não concluído",
             detail = state.message,
-            actionLabel = if (state.retryable) "重新建立索引" else null,
+            actionLabel = if (state.retryable) "Recriar índice" else null,
             action = if (state.retryable) GalleryStatusAction.RETRY_INDEX else null,
             actionEnabled = state.retryable,
         )
@@ -524,55 +524,55 @@ object GallerySearchPresenter {
 
     private fun modelStatus(state: GalleryModelState): GalleryStatusUiModel = when (state) {
         is GalleryModelState.Missing -> GalleryStatusUiModel(
-            eyebrow = "搜索模型 · 待准备",
-            title = "准备 CLIP 图文编码器",
-            detail = "${state.clipModelName} 用于召回；${state.verifierModelName} 可对模糊候选做 G2D 复核。",
-            actionLabel = "准备搜索模型",
+            eyebrow = "Modelo de busca · Pendente",
+            title = "Preparar codificador CLIP de imagem e texto",
+            detail = "${state.clipModelName} para recall; ${state.verifierModelName} pode fazer revisão G2D em candidatos difusos.",
+            actionLabel = "Preparar modelo de busca",
             action = GalleryStatusAction.PREPARE_MODELS,
         )
         is GalleryModelState.Preparing -> GalleryStatusUiModel(
-            eyebrow = "搜索模型 · 准备中",
-            title = "正在准备 ${state.componentName}",
-            detail = "进度 ${state.progressPercent.coerceIn(0, 100)}% · 完成后即可离线搜索",
+            eyebrow = "Modelo de busca · Preparando",
+            title = "Preparando ${state.componentName}",
+            detail = "Progresso ${state.progressPercent.coerceIn(0, 100)}% · Após conclusão, busca offline disponível",
             progressPercent = state.progressPercent.coerceIn(0, 100),
             isBusy = true,
         )
         is GalleryModelState.Ready -> GalleryStatusUiModel(
             eyebrow = if (state.identityVerified) {
-                "搜索模型 · 已就绪 · 身份已验证"
+                "Modelo de busca · Pronto · Identidade verificada"
             } else {
-                "搜索模型 · 已就绪 · 身份未验证"
+                "Modelo de busca · Pronto · Identidade não verificada"
             },
-            title = if (state.verifierModel == null) "CLIP 检索已就绪" else "CLIP + G2D 已就绪",
+            title = if (state.verifierModel == null) "Recuperação CLIP pronta" else "CLIP + G2D pronto",
             detail = buildString {
-                append("图像：${state.clipImageEncoder} · 文本：${state.clipTextEncoder}")
+                append("Imagem: ${state.clipImageEncoder} · Texto: ${state.clipTextEncoder}")
                 if (state.identityVerified) {
-                    append(" · 身份已验证：${state.modelId}")
+                    append(" · Identidade verificada: ${state.modelId}")
                 } else {
-                    append(" · 身份未验证：用户导入的 CLIP 兼容模型")
+                    append(" · Identidade não verificada: Modelo CLIP compatível importado pelo usuário")
                 }
                 if (state.verifierModel == null) {
-                    append(" · G2D 复核未启用")
+                    append(" · Revisão G2D não habilitada")
                 } else {
-                    append(" · 复核：${state.verifierModel}")
+                    append(" · Revisão: ${state.verifierModel}")
                 }
             },
-            actionLabel = "释放模型内存",
+            actionLabel = "Liberar memória do modelo",
             action = GalleryStatusAction.RELEASE_MODELS,
             isSuccess = true,
         )
         is GalleryModelState.Released -> GalleryStatusUiModel(
-            eyebrow = "搜索模型 · 已释放",
-            title = "CLIP 文件仍在本机",
+            eyebrow = "Modelo de busca · Liberado",
+            title = "Arquivos CLIP ainda no dispositivo",
             detail = state.reason,
-            actionLabel = "重新加载搜索模型",
+            actionLabel = "Recarregar modelo de busca",
             action = GalleryStatusAction.PREPARE_MODELS,
         )
         is GalleryModelState.Failed -> GalleryStatusUiModel(
-            eyebrow = "搜索模型 · 失败",
-            title = "模型准备未完成",
+            eyebrow = "Modelo de busca · Falhou",
+            title = "Preparação do modelo não concluída",
             detail = state.message,
-            actionLabel = if (state.retryable) "重新准备" else null,
+            actionLabel = if (state.retryable) "Preparar novamente" else null,
             action = if (state.retryable) GalleryStatusAction.PREPARE_MODELS else null,
             actionEnabled = state.retryable,
         )
@@ -586,12 +586,12 @@ object GallerySearchPresenter {
         subtitle = subtitle,
         scoreLabel = "余弦 ${String.format(java.util.Locale.US, "%.3f", similarity)}",
         sourceLabel = when (source) {
-            GalleryResultSource.CLIP_DIRECT -> "CLIP 直出"
-            GalleryResultSource.G2D_VERIFIED -> "G2D 复核"
+            GalleryResultSource.CLIP_DIRECT -> "Saída direta CLIP"
+            GalleryResultSource.G2D_VERIFIED -> "Revisão G2D"
         },
         sourceDetail = when (source) {
-            GalleryResultSource.CLIP_DIRECT -> "由 CLIP 余弦相似度排序，未应用校准阈值"
-            GalleryResultSource.G2D_VERIFIED -> "小模型已在候选集内复核"
+            GalleryResultSource.CLIP_DIRECT -> "Ordenado por similaridade cosseno do CLIP, sem aplicação de limiar de calibração"
+            GalleryResultSource.G2D_VERIFIED -> "Modelo pequeno já revisado no conjunto de candidatos"
         },
         source = source,
     )

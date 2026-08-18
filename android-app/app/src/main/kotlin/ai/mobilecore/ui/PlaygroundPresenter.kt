@@ -125,78 +125,78 @@ object PlaygroundPresenter {
             }
         } ?: discoveredPhase
         val status = when (phase) {
-            PlaygroundLocalPhase.NOT_DOWNLOADED -> "未下载" to "本机没有发现清单中的模型文件"
-            PlaygroundLocalPhase.PREFLIGHT -> "检查安装空间" to "正在确认私有目录可容纳模型与安全余量"
-            PlaygroundLocalPhase.DOWNLOADING -> "下载中 · ${installSnapshot?.progressPercent ?: 0}%" to
-                "正在写入可续传临时文件；尚未作为模型安装"
-            PlaygroundLocalPhase.VERIFYING -> "校验中" to "正在核对精确字节数与 SHA-256，完成前不会加载"
-            PlaygroundLocalPhase.INSTALLED -> "已安装 · 已校验" to "固定来源、字节数和 SHA-256 均匹配，可安全加载"
-            PlaygroundLocalPhase.LOADING -> "加载中" to "已校验模型正在交给本地 llama.cpp 运行时"
-            PlaygroundLocalPhase.LOADED -> "已加载" to "当前运行时正在使用这份已校验模型"
-            PlaygroundLocalPhase.VERIFICATION_FAILED -> "校验失败" to
-                "下载文件与清单字节数或 SHA-256 不一致，临时文件已清理"
-            PlaygroundLocalPhase.SOURCE_MISMATCH -> "来源不匹配" to
-                "发现同名但未经该清单验证的文件；不会覆盖或加载"
-            PlaygroundLocalPhase.DOWNLOAD_FAILED -> "下载失败 · 可续传" to
-                "网络中断时保留受限 .part 文件；再次下载会从断点继续"
-            PlaygroundLocalPhase.INSUFFICIENT_STORAGE -> "存储空间不足" to
-                "可用空间低于模型字节数与安全余量；未开始网络传输"
-            PlaygroundLocalPhase.ARTIFACT_MISSING -> "安装文件缺失" to
-                "清单要求的受管文件已不存在；不会把残留文件视为完整安装"
-            PlaygroundLocalPhase.ATOMIC_INSTALL_FAILED -> "原子安装失败" to
-                "校验后的临时文件未能原子切换为正式模型；不会加载半安装文件"
-            PlaygroundLocalPhase.UNINSTALL_FAILED -> "卸载未完成" to
-                "至少一个受管文件无法删除；当前状态不会显示为已卸载"
-            PlaygroundLocalPhase.VERIFICATION_IO_FAILED -> "校验读取失败" to
-                "完整 SHA-256 校验或校验记录提交未完成；模型保持未受信任"
-            PlaygroundLocalPhase.LOAD_FAILED -> "加载失败" to "模型已校验安装，但本地运行时未能加载"
-            PlaygroundLocalPhase.CANCELLED -> "已取消" to
-                "当前下载或校验已停止；临时下载已清理，正式安装文件未被删除"
-            PlaygroundLocalPhase.PARTIAL -> "文件不完整" to "多文件模型缺少 ${required.size - present} 个组件"
-            PlaygroundLocalPhase.LOCAL_UNVERIFIED -> "本地文件 · 待校验" to "文件已发现，尚未按 Playground SHA-256 校验"
+            PlaygroundLocalPhase.NOT_DOWNLOADED -> "Não baixado" to "Nenhum arquivo do manifesto encontrado no dispositivo"
+            PlaygroundLocalPhase.PREFLIGHT -> "Verificar espaço de instalação" to "Confirmando que o diretório privado pode acomodar o modelo e margem de segurança"
+            PlaygroundLocalPhase.DOWNLOADING -> "Baixando · ${installSnapshot?.progressPercent ?: 0}%" to
+                "Escrevendo arquivo temporário retomável; ainda não instalado como modelo"
+            PlaygroundLocalPhase.VERIFYING -> "Verificando" to "Verificando bytes exatos e SHA-256, não carregará até a conclusão"
+            PlaygroundLocalPhase.INSTALLED -> "Instalado · Verificado" to "Fonte fixa, bytes e SHA-256 correspondem, seguro para carregar"
+            PlaygroundLocalPhase.LOADING -> "Carregando" to "Modelo verificado sendo entregue ao runtime local llama.cpp"
+            PlaygroundLocalPhase.LOADED -> "Carregado" to "O runtime atual está usando este modelo verificado"
+            PlaygroundLocalPhase.VERIFICATION_FAILED -> "Verificação falhou" to
+                "Arquivo baixado incompatível com bytes ou SHA-256 do manifesto, arquivos temporários limpos"
+            PlaygroundLocalPhase.SOURCE_MISMATCH -> "Fonte incompatível" to
+                "Encontrado arquivo com mesmo nome mas não verificado por este manifesto; não sobrescreverá ou carregará"
+            PlaygroundLocalPhase.DOWNLOAD_FAILED -> "Falha no download · Pode retomar" to
+                "Arquivos .part restritos são mantidos quando a rede é interrompida; downloads retomam do ponto de interrupção"
+            PlaygroundLocalPhase.INSUFFICIENT_STORAGE -> "Espaço de armazenamento insuficiente" to
+                "Espaço disponível abaixo dos bytes do modelo e margem de segurança; transferência de rede não iniciada"
+            PlaygroundLocalPhase.ARTIFACT_MISSING -> "Arquivo de instalação ausente" to
+                "Arquivo gerenciado exigido pelo manifesto não existe mais; arquivos residuais não serão tratados como instalação completa"
+            PlaygroundLocalPhase.ATOMIC_INSTALL_FAILED -> "Instalação atômica falhou" to
+                "Arquivos temporários verificados falharam na troca atômica para modelo oficial; arquivos semi-instalados não serão carregados"
+            PlaygroundLocalPhase.UNINSTALL_FAILED -> "Desinstalação não concluída" to
+                "Pelo menos um arquivo gerenciado não pôde ser deletado; status atual não mostrará como desinstalado"
+            PlaygroundLocalPhase.VERIFICATION_IO_FAILED -> "Leitura de verificação falhou" to
+                "Verificação SHA-256 completa ou envio de registro de verificação não concluído; modelo permanece não confiável"
+            PlaygroundLocalPhase.LOAD_FAILED -> "Falha ao carregar" to "Modelo verificado e instalado, mas o runtime local falhou ao carregar"
+            PlaygroundLocalPhase.CANCELLED -> "Cancelado" to
+                "Download ou verificação interrompidos; downloads temporários limpos, arquivos de instalação oficiais não deletados"
+            PlaygroundLocalPhase.PARTIAL -> "Arquivo incompleto" to "Modelo multi-arquivo faltando ${required.size - present} componentes"
+            PlaygroundLocalPhase.LOCAL_UNVERIFIED -> "Arquivo local · Aguardando verificação" to "Arquivo encontrado, ainda não verificado pelo SHA-256 do Playground"
             PlaygroundLocalPhase.ACTIVE_UNVERIFIED -> if (required.size > 1) {
-                "主模型运行中 · 来源待校验" to
-                    "主 GGUF 正在运行；投影组件仅确认存在，尚未确认已加载或匹配清单 SHA-256"
+                "Modelo principal em execução · Fonte aguardando verificação" to
+                    "GGUF principal em execução; componente de projeção apenas confirmado existente, ainda não confirmado carregado ou correspondente ao SHA-256 do manifesto"
             } else {
-                "运行中 · 来源待校验" to "当前运行时使用同名文件，尚未匹配清单 SHA-256"
+                "Executando · Fonte aguardando verificação" to "O runtime atual usa arquivo com mesmo nome, ainda não corresponde ao SHA-256 do manifesto"
             }
         }
         val action = when (phase) {
             PlaygroundLocalPhase.NOT_DOWNLOADED,
             PlaygroundLocalPhase.DOWNLOAD_FAILED,
-            -> "下载并校验" to true
+            -> "Baixar e verificar" to true
             PlaygroundLocalPhase.CANCELLED -> if (installSnapshot?.installedArtifactNames?.isNotEmpty() == true) {
-                "重新校验" to true
+                "Reverificar" to true
             } else {
-                "下载并校验" to true
+                "Baixar e verificar" to true
             }
             PlaygroundLocalPhase.VERIFICATION_FAILED -> if (installSnapshot?.installedArtifactNames?.isNotEmpty() == true) {
-                "移除错误文件" to true
+                "Remover arquivos com erro" to true
             } else {
-                "重新下载并校验" to true
+                "Baixar novamente e verificar" to true
             }
-            PlaygroundLocalPhase.PREFLIGHT -> "正在检查空间" to false
-            PlaygroundLocalPhase.DOWNLOADING -> "取消下载" to true
-            PlaygroundLocalPhase.VERIFYING -> "取消校验" to true
+            PlaygroundLocalPhase.PREFLIGHT -> "Verificando espaço" to false
+            PlaygroundLocalPhase.DOWNLOADING -> "Cancelar download" to true
+            PlaygroundLocalPhase.VERIFYING -> "Cancelar verificação" to true
             PlaygroundLocalPhase.INSTALLED,
             PlaygroundLocalPhase.LOAD_FAILED,
-            -> "加载模型" to true
-            PlaygroundLocalPhase.LOADING -> "正在加载" to false
-            PlaygroundLocalPhase.LOADED -> "模型运行中" to false
-            PlaygroundLocalPhase.SOURCE_MISMATCH -> "移除错误文件" to true
-            PlaygroundLocalPhase.INSUFFICIENT_STORAGE -> "重新检查空间" to true
+            -> "Carregar modelo" to true
+            PlaygroundLocalPhase.LOADING -> "Carregando" to false
+            PlaygroundLocalPhase.LOADED -> "Modelo em execução" to false
+            PlaygroundLocalPhase.SOURCE_MISMATCH -> "Remover arquivos com erro" to true
+            PlaygroundLocalPhase.INSUFFICIENT_STORAGE -> "Reverificar espaço" to true
             PlaygroundLocalPhase.ARTIFACT_MISSING -> if (installSnapshot?.installedArtifactNames?.isNotEmpty() == true) {
-                "移除残留文件" to true
+                "Remover arquivos residuais" to true
             } else {
-                "重新下载并校验" to true
+                "Baixar novamente e verificar" to true
             }
-            PlaygroundLocalPhase.ATOMIC_INSTALL_FAILED -> "重试原子安装" to true
-            PlaygroundLocalPhase.UNINSTALL_FAILED -> "重试卸载" to true
-            PlaygroundLocalPhase.VERIFICATION_IO_FAILED -> "重新校验" to true
+            PlaygroundLocalPhase.ATOMIC_INSTALL_FAILED -> "Tentar instalação atômica novamente" to true
+            PlaygroundLocalPhase.UNINSTALL_FAILED -> "Tentar desinstalar novamente" to true
+            PlaygroundLocalPhase.VERIFICATION_IO_FAILED -> "Reverificar" to true
             PlaygroundLocalPhase.PARTIAL,
             PlaygroundLocalPhase.LOCAL_UNVERIFIED,
             PlaygroundLocalPhase.ACTIVE_UNVERIFIED,
-            -> "查看本机文件" to false
+            -> "Ver arquivos locais" to false
         }
         val metadata = listOf(entry.parameterLabel, entry.quantizationLabel)
             .filter { it.isNotBlank() }
@@ -207,23 +207,23 @@ object PlaygroundPresenter {
             entry.source.licenseReview == "cleared" &&
             validationPassed
         val attribution = when (entry.origin) {
-            PlaygroundArtifactOrigin.UPSTREAM -> "上游 ${entry.source.upstreamPublisher} · 官方 GGUF"
+            PlaygroundArtifactOrigin.UPSTREAM -> "Upstream ${entry.source.upstreamPublisher} · GGUF Oficial"
             PlaygroundArtifactOrigin.HARZVA,
             PlaygroundArtifactOrigin.THIRD_PARTY,
             PlaygroundArtifactOrigin.RECIPE ->
-                "上游 ${entry.source.upstreamPublisher} · 转换者 ${entry.source.conversionPublisher}"
+                "Upstream ${entry.source.upstreamPublisher} · Conversor ${entry.source.conversionPublisher}"
         }
         val distributionLabel = when {
             entry.distribution.mode == "huggingface_model_repo" && entry.distribution.downloadable ->
-                "Hugging Face 已校验 · 提供固定直链"
-            entry.distribution.downloadable -> "已发布 · 可直接下载"
+                "Hugging Face verificado · Fornece link direto fixo"
+            entry.distribution.downloadable -> "Publicado · Pode baixar diretamente"
             entry.distribution.mode == "gitcode_model_repo" &&
                 entry.distribution.publicationState == "POST_PUBLISH_VERIFIED" &&
                 entry.distribution.installTransport == "git_lfs_batch" ->
-                "GitCode 已校验 · 直装待 LFS"
-            entry.distribution.published -> "来源仓已发布 · 暂未开放直装"
-            entry.distribution.publishable -> "已通过发布门禁 · 尚未发布"
-            else -> "已收录 · 暂不可发布"
+                "GitCode verificado · Instalação direta pendente LFS"
+            entry.distribution.published -> "Repositório fonte publicado · Instalação direta ainda não disponível"
+            entry.distribution.publishable -> "Passou pelo gate de publicação · Ainda não publicado"
+            else -> "Incluído · Ainda não pode publicar"
         }
         return PlaygroundEntryUiModel(
             id = entry.id,
@@ -251,10 +251,10 @@ object PlaygroundPresenter {
     }
 
     fun originAccessibilityLabel(origin: PlaygroundArtifactOrigin): String = when (origin) {
-        PlaygroundArtifactOrigin.HARZVA -> "由 Harzva 转换"
-        PlaygroundArtifactOrigin.THIRD_PARTY -> "由第三方转换，保留原转换者署名"
-        PlaygroundArtifactOrigin.UPSTREAM -> "由模型官方上游发布"
-        PlaygroundArtifactOrigin.RECIPE -> "仅提供转换配方"
+        PlaygroundArtifactOrigin.HARZVA -> "Convertido por Harzva"
+        PlaygroundArtifactOrigin.THIRD_PARTY -> "Convertido por terceiros, preservando atribuição do conversor original"
+        PlaygroundArtifactOrigin.UPSTREAM -> "Publicado pelo upstream oficial"
+        PlaygroundArtifactOrigin.RECIPE -> "Apenas fornece receita de conversão"
     }
 
     private fun sameCanonicalPath(first: String?, second: String?): Boolean {

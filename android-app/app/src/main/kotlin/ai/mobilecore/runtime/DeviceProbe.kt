@@ -83,21 +83,21 @@ class DeviceProbe(private val context: Context) {
                 measuredScore * scoring.measuredSpeedWeight
             val score = max(0.0, weightedScore - memoryPressure * scoring.memoryPressurePenalty)
 
-            reasons.add("估算占用 ${estimatedMemoryMb}MB（文件 ${sizeMb}MB）")
-            reasons.add("适配等级: ${fit.name.lowercase()}")
-            reasons.add("偏好: ${scoring.mode.apiName}")
+            reasons.add("Uso estimado ${estimatedMemoryMb}MB (arquivo ${sizeMb}MB)")
+            reasons.add("Nível de compatibilidade: ${fit.name.lowercase()}")
+            reasons.add("Preferência: ${scoring.mode.apiName}")
             if (benchmark != null) {
                 reasons.add("历史均速 ${"%.2f".format(benchmark.averageDecodeTokensPerSecond)} tok/s")
-                if (benchmark.memoryPeakMb > 0) reasons.add("历史峰值 ${benchmark.memoryPeakMb}MB")
+                if (benchmark.memoryPeakMb > 0) reasons.add("Pico histórico ${benchmark.memoryPeakMb}MB")
             }
             if (model.parameterLabel != null) {
                 reasons.add("${model.architecture}/${model.parameterLabel}/${model.quantization}")
             }
             if (model.sizeBytes == 0L) {
-                reasons.add("当前文件占用未知：建议先实际下载 GGUF")
+                reasons.add("Ocupação do arquivo atual desconhecida: recomenda-se baixar o GGUF primeiro")
             }
             if (model.loaded) {
-                reasons.add("已加载模型：无需切换")
+                reasons.add("Modelo carregado: não é necessário alternar")
             }
 
             recommendations.add(

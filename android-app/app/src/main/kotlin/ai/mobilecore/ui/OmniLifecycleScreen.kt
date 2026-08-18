@@ -166,11 +166,11 @@ object OmniLifecyclePresenter {
             storageLabel = resourceLabel(snapshot.availableStorageBytes, snapshot.requiredStorageBytes),
             storageReady = snapshot.requiredStorageBytes > 0L &&
                 snapshot.availableStorageBytes >= snapshot.requiredStorageBytes,
-            wifiLabel = if (snapshot.wifiConnected) "已连接，可按仅 Wi-Fi 策略下载" else "未检测到 Wi-Fi",
+            wifiLabel = if (snapshot.wifiConnected) "Conectado, pode baixar sob política de apenas Wi-Fi" else "Wi-Fi não detectado",
             mainArtifactLabel = artifactLabel(snapshot.mainInstalled, snapshot.mainVerified),
             mmprojArtifactLabel = artifactLabel(snapshot.mmprojInstalled, snapshot.mmprojVerified),
             licenseLabel = "${snapshot.licenseId} · ${licenseReviewLabel(snapshot.licenseReviewStatus)}",
-            revisionLabel = snapshot.revision.take(12).ifBlank { "等待服务返回" },
+            revisionLabel = snapshot.revision.take(12).ifBlank { "Aguardando resposta do serviço" },
             actions = actions(stage, snapshot),
         )
     }
@@ -179,15 +179,15 @@ object OmniLifecyclePresenter {
         stage: OmniLifecycleStage,
         snapshot: OmniLifecycleSnapshot,
     ): Pair<String, String> = when (stage) {
-        OmniLifecycleStage.SERVICE_OFFLINE -> "服务未连接" to "启动本机服务后读取实时资源和模型状态。"
-        OmniLifecycleStage.READY -> "可以安装" to "设备条件满足；仍需阅读来源与许可说明并逐次明确同意。"
-        OmniLifecycleStage.BLOCKED -> "当前设备条件不足" to blockedDetail(snapshot)
-        OmniLifecycleStage.INSTALLING -> "正在下载" to "两个固定版本 artifact 正在写入应用私有目录，可随时取消。"
-        OmniLifecycleStage.VERIFYING -> "正在校验" to "正在核对固定字节数与 SHA-256，校验完成前不会加载。"
-        OmniLifecycleStage.INSTALLED -> "已校验，尚未加载" to "主模型与 mmproj 均已验证；加载后才会公布图片和音频能力。"
-        OmniLifecycleStage.LOADED -> "本地多模态已加载" to "运行时已确认这组固定 artifact；实际能力仍以 /health 为准。"
-        OmniLifecycleStage.CANCELLED -> "安装已取消" to "临时下载文件已清理；再次安装仍需重新明确同意。"
-        OmniLifecycleStage.FAILED -> "操作失败" to failureLabel(snapshot.failureCode, snapshot.failureMessage)
+        OmniLifecycleStage.SERVICE_OFFLINE -> "Serviço não conectado" to "Inicie o serviço local para ler recursos e status do modelo em tempo real."
+        OmniLifecycleStage.READY -> "Pode instalar" to "Condições do dispositivo atendidas; ainda precisa ler fonte e licença e concordar explicitamente cada vez."
+        OmniLifecycleStage.BLOCKED -> "Condições atuais do dispositivo insuficientes" to blockedDetail(snapshot)
+        OmniLifecycleStage.INSTALLING -> "Baixando" to "Dois artefatos de versão fixa sendo escritos no diretório privado do app, pode cancelar a qualquer momento."
+        OmniLifecycleStage.VERIFYING -> "Verificando" to "Verificando bytes fixos e SHA-256, não carregará até a conclusão da verificação."
+        OmniLifecycleStage.INSTALLED -> "Verificado, ainda não carregado" to "Modelo principal e mmproj verificados; capacidades de imagem e áudio serão anunciadas após o carregamento."
+        OmniLifecycleStage.LOADED -> "Multimodal local carregado" to "O runtime confirmou este conjunto de artefatos fixos; capacidades reais ainda sujeitas a /health."
+        OmniLifecycleStage.CANCELLED -> "Instalação cancelada" to "Arquivos de download temporários limpos; reinstalar ainda requer acordo explícito."
+        OmniLifecycleStage.FAILED -> "Operação falhou" to failureLabel(snapshot.failureCode, snapshot.failureMessage)
     }
 
     private fun actions(
@@ -195,81 +195,81 @@ object OmniLifecyclePresenter {
         snapshot: OmniLifecycleSnapshot,
     ): List<OmniLifecycleActionUiModel> = when (stage) {
         OmniLifecycleStage.SERVICE_OFFLINE -> listOf(
-            OmniLifecycleActionUiModel(OmniLifecycleAction.START_SERVICE, "启动服务并检查"),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.START_SERVICE, "Iniciar serviço e verificar"),
         )
         OmniLifecycleStage.READY -> listOf(
             OmniLifecycleActionUiModel(
                 OmniLifecycleAction.INSTALL,
-                "阅读说明并同意下载",
+                "Leia as instruções e concorde com o download",
                 enabled = snapshot.resourcesSufficient && snapshot.wifiConnected,
             ),
-            OmniLifecycleActionUiModel(OmniLifecycleAction.REFRESH, "重新检查"),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.REFRESH, "Reverificar"),
         )
         OmniLifecycleStage.BLOCKED -> listOf(
-            OmniLifecycleActionUiModel(OmniLifecycleAction.REFRESH, "重新检查设备条件"),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.REFRESH, "Reverificar condições do dispositivo"),
         )
         OmniLifecycleStage.INSTALLING,
         OmniLifecycleStage.VERIFYING -> listOf(
-            OmniLifecycleActionUiModel(OmniLifecycleAction.CANCEL, "取消安装", destructive = true),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.CANCEL, "Cancelar instalação", destructive = true),
         )
         OmniLifecycleStage.INSTALLED -> listOf(
-            OmniLifecycleActionUiModel(OmniLifecycleAction.LOAD, "加载到本机运行时"),
-            OmniLifecycleActionUiModel(OmniLifecycleAction.VERIFY, "重新校验"),
-            OmniLifecycleActionUiModel(OmniLifecycleAction.UNINSTALL, "卸载", destructive = true),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.LOAD, "Carregar no runtime local"),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.VERIFY, "Reverificar"),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.UNINSTALL, "Desinstalar", destructive = true),
         )
         OmniLifecycleStage.LOADED -> listOf(
-            OmniLifecycleActionUiModel(OmniLifecycleAction.VERIFY, "重新校验"),
-            OmniLifecycleActionUiModel(OmniLifecycleAction.UNINSTALL, "卸载并释放", destructive = true),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.VERIFY, "Reverificar"),
+            OmniLifecycleActionUiModel(OmniLifecycleAction.UNINSTALL, "Desinstalar e liberar", destructive = true),
         )
         OmniLifecycleStage.CANCELLED,
         OmniLifecycleStage.FAILED -> buildList {
             if (snapshot.resourcesSufficient && snapshot.wifiConnected) {
-                add(OmniLifecycleActionUiModel(OmniLifecycleAction.INSTALL, "重新阅读并安装"))
+                add(OmniLifecycleActionUiModel(OmniLifecycleAction.INSTALL, "Reler e instalar"))
             }
-            add(OmniLifecycleActionUiModel(OmniLifecycleAction.REFRESH, "刷新状态"))
+            add(OmniLifecycleActionUiModel(OmniLifecycleAction.REFRESH, "Atualizar status"))
             if (snapshot.mainInstalled || snapshot.mmprojInstalled) {
-                add(OmniLifecycleActionUiModel(OmniLifecycleAction.UNINSTALL, "清理本地文件", destructive = true))
+                add(OmniLifecycleActionUiModel(OmniLifecycleAction.UNINSTALL, "Limpar arquivos locais", destructive = true))
             }
         }
     }
 
     private fun blockedDetail(snapshot: OmniLifecycleSnapshot): String = when {
         snapshot.requiredStorageBytes > 0L && snapshot.availableStorageBytes < snapshot.requiredStorageBytes ->
-            "应用私有存储不足，安装不会启动。"
+            "Armazenamento privado do app insuficiente, instalação não será iniciada."
         snapshot.requiredMemoryBytes > 0L && snapshot.availableMemoryBytes < snapshot.requiredMemoryBytes ->
-            "当前可用内存低于保守加载门槛，安装不会启动。"
-        !snapshot.wifiConnected -> "仅 Wi-Fi 策略已启用，连接 Wi-Fi 后再检查。"
+            "Memória disponível abaixo do limite conservador de carregamento, instalação não será iniciada."
+        !snapshot.wifiConnected -> "Política de apenas Wi-Fi habilitada, verifique após conectar ao Wi-Fi."
         else -> failureLabel(snapshot.failureCode, snapshot.failureMessage)
     }
 
     private fun failureLabel(code: String?, message: String?): String = when (code) {
-        "checksum_mismatch" -> "文件摘要不匹配，不能加载；请清理后重新安装。"
-        "artifact_missing" -> "固定 artifact 对不完整，不能加载。"
-        "download_failed" -> "下载未完成，请检查网络后重试。"
-        "projector_incompatible" -> "mmproj 与主模型不兼容。"
-        "projector_load_failed" -> "运行时拒绝了已校验的 mmproj。"
-        "model_load_failed" -> "运行时未能加载已校验模型。"
-        "wifi_required" -> "仅 Wi-Fi 下载需要有效 Wi-Fi 连接。"
-        "insufficient_memory" -> "当前可用内存低于保守门槛。"
-        "insufficient_storage" -> "应用私有存储不足。"
-        "request_failed" -> "本机服务未完成请求，请刷新后重试。"
-        else -> message?.takeIf(String::isNotBlank) ?: "本机生命周期操作未完成。"
+        "checksum_mismatch" -> "Resumo do arquivo incompatível, não é possível carregar; limpe e reinstale."
+        "artifact_missing" -> "Par de artefatos fixos incompleto, não é possível carregar."
+        "download_failed" -> "Download incompleto, verifique a rede e tente novamente."
+        "projector_incompatible" -> "mmproj e modelo principal incompatíveis."
+        "projector_load_failed" -> "O runtime rejeitou o mmproj verificado."
+        "model_load_failed" -> "O runtime falhou ao carregar o modelo verificado."
+        "wifi_required" -> "Download por Wi-Fi requer conexão Wi-Fi válida."
+        "insufficient_memory" -> "Memória disponível abaixo do limite conservador."
+        "insufficient_storage" -> "Armazenamento privado do app insuficiente."
+        "request_failed" -> "Serviço local não completou a requisição, atualize e tente novamente."
+        else -> message?.takeIf(String::isNotBlank) ?: "Operação de ciclo de vida local não concluída."
     }
 
     private fun artifactLabel(installed: Boolean, verified: Boolean): String = when {
-        verified -> "已安装 · SHA-256 已校验"
-        installed -> "已安装 · 尚未校验"
-        else -> "未安装"
+        verified -> "Instalado · SHA-256 verificado"
+        installed -> "Instalado · Ainda não verificado"
+        else -> "Não instalado"
     }
 
     private fun licenseReviewLabel(value: String): String = when (value) {
-        "source_declared_not_legal_reviewed" -> "来源声明，未做法律审查"
-        else -> value.ifBlank { "审查状态未知" }
+        "source_declared_not_legal_reviewed" -> "Declaração de fonte, sem revisão legal conduzida"
+        else -> value.ifBlank { "Status da revisão desconhecido" }
     }
 
     private fun resourceLabel(available: Long, required: Long): String {
-        if (required <= 0L) return "等待本机服务返回"
-        return "${formatBytes(available)} 可用 / ${formatBytes(required)} 需要"
+        if (required <= 0L) return "Aguardando resposta do serviço local"
+        return "${formatBytes(available)} disponível / ${formatBytes(required)} necessário"
     }
 
     private fun formatBytes(bytes: Long): String {
@@ -318,10 +318,10 @@ class OmniLifecycleScreen(context: Context) : LinearLayout(context) {
         })
         addView(LinearLayout(context).apply {
             orientation = VERTICAL
-            addView(text("本地多模态", 20f, Palette.deepInk, Typeface.BOLD))
-            addView(text("Qwen2.5-Omni-3B 固定双 artifact 生命周期", 12f, Palette.muted))
+            addView(text("Multimodal local", 20f, Palette.deepInk, Typeface.BOLD))
+            addView(text("Ciclo de vida de dois artefatos fixos Qwen2.5-Omni-3B", 12f, Palette.muted))
         }, LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        addView(pill("实验", Palette.lavender))
+        addView(pill("Experimento", Palette.lavender))
     }
 
     private fun statusCard(model: OmniLifecycleUiModel, callbacks: OmniLifecycleCallbacks): View =
@@ -351,40 +351,40 @@ class OmniLifecycleScreen(context: Context) : LinearLayout(context) {
         }
 
     private fun preflightCard(model: OmniLifecycleUiModel): View = card(Palette.sky) {
-        addView(sectionTitle("安装前检查", "每次读取实时值，不缓存授权"))
+        addView(sectionTitle("Verificação pré-instalação", "Lê valores em tempo real a cada vez, não armazena em cache a autorização"))
         addView(space(9))
-        addView(metaRow("内存", model.memoryLabel, model.memoryReady))
-        addView(metaRow("存储", model.storageLabel, model.storageReady))
-        addView(metaRow("网络", model.wifiLabel, model.wifiLabel.startsWith("已连接")))
+        addView(metaRow("Memória", model.memoryLabel, model.memoryReady))
+        addView(metaRow("Armazenamento", model.storageLabel, model.storageReady))
+        addView(metaRow("Rede", model.wifiLabel, model.wifiLabel.startsWith("Conectado")))
     }
 
     private fun artifactCard(model: OmniLifecycleUiModel): View = card(Palette.mint) {
-        addView(sectionTitle("固定 artifact 对", "任一文件未校验都不会公布多模态能力"))
+        addView(sectionTitle("Par de artefatos fixos", "Qualquer arquivo não verificado não anunciará capacidade multimodal"))
         addView(space(9))
-        addView(metaRow("主模型", model.mainArtifactLabel, model.mainArtifactLabel.contains("已校验")))
-        addView(metaRow("mmproj", model.mmprojArtifactLabel, model.mmprojArtifactLabel.contains("已校验")))
-        addView(metaRow("revision", model.revisionLabel, model.revisionLabel != "等待服务返回"))
+        addView(metaRow("Modelo principal", model.mainArtifactLabel, model.mainArtifactLabel.contains("Verificado")))
+        addView(metaRow("mmproj", model.mmprojArtifactLabel, model.mmprojArtifactLabel.contains("Verificado")))
+        addView(metaRow("revision", model.revisionLabel, model.revisionLabel != "Aguardando resposta do serviço"))
     }
 
     private fun licenseCard(model: OmniLifecycleUiModel, callbacks: OmniLifecycleCallbacks): View = card(Palette.amber) {
-        addView(sectionTitle("来源与许可", "下载前必须单独确认"))
+        addView(sectionTitle("Fonte e licença", "Deve confirmar separadamente antes de baixar"))
         addView(space(8))
-        addView(text("发布者：ggml-org（不是 Qwen 官方 GGUF）", 13f, Palette.ink))
-        addView(text("许可：${model.licenseLabel}", 13f, Palette.ink).apply { setPadding(0, dp(4), 0, 0) })
-        addView(text("完整下载约 3.39 GiB；仅写入 MobileCore 应用私有目录。", 12f, Palette.muted).apply {
+        addView(text("Publicador: ggml-org (não é GGUF oficial do Qwen)", 13f, Palette.ink))
+        addView(text("Licença: ${model.licenseLabel}", 13f, Palette.ink).apply { setPadding(0, dp(4), 0, 0) })
+        addView(text("Download completo de cerca de 3,39 GiB; escrito apenas no diretório privado do app MobileCore.", 12f, Palette.muted).apply {
             setPadding(0, dp(7), 0, 0)
         })
         addView(space(11))
-        addView(actionButton(OmniLifecycleActionUiModel(OmniLifecycleAction.OPEN_SOURCE, "查看固定版本来源")) {
+        addView(actionButton(OmniLifecycleActionUiModel(OmniLifecycleAction.OPEN_SOURCE, "Ver fonte da versão fixa")) {
             callbacks.onAction(OmniLifecycleAction.OPEN_SOURCE)
         }, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(TuiMaTheme.minimumTouchTargetDp)))
     }
 
     private fun boundaryCard(): View = card(Palette.lavender) {
-        addView(sectionTitle("能力边界", "MobileCore 只负责本地推理"))
+        addView(sectionTitle("Limite de capacidade", "MobileCore apenas lida com inferência local"))
         addView(space(7))
-        addView(text("此页面不能点击其他 App、登录账号或下单。Phone Use、交易审批与证据链仍由 MobileCode 控制。", 12.5f, Palette.ink))
-        addView(text("当前 GGUF 路线仅支持文本/图片/音频输入到文本输出；不支持视频输入和语音输出。", 12f, Palette.muted).apply {
+        addView(text("Esta página não pode clicar em outros apps, fazer login em contas ou fazer pedidos. Phone Use, aprovação de transações e cadeia de evidências ainda são controlados pelo MobileCode.", 12.5f, Palette.ink))
+        addView(text("A rota GGUF atual suporta apenas entrada de texto/imagem/áudio para saída de texto; não suporta entrada de vídeo e saída de voz.", 12f, Palette.muted).apply {
             setPadding(0, dp(7), 0, 0)
         })
     }

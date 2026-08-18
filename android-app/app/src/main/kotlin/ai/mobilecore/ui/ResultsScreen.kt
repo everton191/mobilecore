@@ -44,7 +44,7 @@ data class BenchmarkResultSnapshot(
         }
 
     val executionLabel: String
-        get() = "$backendLabel · $runtimeName · $threads 线程"
+        get() = "$backendLabel · $runtimeName · $threads threads"
 }
 
 data class ResultInsight(
@@ -88,11 +88,11 @@ object ResultsScreenPresenter {
             manifestSha256 = report.optString("manifest_sha256"),
             comparisonKey = comparisonKey(report, spec, device),
             dimensions = listOf(
-                ResultDimension("inference", "推理", dimensions.optInt("inference"), 350),
-                ResultDimension("responsiveness", "响应", dimensions.optInt("responsiveness"), 150),
-                ResultDimension("memory", "内存", dimensions.optInt("memory"), 150),
-                ResultDimension("sustained_performance", "持续", dimensions.optInt("sustained_performance"), 200),
-                ResultDimension("stability", "稳定", dimensions.optInt("stability"), 150)
+                ResultDimension("inference", "Inferência", dimensions.optInt("inference"), 350),
+                ResultDimension("responsiveness", "Resposta", dimensions.optInt("responsiveness"), 150),
+                ResultDimension("memory", "Memória", dimensions.optInt("memory"), 150),
+                ResultDimension("sustained_performance", "Sustentado", dimensions.optInt("sustained_performance"), 200),
+                ResultDimension("stability", "Estável", dimensions.optInt("stability"), 150)
             ),
             decodeTokensPerSecond = summary.optDouble("median_decode_tokens_per_second", 0.0),
             firstTokenMs = summary.optLong("median_first_token_ms", 0L),
@@ -115,34 +115,34 @@ object ResultsScreenPresenter {
         val weakest = ordered.last()
         val strongestDimension = ordered.first()
         val rating = when {
-            snapshot.canonicalScore >= 850 -> "优秀"
-            snapshot.canonicalScore >= 700 -> "良好"
-            snapshot.canonicalScore >= 500 -> "一般"
-            else -> "受限"
+            snapshot.canonicalScore >= 850 -> "Excelente"
+            snapshot.canonicalScore >= 700 -> "Bom"
+            snapshot.canonicalScore >= 500 -> "Normal"
+            else -> "Limitado"
         }
         val strengthDescription = when {
-            strongestDimension.ratio >= 0.90 -> "非常突出"
-            strongestDimension.ratio >= 0.75 -> "表现良好"
-            else -> "相对稳定"
+            strongestDimension.ratio >= 0.90 -> "Muito destaque"
+            strongestDimension.ratio >= 0.75 -> "Desempenha bem"
+            else -> "Relativamente estável"
         }
         val recommendation = when {
             snapshot.canonicalScore >= 850 && snapshot.dimensions.first { it.key == "memory" }.ratio >= 0.65 ->
-                "适合 0.5B–1.5B 本地语言模型，可用于日常对话、摘要和轻量写作。"
+                "Adequado para modelos de linguagem local de 0.5B–1.5B, pode ser usado para diálogos cotidianos, resumo e escrita leve."
             snapshot.canonicalScore >= 700 ->
-                "适合 0.5B–1B 本地语言模型，可用于短对话、摘要和离线问答。"
+                "Adequado para modelos de linguagem local de 0.5B–1B, pode ser usado para diálogos curtos, resumo e perguntas e respostas offline."
             snapshot.canonicalScore >= 500 ->
-                "建议使用 0.3B–0.6B 小模型，优先选择短上下文任务。"
+                "Recomenda-se usar modelo pequeno de 0.3B–0.6B, priorizando tarefas de contexto curto."
             else ->
-                "建议使用 0.3B 以下超轻模型，适合简单分类与短文本任务。"
+                "Recomenda-se usar modelo ultra-leve com menos de 0.3B, adequado para classificação simples e tarefas de texto curto."
         }
         val modeHint = when (snapshot.profile) {
-            "standard" -> "标准模式 · ${if (snapshot.leaderboardEligible) "具备榜单资格" else "本次结果无榜单资格"}"
-            "stress" -> "压力模式 · 用于观察持续性能，不参与榜单"
-            else -> "快速模式 · 仅供预览，不参与榜单"
+            "standard" -> "标准模式 · ${if (snapshot.leaderboardEligible) "具备榜单资格" else "Este resultado não elegível para ranking"}"
+            "stress" -> "Modo estresse · Para observar desempenho sustentado, não participa do ranking"
+            else -> "Modo rápido · Apenas para pré-visualização, não participa do ranking"
         }
         return ResultInsight(
             rating = rating,
-            summary = "${strongestDimension.label}$strengthDescription，${weakest.label}是当前主要瓶颈。",
+            summary = "${strongestDimension.label}$strengthDescription, ${weakest.label} é o gargalo principal atual.",
             strongest = strongest,
             bottleneck = weakest.label,
             recommendation = recommendation,

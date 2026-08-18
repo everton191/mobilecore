@@ -48,49 +48,49 @@ object BenchmarkScreenPresenter {
     }
 
     private fun title(state: BenchmarkUiState): String = when (state) {
-        BenchmarkUiState.Ready -> "准备就绪"
-        is BenchmarkUiState.NeedsModel -> "还差一个标准模型"
-        is BenchmarkUiState.Checking -> "正在检查设备"
-        is BenchmarkUiState.LoadingModel -> "正在准备模型"
-        is BenchmarkUiState.WarmingUp -> "正在预热"
-        is BenchmarkUiState.Measuring -> "正在计分"
-        is BenchmarkUiState.Cooling -> "正在等待设备冷却"
-        is BenchmarkUiState.Cancelling -> "正在安全取消"
-        is BenchmarkUiState.Blocked -> "暂时不能开始"
-        is BenchmarkUiState.Completed -> "跑分完成"
-        is BenchmarkUiState.Failed -> "本次跑分未完成"
-        BenchmarkUiState.Cancelled -> "跑分已取消"
+        BenchmarkUiState.Ready -> "Preparado"
+        is BenchmarkUiState.NeedsModel -> "Falta um modelo padrão"
+        is BenchmarkUiState.Checking -> "Verificando dispositivo"
+        is BenchmarkUiState.LoadingModel -> "Preparando modelo"
+        is BenchmarkUiState.WarmingUp -> "Aquecendo"
+        is BenchmarkUiState.Measuring -> "Pontuando"
+        is BenchmarkUiState.Cooling -> "Aguardando resfriamento do dispositivo"
+        is BenchmarkUiState.Cancelling -> "Cancelando com segurança"
+        is BenchmarkUiState.Blocked -> "Não pode iniciar temporariamente"
+        is BenchmarkUiState.Completed -> "Benchmark concluído"
+        is BenchmarkUiState.Failed -> "Benchmark desta vez não concluído"
+        BenchmarkUiState.Cancelled -> "Benchmark cancelado"
     }
 
     private fun message(state: BenchmarkUiState, modelDisplayName: (String) -> String): String = when (state) {
-        BenchmarkUiState.Ready -> "标准模型已就绪。测试时会自动启动本机服务。"
-        is BenchmarkUiState.NeedsModel -> "需要 ${modelDisplayName(state.fileName.substringBeforeLast('.'))} 标准模型，下载完成后即可开始。"
-        is BenchmarkUiState.Checking -> "正在校验电量、温度、存储和模型完整性。"
-        is BenchmarkUiState.LoadingModel -> "正在加载 ${modelDisplayName(state.modelName.substringBeforeLast('.'))}。"
-        is BenchmarkUiState.WarmingUp -> "预热 ${state.current} / ${state.total}，这部分不计分。"
-        is BenchmarkUiState.Measuring -> "计分 ${state.current} / ${state.total}，请保持应用在前台。"
-        is BenchmarkUiState.Cooling -> "剩余约 ${state.secondsRemaining} 秒，避免温度影响下一轮。"
-        is BenchmarkUiState.Cancelling -> "正在停止当前推理并保存诊断信息。"
-        is BenchmarkUiState.Blocked -> "处理下面的项目后，点击重新检测。"
-        is BenchmarkUiState.Completed -> "${formatScore(state.headlineScore)} TuiMa · 标准分 ${state.canonicalScore} / 1000"
+        BenchmarkUiState.Ready -> "Modelo padrão pronto. O serviço local será iniciado automaticamente durante o teste."
+        is BenchmarkUiState.NeedsModel -> "Necessário o modelo padrão ${modelDisplayName(state.fileName.substringBeforeLast('.'))}, o download será iniciado assim que concluído."
+        is BenchmarkUiState.Checking -> "Verificando bateria, temperatura, armazenamento e integridade do modelo."
+        is BenchmarkUiState.LoadingModel -> "Carregando ${modelDisplayName(state.modelName.substringBeforeLast('.'))}."
+        is BenchmarkUiState.WarmingUp -> "Aquecimento ${state.current} / ${state.total}, esta parte não pontua."
+        is BenchmarkUiState.Measuring -> "Pontuação ${state.current} / ${state.total}, mantenha o app em primeiro plano."
+        is BenchmarkUiState.Cooling -> "Cerca de ${state.secondsRemaining} segundos restantes, evite que a temperatura afete a próxima rodada."
+        is BenchmarkUiState.Cancelling -> "Parando inferência atual e salvando informações de diagnóstico."
+        is BenchmarkUiState.Blocked -> "Trate os itens abaixo e clique em re-verificar."
+        is BenchmarkUiState.Completed -> "${formatScore(state.headlineScore)} TuiMa · Pontuação padrão ${state.canonicalScore} / 1000"
         is BenchmarkUiState.Failed -> state.message
-        BenchmarkUiState.Cancelled -> "没有生成成绩，你可以随时重新开始。"
+        BenchmarkUiState.Cancelled -> "Nenhuma pontuação gerada, você pode recomeçar a qualquer momento."
     }
 
     private fun phase(state: BenchmarkUiState): String = when (state) {
-        is BenchmarkUiState.Checking -> "1/5 设备检查"
-        is BenchmarkUiState.LoadingModel -> "2/5 加载模型"
-        is BenchmarkUiState.WarmingUp -> "3/5 模型预热"
-        is BenchmarkUiState.Measuring -> "4/5 正式计分"
-        is BenchmarkUiState.Cooling -> "4/5 散热等待"
-        is BenchmarkUiState.Completed -> "5/5 生成结果"
-        else -> "等待开始"
+        is BenchmarkUiState.Checking -> "1/5 Verificação do dispositivo"
+        is BenchmarkUiState.LoadingModel -> "2/5 Carregando modelo"
+        is BenchmarkUiState.WarmingUp -> "3/5 Aquecimento do modelo"
+        is BenchmarkUiState.Measuring -> "4/5 Pontuação oficial"
+        is BenchmarkUiState.Cooling -> "4/5 Aguardando resfriamento"
+        is BenchmarkUiState.Completed -> "5/5 Gerando resultado"
+        else -> "Aguardando início"
     }
 
     private fun estimateRemaining(state: BenchmarkUiState, progress: Int, elapsedMs: Long): String {
-        if (!state.isRunning) return if (state is BenchmarkUiState.Completed) "已完成" else "尚未开始"
-        if (state is BenchmarkUiState.Cooling) return "约 ${state.secondsRemaining} 秒"
-        if (elapsedMs <= 0L || progress <= 0) return "正在估算"
+        if (!state.isRunning) return if (state is BenchmarkUiState.Completed) "Concluído" else "Não iniciado"
+        if (state is BenchmarkUiState.Cooling) return "Cerca de ${state.secondsRemaining} segundos"
+        if (elapsedMs <= 0L || progress <= 0) return "Estimando"
         val remaining = (elapsedMs.toDouble() * (100 - progress).toDouble() / progress.toDouble()).toLong()
         return formatRemainingDuration(remaining.coerceAtLeast(1_000L))
     }

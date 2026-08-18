@@ -34,7 +34,7 @@ class MobileCoreService : Service() {
     override fun onCreate() {
         super.onCreate()
         ensureNotificationChannel()
-        promoteToForeground("MobileCore local API 启动中")
+        promoteToForeground("API local MobileCore iniciando")
 
         backend = MockRuntimeBackend(applicationContext)
         modelManager = ModelManager(backend, applicationContext)
@@ -56,14 +56,14 @@ class MobileCoreService : Service() {
         }
 
         startWakeLock()
-        updateNotification("MobileCore API 可达：127.0.0.1:8080/v1")
+        updateNotification("API MobileCore acessível: 127.0.0.1:8080/v1")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // Reassert foreground state before any model work on every delivery.
         // This also acknowledges a foreground-start obligation if another
         // entry point uses startForegroundService() in the future.
-        promoteToForeground("MobileCore API 可达：127.0.0.1:8080/v1")
+        promoteToForeground("API MobileCore acessível: 127.0.0.1:8080/v1")
 
         val requestedModelPath = intent?.getStringExtra("modelPath")
         val loadFirstModel = intent?.getBooleanExtra("loadFirstModel", false) == true
@@ -90,7 +90,7 @@ class MobileCoreService : Service() {
                 state = if (result.ok) ModelLoadStatusContract.STATE_LOADED else ModelLoadStatusContract.STATE_FAILED,
                 modelPath = modelPath,
                 modelId = result.modelId,
-                message = if (result.ok) "模型已加载" else "运行时未能加载模型",
+                message = if (result.ok) "Carregado" else "O runtime falhou ao carregar o modelo",
             )
         }
         return START_STICKY
@@ -131,7 +131,7 @@ class MobileCoreService : Service() {
                     "MobileCore Service",
                     NotificationManager.IMPORTANCE_LOW
                 ).apply {
-                    description = "MobileCore local API 与模型推理服务"
+                    description = "API local MobileCore e serviço de inferência de modelo"
                 }
                 notificationManager.createNotificationChannel(channel)
             }
