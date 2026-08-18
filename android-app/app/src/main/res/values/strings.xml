@@ -1145,8 +1145,6 @@
     <string name="action_go_to_give">Go to Give</string>
     <string name="action_go_to_share">Go to Share</string>
     <string name="action_go_to_care">Go to Care</string>
-    <string name="action_go_to_help">Go to Help</string>
-    <string name="action_go_to_support">Go to Support</string>
     <string name="action_go_to_assist">Go to Assist</string>
     <string name="action_go_to_aid">Go to Aid</string>
     <string name="action_go_to_rescue">Go to Rescue</string>
