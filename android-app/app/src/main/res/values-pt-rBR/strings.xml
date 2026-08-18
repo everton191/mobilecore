@@ -437,8 +437,8 @@
     <string name="omni_state_verified_not_loaded_subtitle">Modelo principal e mmproj ambos verificados; capacidades de imagem e áudio serão anunciadas apenas após o carregamento.</string>
     <string name="omni_state_loaded">Multimodal Local Carregado</string>
     <string name="omni_state_loaded_subtitle">O runtime confirmou este conjunto de artefatos fixos; capacidades reais ainda sujeitas a /health.</string>
-    <string name="omni_state_install_cancellean">Instalação Cancelada</string>
-    <string name="omni_state_install_cancellean_subtitle">Arquivos de download temporários limpos; reinstalar ainda requer acordo explícito.</string>
+    <string name="omni_state_install_cancelled">Instalação Cancelada</string>
+    <string name="omni_state_install_cancelled_subtitle">Arquivos de download temporários limpos; reinstalar ainda requer acordo explícito.</string>
     <string name="omni_state_operation_failed">Operação Falhou</string>
 
     <!-- Omni Actions -->
@@ -513,8 +513,8 @@
     <string name="playground_state_verification_read_failed_subtitle">Verificação SHA-256 completa ou envio de registro de verificação não concluído; modelo permanece não confiável</string>
     <string name="playground_state_load_failed">Falha ao Carregar</string>
     <string name="playground_state_load_failed_subtitle">Modelo verificado e instalado, mas o runtime local falhou ao carregar</string>
-    <string name="playground_state_cancellean">Cancelado</string>
-    <string name="playground_state_cancellean_subtitle">Download ou verificação atual parada; downloads temporários limpos, arquivos de instalação oficiais não deletados</string>
+    <string name="playground_state_cancelled">Cancelado</string>
+    <string name="playground_state_cancelled_subtitle">Download ou verificação atual parada; downloads temporários limpos, arquivos de instalação oficiais não deletados</string>
     <string name="playground_state_file_incomplete">Arquivo Incompleto</string>
     <string name="playground_state_local_file_pending">Arquivo Local · Aguardando Verificação</string>
     <string name="playground_state_main_running">Modelo Principal Executando · Fonte Aguardando Verificação</string>
@@ -564,7 +564,7 @@
     <string name="component_benchmark_progress">Progresso do Benchmark %</string>
     <string name="component_estimating">Estimando</string>
     <string name="component_about_seconds">Cerca de %d segundos</string>
-    <string name="component_about_minutes_seconds">Cerca de %d min %d seg</string>
+    <string name="component_about_minutes_seconds" formatted="false">Cerca de %d min %d seg</string>
 
     <!-- Home Screen Download -->
     <string name="home_download_standard_model">Baixar Modelo Padrão</string>

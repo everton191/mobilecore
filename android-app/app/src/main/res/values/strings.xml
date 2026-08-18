@@ -564,7 +564,7 @@
     <string name="component_benchmark_progress">Benchmark Progress %</string>
     <string name="component_estimating">Estimating</string>
     <string name="component_about_seconds">About %d seconds</string>
-    <string name="component_about_minutes_seconds">About %d min %d sec</string>
+    <string name="component_about_minutes_seconds" formatted="false">About %d min %d sec</string>
 
     <!-- Home Screen Download -->
     <string name="home_download_standard_model">Download Standard Model</string>
