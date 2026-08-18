@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TuiMa</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Início</string>
+    <string name="nav_models">Modelos</string>
+    <string name="nav_playground">Playground</string>
+    <string name="nav_gallery">Galeria</string>
+    <string name="nav_vision_models">Modelos Visuais</string>
+    <string name="nav_g2d_lab">Lab G2D</string>
+    <string name="nav_vision">Visual</string>
+    <string name="nav_omni">Omni</string>
+    <string name="nav_benchmark">Benchmark</string>
+    <string name="nav_results">Resultados</string>
+    <string name="nav_api">API</string>
+    <string name="nav_settings">Configurações</string>
+    <string name="nav_my_profile">Meu Perfil</string>
+
+    <!-- Home Tab -->
+    <string name="home_header_title">Console TuiMa</string>
+    <string name="home_header_subtitle">IA local em um vislumbre</string>
+    <string name="home_privacy_row">Executa offline · Dados ficam no dispositivo</string>
+    <string name="home_device_overview_available_memory">Memória Disponível</string>
+    <string name="home_device_overview_cpu_cores">Núcleos CPU</string>
+    <string name="home_device_overview_battery">Bateria Atual</string>
+    <string name="home_device_overview_temperature">Temperatura do Dispositivo</string>
+
+    <!-- Models Tab -->
+    <string name="models_tab_title">Modelos</string>
+    <string name="models_tab_subtitle">Biblioteca de modelos local e status do runtime no dispositivo</string>
+    <string name="models_trusted_model_store">Loja de Modelos Confiável</string>
+    <string name="models_trusted_model_store_subtitle">Fonte, licença, hash e evidências no dispositivo rastreáveis</string>
+    <string name="models_community_candidates">Candidatos da Comunidade</string>
+    <string name="models_community_candidates_subtitle">Ordenados por estimativa do dispositivo, não equivalente ao Playground verificado</string>
+    <string name="models_community_search">Busca da Comunidade · Não Verificado</string>
+    <string name="models_community_search_subtitle">Encontre mais GGUF no ModelScope, verifique a fonte antes de baixar</string>
+    <string name="models_runtime_suggestions">Sugestões de Runtime</string>
+    <string name="models_runtime_suggestions_subtitle">Ordenados por capacidade do dispositivo e velocidade histórica</string>
+
+    <!-- Playground Tab -->
+    <string name="playground_tab_title">Loja de Modelos</string>
+    <string name="playground_tab_subtitle">Mobile Model Playground</string>
+    <string name="playground_catalog_unavailable">Catálogo Indisponível</string>
+    <string name="playground_catalog_unavailable_subtitle">Falha ao analisar catálogo interno, nenhuma fonte não verificada exibida.</string>
+    <string name="playground_responsibility">Playground cuida da fonte do modelo, conversor, licença, SHA-256 e evidências; MobileCore cuida da descoberta, carregamento e benchmark local.</string>
+    <string name="playground_view_project">Ver Projeto Playground</string>
+    <string name="playground_cannot_open_project">Não foi possível abrir o projeto Playground</string>
+
+    <!-- Benchmark Tab -->
+    <string name="benchmark_tab_title">Benchmark</string>
+    <string name="benchmark_tab_subtitle">Teste de desempenho de IA no dispositivo</string>
+    <string name="benchmark_ready">Pronto</string>
+    <string name="benchmark_needs_model">Precisa de um modelo padrão</string>
+    <string name="benchmark_checking_device">Verificando dispositivo</string>
+    <string name="benchmark_preparing_model">Preparando modelo</string>
+    <string name="benchmark_warming_up">Aquecendo</string>
+    <string name="benchmark_scoring">Pontuando</string>
+    <string name="benchmark_waiting_cooling">Aguardando resfriamento</string>
+    <string name="benchmark_cancelling">Cancelando com segurança</string>
+    <string name="benchmark_cannot_start">Não pode iniciar temporariamente</string>
+    <string name="benchmark_completed">Benchmark concluído</string>
+    <string name="benchmark_not_completed">Benchmark não concluído</string>
+    <string name="benchmark_cancelled">Benchmark cancelado</string>
+    <string name="benchmark_model_ready">Modelo padrão pronto. O serviço local iniciará automaticamente durante o teste.</string>
+    <string name="benchmark_needs_model_download">Precisa de ... modelo padrão, pronto para iniciar após o download.</string>
+    <string name="benchmark_checking_requirements">Verificando bateria, temperatura, armazenamento e integridade do modelo.</string>
+    <string name="benchmark_loading_model">Carregando ...</string>
+    <string name="benchmark_warmup_progress">Aquecimento .../..., esta parte não conta pontuação.</string>
+    <string name="benchmark_scoring_progress">Pontuação .../..., mantenha o app em primeiro plano.</string>
+    <string name="benchmark_cooling_down">Cerca de ... segundos restantes, evite que a temperatura afete a próxima rodada.</string>
+    <string name="benchmark_stopping_inference">Parando inferência atual e salvando diagnósticos.</string>
+    <string name="benchmark_fix_issues">Corrija os itens abaixo e clique em re-verificar.</string>
+    <string name="benchmark_standard_score">TuiMa · Pontuação Padrão .../ 1000</string>
+    <string name="benchmark_no_score_generated">Nenhuma pontuação gerada, você pode recomeçar a qualquer momento.</string>
+    <string name="benchmark_phase_1">1/5 Verificação do Dispositivo</string>
+    <string name="benchmark_phase_2">2/5 Carregar Modelo</string>
+    <string name="benchmark_phase_3">3/5 Aquecimento do Modelo</string>
+    <string name="benchmark_phase_4_scoring">4/5 Pontuação</string>
+    <string name="benchmark_phase_4_cooling">4/5 Espera de Resfriamento</string>
+    <string name="benchmark_phase_5">5/5 Gerar Resultados</string>
+    <string name="benchmark_waiting_to_start">Aguardando início</string>
+    <string name="benchmark_completed_status">Concluído</string>
+    <string name="benchmark_not_started">Não iniciado</string>
+    <string name="benchmark_about_seconds">Cerca de ... segundos</string>
+    <string name="benchmark_estimating">Estimando</string>
+
+    <!-- Results Tab -->
+    <string name="results_tab_title">Resultados</string>
+    <string name="results_tab_subtitle">Pontuações em duas camadas e explicação de desempenho</string>
+    <string name="results_latest_result">Último Resultado</string>
+    <string name="results_history">Histórico</string>
+    <string name="results_history_subtitle">Últimos 10 testes v2</string>
+    <string name="results_dimension_inference">Inferência</string>
+    <string name="results_dimension_response">Resposta</string>
+    <string name="results_dimension_memory">Memória</string>
+    <string name="results_dimension_sustained">Sustentado</string>
+    <string name="results_dimension_stability">Estabilidade</string>
+    <string name="results_rating_excellent">Excelente</string>
+    <string name="results_rating_good">Bom</string>
+    <string name="results_rating_average">Médio</string>
+    <string name="results_rating_limited">Limitado</string>
+    <string name="results_rating_very_outstanding">Muito Destaque</string>
+    <string name="results_rating_performs_well">Desempenha Bem</string>
+    <string name="results_rating_relatively_stable">Relativamente Estável</string>
+    <string name="results_recommendation_excellent">Adequado para modelos de linguagem locais de 0,5B–1,5B, pode ser usado para conversação diária, resumo e escrita leve.</string>
+    <string name="results_recommendation_good">Adequado para modelos de linguagem locais de 0,5B–1B, pode ser usado para conversas curtas, resumo e perguntas e respostas offline.</string>
+    <string name="results_recommendation_average">Recomendado usar modelos pequenos de 0,3B–0,6B, priorize tarefas de contexto curto.</string>
+    <string name="results_recommendation_limited">Recomendado usar modelos ultraleves de 0,3B ou menos, adequado para classificação simples e tarefas de texto curto.</string>
+    <string name="results_profile_standard">Modo padrão · ${} elegível para ranking / Este resultado não elegível para ranking</string>
+    <string name="results_profile_stress">Modo estresse · Para observar desempenho sustentado, não para ranking</string>
+    <string name="results_profile_quick">Modo rápido · Apenas para visualização, não para ranking</string>
+    <string name="results_bottleneck">é o gargalo principal atual.</string>
+
+    <!-- Vision Tab -->
+    <string name="vision_tab_title">Laboratório Visual</string>
+    <string name="vision_tab_subtitle">OCR e sondas visuais leves</string>
+    <string name="vision_ocr_title">OCR Visual</string>
+    <string name="vision_ocr_subtitle">Reconhecimento de texto em imagens</string>
+    <string name="vision_model_status">Status do Modelo</string>
+    <string name="vision_model_status_subtitle">ONNX / TFLite / MNN</string>
+    <string name="vision_ocr_model">Modelo OCR</string>
+    <string name="vision_ocr_model_subtitle">Backend visual independente</string>
+    <string name="vision_classification_title">CLIP / Classificação</string>
+    <string name="vision_classification_subtitle">CIFAR10 / MNIST</string>
+    <string name="vision_recognition_result">Resultado do Reconhecimento</string>
+    <string name="vision_recognition_result_subtitle">Status do processamento local</string>
+
+    <!-- Gallery Tab -->
+    <string name="gallery_tab_title">Busca Visual Local</string>
+    <string name="gallery_tab_subtitle">Pesquise na galeria local com uma frase</string>
+    <string name="gallery_description">Atualmente usando CLIP para recall por similaridade cosseno local; a revisão G2D com modelo pequeno será habilitada em versões futuras.</string>
+    <string name="gallery_progress">Progresso ...%</string>
+    <string name="gallery_processing">Processando</string>
+    <string name="gallery_natural_language_search">Busca em Linguagem Natural</string>
+    <string name="gallery_search_hint">O que você está procurando?</string>
+    <string name="gallery_photo_search_description">Descrição da busca por foto</string>
+    <string name="gallery_clear_search">Limpar Busca</string>
+    <string name="gallery_search_results">Resultados da Busca</string>
+    <string name="gallery_local_recall">Recall Local</string>
+    <string name="gallery_searching_photos">Pesquisando fotos locais</string>
+    <string name="gallery_clip_explanation">Saída direta do CLIP significa ordenação por similaridade cosseno, não significa passagem pelo limiar de calibração; apenas os resultados marcados como revisão G2D foram discriminados pelo modelo pequeno.</string>
+    <string name="gallery_result_number">Resultado ..., ...</string>
+    <string name="gallery_photo_number">Foto ...</string>
+    <string name="gallery_privacy_notice">MobileCore não envia fotos, consultas ou índices</string>
+
+    <!-- Gallery Index States -->
+    <string name="gallery_index_unauthorized">Índice da Galeria · Não Autorizado</string>
+    <string name="gallery_index_unauthorized_subtitle">Construa o índice local após conceder acesso</string>
+    <string name="gallery_index_unauthorized_description">Lê apenas suas fotos autorizadas; imagens originais, vetores e consultas ficam no dispositivo.</string>
+    <string name="gallery_index_authorize">Autorizar e Construir Índice</string>
+    <string name="gallery_index_authorized">Índice da Galeria · Autorizado</string>
+    <string name="gallery_index_found_pending">Índice local pendente encontrado</string>
+    <string name="gallery_index_not_built">Nenhum índice de fotos construído ainda</string>
+    <string name="gallery_index_preparing_clip">Preparar o CLIP verificará e restaurará o índice existente; deve ser reconstruído quando o modelo mudar.</string>
+    <string name="gallery_index_scanning_description">Verificando fotos autorizadas e gerando vetores locais, pode cancelar e retomar a qualquer momento.</string>
+    <string name="gallery_index_select_more">Selecionar Mais e Construir Índice</string>
+    <string name="gallery_index_build">Construir Índice de Fotos</string>
+    <string name="gallery_index_clear_existing">Limpar Índice Existente</string>
+    <string name="gallery_index_scanning">Índice da Galeria · Verificando</string>
+    <string name="gallery_index_scanning_subtitle">Descobrindo fotos pesquisáveis</string>
+    <string name="gallery_index_scanning_progress">Encontradas ... fotos, vetores serão gerados automaticamente após a conclusão da verificação.</string>
+    <string name="gallery_index_indexing">Índice da Galeria · Indexando</string>
+    <string name="gallery_index_generating_vectors">Gerando vetores de imagem</string>
+    <string name="gallery_index_count">... · ...%</string>
+    <string name="gallery_index_skipped">Puladas ... fotos</string>
+    <string name="gallery_index_cancel_save">Cancelar e Salvar Progresso</string>
+    <string name="gallery_index_ready">Índice da Galeria · Pronto</string>
+    <string name="gallery_index_ready_photos">... fotos pesquisáveis</string>
+    <string name="gallery_index_ready_none">Nenhuma foto pesquisável temporariamente</string>
+    <string name="gallery_index_incremental">Pode atualizar incrementalmente; fotos e vetores não serão enviados para a nuvem.</string>
+    <string name="gallery_index_skipped_unreadable">Puladas ... fotos ilegíveis desta vez.</string>
+    <string name="gallery_index_reauthorize">Reautorize mais fotos e reconstrua o índice.</string>
+    <string name="gallery_index_select_more_update">Selecionar Mais e Atualizar Índice</string>
+    <string name="gallery_index_rescan">Verificar Novamente</string>
+    <string name="gallery_index_update">Atualizar Índice</string>
+    <string name="gallery_index_clear">Limpar Índice</string>
+    <string name="gallery_index_failed">Índice da Galeria · Falhou</string>
+    <string name="gallery_index_failed_subtitle">Índice local não concluído</string>
+    <string name="gallery_index_rebuild">Reconstruir Índice</string>
+
+    <!-- Gallery Search Model States -->
+    <string name="gallery_search_model_pending">Modelo de Busca · Pendente</string>
+    <string name="gallery_search_model_prepare_clip">Preparar Codificador CLIP Imagem-Texto</string>
+    <string name="gallery_search_model用途">Para recall; ... pode fazer revisão G2D em candidatos difusos.</string>
+    <string name="gallery_search_model_prepare">Preparar Modelo de Busca</string>
+    <string name="gallery_search_model_preparing">Modelo de Busca · Preparando</string>
+    <string name="gallery_search_model_preparing_progress">Preparando ...</string>
+    <string name="gallery_search_model_preparing_status">Progresso ...% · Pronto para busca offline após conclusão</string>
+    <string name="gallery_search_model_ready_verified">Modelo de Busca · Pronto · Identidade Verificada</string>
+    <string name="gallery_search_model_ready_unverified">Modelo de Busca · Pronto · Identidade Não Verificada</string>
+    <string name="gallery_search_model_clip_ready">Recall CLIP Pronto</string>
+    <string name="gallery_search_model_clip_g2d_ready">CLIP + G2D Pronto</string>
+    <string name="gallery_search_model_image_text">Imagem: ... · Texto: ...</string>
+    <string name="gallery_search_model_identity_verified">Identidade verificada: ...</string>
+    <string name="gallery_search_model_identity_unverified">Identidade não verificada: Modelo CLIP compatível importado pelo usuário</string>
+    <string name="gallery_search_model_g2d_disabled">Revisão G2D não habilitada</string>
+    <string name="gallery_search_model_review">Revisão: ...</string>
+    <string name="gallery_search_model_release_memory">Liberar Memória do Modelo</string>
+    <string name="gallery_search_model_released">Modelo de Busca · Liberado</string>
+    <string name="gallery_search_model_released_subtitle">Arquivos CLIP ainda no dispositivo</string>
+    <string name="gallery_search_model_reload">Recarregar Modelo de Busca</string>
+    <string name="gallery_search_model_failed">Modelo de Busca · Falhou</string>
+    <string name="gallery_search_model_failed_subtitle">Preparação do modelo não concluída</string>
+    <string name="gallery_search_model_retry">Tentar Preparação Novamente</string>
+
+    <!-- Gallery Search Results -->
+    <string name="gallery_result_cosine">Cosseno ...</string>
+    <string name="gallery_result_clip_direct">CLIP Direto</string>
+    <string name="gallery_result_g2d_review">Revisão G2D</string>
+    <string name="gallery_result_clip_explanation">Ordenado por similaridade cosseno CLIP, limiar de calibração não aplicado</string>
+    <string name="gallery_result_g2d_explanation">Modelo pequeno revisou candidatos dentro do conjunto</string>
+
+    <!-- Gallery Messages -->
+    <string name="gallery_no_photos_found">Nenhuma foto encontrada para indexar. Conceda acesso a mais fotos e tente novamente.</string>
+    <string name="gallery_index_ready_message">Pronto para pesquisar fotos com linguagem natural após índice e modelo estarem prontos.</string>
+    <string name="gallery_try_search">Tente \\\"pessoa de vermelho na praia\\\" ou \\\"foto de reunião com gráfico de barras\\\".</string>
+    <string name="gallery_calculating_similarity">Calculando similaridade cosseno CLIP a partir de vetores locais.</string>
+    <string name="gallery_returning_candidates">Retornando top ... candidatos com maior similaridade cosseno</string>
+    <string name="gallery_no_candidates">O índice local não retornou fotos candidatas ordenáveis.</string>
+    <string name="gallery_searching">Pesquisando</string>
+    <string name="gallery_search_local_photos">Pesquisar fotos locais</string>
+    <string name="gallery_describe_content">Descreva pessoas, objetos, animais, cores ou cenas</string>
+    <string name="gallery_complete_index_first">Conclua o índice da galeria e preparação do modelo primeiro</string>
+    <string name="gallery_top_results">Top-... Resultados</string>
+    <string name="gallery_start_search">Iniciar Busca</string>
+    <string name="gallery_cancel_creating_vectors">Cancelando; vetores concluídos serão salvos para a próxima retomada</string>
+    <string name="gallery_access_revoked">Acesso à galeria revogado, por favor reautorize para construir o índice</string>
+    <string name="gallery_manual_release">Sessão CLIP liberada manualmente; arquivos do modelo e índice de fotos ainda preservados.</string>
+    <string name="gallery_photo_source_invalid">Fonte da foto não mais válida</string>
+    <string name="gallery_cannot_open_photo">Não foi possível abrir esta foto</string>
+    <string name="gallery_released">Sessão CLIP liberada; arquivos do modelo e índice local ainda preservados.</string>
+    <string name="gallery_background_released">App entrou em segundo plano, sessão CLIP liberada; será retomada automaticamente ao voltar para a busca na galeria.</string>
+    <string name="gallery_memory_released">Sistema solicitou recuperação de memória, sessão CLIP liberada; arquivos do modelo e índice local ainda preservados.</string>
+    <string name="gallery_released_on_close">Página fechada, liberando sessão CLIP; arquivos do modelo e índice local ainda preservados.</string>
+    <string name="gallery_checking_model_status">Confirmando status do modelo de linguagem local, por favor tente novamente mais tarde.</string>
+    <string name="gallery_unload_model_first">Para evitar que CLIP e GGUF ocupem memória simultaneamente, por favor descarregue ou aguarde o modelo de linguagem local.</string>
+    <string name="gallery_index_cleared">Índice de fotos local limpo</string>
+
+    <!-- Gallery Error Messages -->
+    <string name="gallery_error_insufficient_memory">Memória insuficiente para executar o modelo CLIP</string>
+    <string name="gallery_error_model_not_found">Arquivos do modelo CLIP não encontrados</string>
+    <string name="gallery_error_index_failed">Falha ao construir o índice de fotos</string>
+    <string name="gallery_error_search_failed">Falha na busca</string>
+    <string name="gallery_error.permission_denied">Permissão da galeria negada</string>
+    <string name="gallery_error_no_photos">Nenhuma foto disponível para indexação</string>
+    <string name="gallery_error_model_load_failed">Falha ao carregar o modelo CLIP</string>
+    <string name="gallery_error_index_corrupted">Dados do índice corrompidos</string>
+    <string name="gallery_error_storage_full">Armazenamento cheio, não é possível construir o índice</string>
+    <string name="gallery_error_unknown">Ocorreu um erro durante a operação da galeria</string>
+
+    <!-- Vision Models Tab -->
+    <string name="vision_models_tab_title">Modelos Visuais</string>
+    <string name="vision_models_tab_subtitle">Importação, pareamento e diagnósticos de compatibilidade local</string>
+    <string name="vision_models_no_package">Nenhum pacote completo de modelo visual ainda, importe todos os arquivos necessários para uma tarefa primeiro.</string>
+    <string name="vision_models_package_ready">... arquivos do pacote de modelo prontos, ainda precisa de diagnósticos individuais antes de executar.</string>
+    <string name="vision_models_copying">Copiando para o diretório de modelos visuais locais, o progresso continuará sendo exibido após sair da página.</string>
+    <string name="vision_models_import_paused">Importação pausada, arquivos temporários copiados serão preservados.</string>
+    <string name="vision_models_import_failed">Falha na importação, por favor selecione os arquivos novamente.</string>
+    <string name="vision_models_no_files">Nenhum arquivo importado ainda</string>
+    <string name="vision_models_role_mismatch">função ou formato não corresponde a esta tarefa, por favor substitua antes de diagnosticar.</string>
+    <string name="vision_models_mnn_not_connected">A versão atual pode gerenciar arquivos MNN, mas o pipeline de execução MNN para esta tarefa ainda não está conectado.</string>
+    <string name="vision_models_missing_yolo">Arquivo do modelo YOLO ausente (ONNX / ORT / TFLite).</string>
+    <string name="vision_models_yolo_ready">Arquivo do modelo pronto; tamanho de entrada, tensor de saída e suporte a operadores ainda precisam de diagnóstico em tempo de execução para confirmar.</string>
+    <string name="vision_models_missing_clip_image">Codificador de imagem CLIP ausente.</string>
+    <string name="vision_models_clip_ready">Codificadores de imagem e texto com tokenizer pareados, podem ser usados para busca de texto aberto após os diagnósticos passarem.</string>
+    <string name="vision_models_text_encoder_partial">Codificador de texto importado, mas faltando ...</string>
+    <string name="vision_models_image_encoder_paired">Codificador de imagem e sidecar de embeddings pareados, suporta apenas rótulos fixos dentro do sidecar; busca de texto ainda precisa do codificador de texto.</string>
+    <string name="vision_models_missing_clip_text">Codificador de texto CLIP ausente; também pode importar sidecar de embeddings JSON para verificação de rótulos fixos.</string>
+    <string name="vision_models_gguf_mmproj_must_pair">Deve importar o modelo principal GGUF e o arquivo de projeção visual mmproj correspondente como par.</string>
+    <string name="vision_models_mmproj_no_main">mmproj existe, mas falta o modelo principal GGUF correspondente.</string>
+    <string name="vision_models_main_no_mmproj">Modelo principal GGUF existe, mas falta o arquivo de projeção visual mmproj correspondente.</string>
+    <string name="vision_models_gguf_mmproj_paired">Modelo principal GGUF e arquivo mmproj pareados; arquitetura e dimensões de projeção ainda precisam de diagnóstico em tempo de execução para confirmar.</string>
+
+    <!-- Vision Model Import States -->
+    <string name="vision_import_state_ready">Arquivo Pronto</string>
+    <string name="vision_import_state_labels_ready">Rótulos Fixos Prontos</string>
+    <string name="vision_import_state_missing_files">Arquivos Ausentes</string>
+    <string name="vision_import_state_incompatible">Incompatível</string>
+    <string name="vision_import_state_importing">Importando</string>
+    <string name="vision_import_state_paused">Pausado</string>
+    <string name="vision_import_state_failed">Falha na Importação</string>
+    <string name="vision_import_size_unknown">Tamanho Desconhecido</string>
+
+    <!-- Vision Model Actions -->
+    <string name="vision_action_pause">Pausar</string>
+    <string name="vision_action_resume">Continuar Importação</string>
+    <string name="vision_action_remove">Remover</string>
+    <string name="vision_action_reimport">Reimportar</string>
+    <string name="vision_action_cleanup">Limpar Arquivos Temporários</string>
+    <string name="vision_action_import_package">Importar Pacote do Modelo</string>
+    <string name="vision_action_add_files">Adicionar Arquivos</string>
+    <string name="vision_action_replace">Substituir Arquivos</string>
+    <string name="vision_action_diagnose">Ver Diagnósticos</string>
+    <string name="vision_action_run_diagnose">Executar Diagnósticos</string>
+
+    <!-- Vision Model Details -->
+    <string name="vision_model_package">Pacote do Modelo</string>
+    <string name="vision_model_package_description">Completude dos arquivos não significa compatibilidade de runtime; cada pacote precisa de diagnósticos locais.</string>
+    <string name="vision_model_execution_baseline">A linha de base de execução atual é CPU; GPU, NNAPI, QNN ou NPU só serão marcados como habilitados quando explicitamente conectados e passando nos diagnósticos.</string>
+    <string name="vision_model_format">Formato</string>
+    <string name="vision_model_runtime">Runtime</string>
+    <string name="vision_model_acceleration">Aceleração</string>
+    <string name="vision_model_import_progress">Progresso da Importação</string>
+
+    <!-- Vision Model Slots -->
+    <string name="vision_slot_yolo_detection">YOLO Detecção de Objetos</string>
+    <string name="vision_slot_yolo_detection_type">Detecção</string>
+    <string name="vision_slot_yolo_segmentation">YOLO Segmentação de Instâncias</string>
+    <string name="vision_slot_yolo_segmentation_type">Segmentação</string>
+    <string name="vision_slot_clip_retrieval">CLIP Recuperação Imagem-Texto</string>
+    <string name="vision_slot_clip_retrieval_type">Correspondência Imagem-Texto</string>
+    <string name="vision_slot_clip_description">Codificador de imagem + Codificador de texto + Tokenizer / Sidecar de embeddings</string>
+    <string name="vision_slot_vlm_review">Revisão VLM Pequeno</string>
+    <string name="vision_slot_vlm_review_type">Revisão G2D</string>
+    <string name="vision_slot_vlm_description">Modelo principal GGUF + mmproj</string>
+
+    <!-- Vision Model Roles -->
+    <string name="vision_role_model">Modelo</string>
+    <string name="vision_role_image_encoder">Codificador de Imagem</string>
+    <string name="vision_role_text_encoder">Codificador de Texto</string>
+    <string name="vision_role_tokenizer">Tokenizer de Texto</string>
+    <string name="vision_role_labels_sidecar">Sidecar de Rótulos Fixos</string>
+    <string name="vision_role_gguf_main">Modelo Principal GGUF</string>
+    <string name="vision_role_mmproj">Projeção Visual mmproj</string>
+
+    <!-- G2D Validation Tab -->
+    <string name="g2d_tab_title">Validação G2D no Dispositivo</string>
+    <string name="g2d_tab_subtitle">Linhas de base regras + Roteamento Agentic · Testes no mesmo dispositivo</string>
+    <string name="g2d_dataset">Conjunto de Dados</string>
+    <string name="g2d_sample_count">Contagem de Amostras</string>
+    <string name="g2d_validation_progress">Progresso da Validação G2D no Dispositivo</string>
+    <string name="g2d_cancel_validation">Cancelar Validação</string>
+    <string name="g2d_export_report">Exportar Relatório de Teste</string>
+    <string name="g2d_accuracy">Precisão</string>
+    <string name="g2d_improvement">Melhoria</string>
+    <string name="g2d_samples">Amostras</string>
+    <string name="g2d_backend">Backend</string>
+    <string name="g2d_quantization">Quantização</string>
+    <string name="g2d_route_distribution">Distribuição de Rotas</string>
+    <string name="g2d_agent_audit">Auditoria de Agendamento do Agente</string>
+    <string name="g2d_tool_calls">Chamadas de Ferramentas</string>
+    <string name="g2d_router_p50">Roteador P50</string>
+    <string name="g2d_rule_fallback">Fallback de Regra</string>
+    <string name="g2d_p50_latency">Latência P50</string>
+    <string name="g2d_p95_latency">Latência P95</string>
+    <string name="g2d_peak_memory">Memória Pico</string>
+    <string name="g2d_temperature_change">Variação de Temperatura</string>
+    <string name="g2d_battery_change">Variação de Bateria</string>
+    <string name="g2d_record_status">Status do Registro</string>
+    <string name="g2d_existing_measurements">Medições Existentes</string>
+
+    <!-- G2D Validation States -->
+    <string name="g2d_state_waiting">Aguardando medição</string>
+    <string name="g2d_state_no_dataset">Nenhum conjunto de dados selecionado</string>
+    <string name="g2d_state_samples">... amostras</string>
+    <string name="g2d_state_waiting_selection">Aguardando seleção</string>
+    <string name="g2d_state_start_validation">Iniciar Validação no Dispositivo</string>
+    <string name="g2d_state_waiting_data_model">Aguardando dados e modelo</string>
+    <string name="g2d_state_validation_running">Validação em execução</string>
+    <string name="g2d_state_revalidate">Re-validar</string>
+    <string name="g2d_state_retry_validation">Tentar Validação Novamente</string>
+    <string name="g2d_state_measurements">... medições</string>
+    <string name="g2d_state_baseline">Linha de base</string>
+    <string name="g2d_state_waiting_baseline">Aguardando medição da linha de base</string>
+    <string name="g2d_state_waiting_same_sample">Aguardando medição da mesma amostra</string>
+    <string name="g2d_state_improvement">vs ...</string>
+    <string name="g2d_state_candidate">Candidato ...</string>
+    <string name="g2d_state_no_probability">Sem probabilidade ...</string>
+    <string name="g2d_state_times">... vezes</string>
+    <string name="g2d_state_times_percentage">... vezes · ...%</string>
+    <string name="g2d_state_inference_count">... inferências no dispositivo · ...%</string>
+
+    <!-- G2D Validation Descriptions -->
+    <string name="g2d_description_waiting_config">Aguardando configuração; selecione o conjunto de dados e intervalo de amostras para iniciar; esta página não preencherá nenhuma precisão.</string>
+    <string name="g2d_description_waiting_resources">Aguardando recursos</string>
+    <string name="g2d_description_ready">Pronto</string>
+    <string name="g2d_description_will_run">Executará cinco métodos sequencialmente, todas as métricas geradas apenas a partir de registros de medição locais.</string>
+    <string name="g2d_description_validating">Validando; mantenha a dissipação de calor do dispositivo estável; cancelar preserva registros de diagnóstico concluídos, não gera conclusão completa.</string>
+    <string name="g2d_description_completed">Validação concluída</string>
+    <string name="g2d_description_completed_summary">Cinco escores de precisão resumidos; métricas de desempenho ausentes permanecem \\\"aguardando medição\\\".</string>
+    <string name="g2d_description_ended">Execução encerrada; métricas ausentes continuam marcadas como \\\"aguardando medição\\\", não preencherá valores automaticamente.</string>
+    <string name="g2d_description_failed">Validação falhou</string>
+    <string name="g2d_description_failed_message">Nenhum resultado completo de experimento gerado, por favor verifique o modelo, conjunto de dados e status do dispositivo antes de tentar novamente.</string>
+
+    <!-- G2D Experiments -->
+    <string name="g2d_experiment_discriminative">Linha de Base de Modelo Discriminativo</string>
+    <string name="g2d_experiment_generative">Linha de Base de Modelo Generativo Independente</string>
+    <string name="g2d_experiment_high_confidence">Alta confiança vai para CLIP, o resto vai para validadores candidatos</string>
+    <string name="g2d_experiment_three_way">CLIP, gerador independente, validador candidato agendamento em três vias</string>
+    <string name="g2d_experiment_agentic">Modelo pequeno local seleciona ramificação de ferramentas registradas (sem verdade fundamental)</string>
+
+    <!-- G2D Five-way Comparison -->
+    <string name="g2d_five_way_title">Comparação em Cinco Vias no Dispositivo</string>
+    <string name="g2d_five_way_description">1θ/2θ preservados como linhas de base regras do artigo; roteamento Agentic só pode selecionar de CLIP, VLM e ferramentas de validação candidatas registradas.</string>
+
+    <!-- G2D Measurement Principles -->
+    <string name="g2d_principles_title">Princípios de Medição</string>
+    <string name="g2d_principles_description">Precisão calculada apenas a partir da contagem de amostras corretas; Agente não recebe verdade fundamental, chamadas de ferramentas ilegais serão registradas e farão fallback para 2θ. Diferentes intervalos de amostras não calculam melhoria, métricas ausentes exibem uniformemente \\\"aguardando medição\\\".</string>
+
+    <!-- Omni Tab -->
+    <string name="omni_tab_title">Multimodal Local</string>
+    <string name="omni_tab_subtitle">Ciclo de vida de artefatos fixos duais Qwen2.5-Omni-3B</string>
+    <string name="omni_experiment">Experimento</string>
+    <string name="omni_pre_install_check">Verificação Pré-instalação</string>
+    <string name="omni_pre_install_check_subtitle">Lê valores em tempo real a cada vez, não armazena em cache a autorização</string>
+    <string name="omni_memory">Memória</string>
+    <string name="omni_storage">Armazenamento</string>
+    <string name="omni_network">Rede</string>
+    <string name="omni_fixed_artifacts">Par de Artefatos Fixos</string>
+    <string name="omni_fixed_artifacts_subtitle">Qualquer arquivo não verificado não anunciará capacidade multimodal</string>
+    <string name="omni_main_model">Modelo Principal</string>
+    <string name="omni_source_license">Fonte e Licença</string>
+    <string name="omni_source_license_subtitle">Deve confirmar separadamente antes de baixar</string>
+    <string name="omni_publisher">Publicador: ggml-org (não é GGUF oficial do Qwen)</string>
+    <string name="omni_download_size">Download completo de cerca de 3,39 GiB; escrito apenas no diretório privado do app MobileCore.</string>
+    <string name="omni_view_source">Ver Fonte da Versão Fixa</string>
+    <string name="omni_capability_boundary">Limite de Capacidade</string>
+    <string name="omni_capability_boundary_subtitle">MobileCore apenas lida com inferência local</string>
+    <string name="omni_capability_description">Esta página não pode clicar em outros apps, fazer login em contas ou fazer pedidos. Phone Use, aprovação de transações e cadeia de evidências ainda são controlados pelo MobileCore.</string>
+    <string name="omni_gguf_limitation">A rota GGUF atual suporta apenas entrada de texto/imagem/áudio para saída de texto; não suporta entrada de vídeo e saída de voz.</string>
+
+    <!-- Omni States -->
+    <string name="omni_state_wifi_connected">Conectado, pode baixar sob política de apenas Wi-Fi</string>
+    <string name="omni_state_wifi_not_detected">Wi-Fi não detectado</string>
+    <string name="omni_state_waiting_service">Aguardando resposta do serviço</string>
+    <string name="omni_state_service_disconnected">Serviço não conectado</string>
+    <string name="omni_state_service_disconnected_subtitle">Inicie o serviço local para ler recursos e status do modelo em tempo real.</string>
+    <string name="omni_state_can_install">Pode instalar</string>
+    <string name="omni_state_can_install_subtitle">Condições do dispositivo atendidas; ainda precisa ler fonte e licença e concordar explicitamente cada vez.</string>
+    <string name="omni_state_insufficient">Condições atuais do dispositivo insuficientes</string>
+    <string name="omni_state_downloading">Baixando</string>
+    <string name="omni_state_downloading_subtitle">Dois artefatos de versão fixa sendo escritos no diretório privado do app, pode cancelar a qualquer momento.</string>
+    <string name="omni_state_verifying">Verificando</string>
+    <string name="omni_state_verifying_subtitle">Verificando bytes exatos e SHA-256, não carregará até a conclusão da verificação.</string>
+    <string name="omni_state_verified_not_loaded">Verificado, não carregado</string>
+    <string name="omni_state_verified_not_loaded_subtitle">Modelo principal e mmproj ambos verificados; capacidades de imagem e áudio serão anunciadas apenas após o carregamento.</string>
+    <string name="omni_state_loaded">Multimodal Local Carregado</string>
+    <string name="omni_state_loaded_subtitle">O runtime confirmou este conjunto de artefatos fixos; capacidades reais ainda sujeitas a /health.</string>
+    <string name="omni_state_install_cancellean">Instalação Cancelada</string>
+    <string name="omni_state_install_cancellean_subtitle">Arquivos de download temporários limpos; reinstalar ainda requer acordo explícito.</string>
+    <string name="omni_state_operation_failed">Operação Falhou</string>
+
+    <!-- Omni Actions -->
+    <string name="omni_action_start_service">Iniciar Serviço e Verificar</string>
+    <string name="omni_action_read_agree">Ler Instruções e Concordar com o Download</string>
+    <string name="omni_action_recheck">Verificar Novamente</string>
+    <string name="omni_action_recheck_device">Reverificar Condições do Dispositivo</string>
+    <string name="omni_action_cancel_install">Cancelar Instalação</string>
+    <string name="omni_action_load_to_runtime">Carregar no Runtime Local</string>
+    <string name="omni_action_reverify">Reverificar</string>
+    <string name="omni_action_uninstall">Desinstalar</string>
+    <string name="omni_action_uninstall_release">Desinstalar e Liberar</string>
+    <string name="omni_action_reinstall">Reler e Instalar</string>
+    <string name="omni_action_refresh">Atualizar Status</string>
+    <string name="omni_action_cleanup">Limpar Arquivos Locais</string>
+
+    <!-- Omni Error Messages -->
+    <string name="omni_error_storage_insufficient">Armazenamento privado do app insuficiente, a instalação não será iniciada.</string>
+    <string name="omni_error_memory_low">Memória disponível atual abaixo do limiar conservador de carregamento, a instalação não será iniciada.</string>
+    <string name="omni_error_wifi_required">Política de apenas Wi-Fi habilitada, verifique novamente após conectar ao Wi-Fi.</string>
+    <string name="omni_error_checksum_mismatch">Checksum do arquivo incompatível, não é possível carregar; por favor limpe e reinstale.</string>
+    <string name="omni_error_artifacts_incomplete">Par de artefatos fixos incompleto, não é possível carregar.</string>
+    <string name="omni_error_download_incomplete">Download incompleto, por favor verifique a rede e tente novamente.</string>
+    <string name="omni_error_mmproj_incompatible">mmproj e modelo principal incompatíveis.</string>
+    <string name="omni_error_runtime_rejected_mmproj">Runtime rejeitou mmproj verificado.</string>
+    <string name="omni_error_runtime_load_failed">Runtime falhou ao carregar modelo verificado.</string>
+    <string name="omni_error_wifi_download_needs_connection">Download por Wi-Fi requer conexão Wi-Fi válida.</string>
+    <string name="omni_error_memory_below_threshold">Memória disponível atual abaixo do limiar conservador.</string>
+    <string name="omni_error_storage_insufficient_short">Armazenamento privado do app insuficiente.</string>
+    <string name="omni_error_service_not_completed">Serviço local não completou a requisição, por favor atualize e tente novamente.</string>
+    <string name="omni_error_operation_not_completed">Operação de ciclo de vida local não concluída.</string>
+
+    <!-- Omni Status -->
+    <string name="omni_status_installed_verified">Instalado · SHA-256 Verificado</string>
+    <string name="omni_status_installed_unverified">Instalado · Não Verificado</string>
+    <string name="omni_status_not_installed">Não Instalado</string>
+    <string name="omni_status_source_declaration">Declaração de fonte, sem revisão legal conduzida</string>
+    <string name="omni_status_review_unknown">Status da revisão desconhecido</string>
+    <string name="omni_status_waiting_service">Aguardando resposta do serviço local</string>
+    <string name="omni_status_available_needed">Disponível / ... necessário</string>
+
+    <!-- Playground Model States -->
+    <string name="playground_state_not_downloaded">Não Baixado</string>
+    <string name="playground_state_not_downloaded_subtitle">Nenhum arquivo do manifesto encontrado localmente</string>
+    <string name="playground_state_checking_space">Verificando Espaço de Instalação</string>
+    <string name="playground_state_checking_space_subtitle">Confirmando que o diretório privado pode acomodar o modelo e margem de segurança</string>
+    <string name="playground_state_downloading">Baixando · ...%</string>
+    <string name="playground_state_downloading_subtitle">Escrevendo arquivo temporário retomável; ainda não instalado como modelo</string>
+    <string name="playground_state_verifying">Verificando</string>
+    <string name="playground_state_verifying_subtitle">Verificando bytes exatos e SHA-256, não carregará até a conclusão</string>
+    <string name="playground_state_installed_verified">Instalado · Verificado</string>
+    <string name="playground_state_installed_verified_subtitle">Fonte fixa, bytes e SHA-256 todos correspondem, seguro para carregar</string>
+    <string name="playground_state_loading">Carregando</string>
+    <string name="playground_state_loading_subtitle">Modelo verificado sendo entregue ao runtime local llama.cpp</string>
+    <string name="playground_state_loaded">Carregado</string>
+    <string name="playground_state_loaded_subtitle">O runtime atual está usando este modelo verificado</string>
+    <string name="playground_state_verification_failed">Verificação Falhou</string>
+    <string name="playground_state_verification_failed_subtitle">Bytes ou SHA-256 do arquivo baixado não corresponde ao manifesto, arquivos temporários limpos</string>
+    <string name="playground_state_source_mismatch">Fonte Incompatível</string>
+    <string name="playground_state_source_mismatch_subtitle">Encontrado arquivo com mesmo nome mas não verificado por este manifesto; não sobrescreverá ou carregará</string>
+    <string name="playground_state_download_failed">Download Falhou · Pode Retomar</string>
+    <string name="playground_state_download_failed_subtitle">Interrupção de rede preservou arquivo .part limitado; baixar novamente retomará do ponto de interrupção</string>
+    <string name="playground_state_storage_insufficient">Espaço de Armazenamento Insuficiente</string>
+    <string name="playground_state_storage_insufficient_subtitle">Espaço disponível abaixo dos bytes do modelo e margem de segurança; transferência de rede não iniciada</string>
+    <string name="playground_state_install_file_missing">Arquivo de Instalação Ausente</string>
+    <string name="playground_state_install_file_missing_subtitle">Arquivo gerenciado exigido pelo manifesto não existe mais; não tratará arquivos residuais como instalação completa</string>
+    <string name="playground_state_atomic_install_failed">Instalação Atômica Falhou</string>
+    <string name="playground_state_atomic_install_failed_subtitle">Arquivos temporários verificados falharam na troca atômica para modelo oficial; não carregará arquivos semi-instalados</string>
+    <string name="playground_state_uninstall_incomplete">Desinstalação Incompleta</string>
+    <string name="playground_state_uninstall_incomplete_subtitle">Pelo menos um arquivo gerenciado não pôde ser deletado; status atual não mostrará como desinstalado</string>
+    <string name="playground_state_verification_read_failed">Leitura de Verificação Falhou</string>
+    <string name="playground_state_verification_read_failed_subtitle">Verificação SHA-256 completa ou envio de registro de verificação não concluído; modelo permanece não confiável</string>
+    <string name="playground_state_load_failed">Falha ao Carregar</string>
+    <string name="playground_state_load_failed_subtitle">Modelo verificado e instalado, mas o runtime local falhou ao carregar</string>
+    <string name="playground_state_cancellean">Cancelado</string>
+    <string name="playground_state_cancellean_subtitle">Download ou verificação atual parada; downloads temporários limpos, arquivos de instalação oficiais não deletados</string>
+    <string name="playground_state_file_incomplete">Arquivo Incompleto</string>
+    <string name="playground_state_local_file_pending">Arquivo Local · Aguardando Verificação</string>
+    <string name="playground_state_main_running">Modelo Principal Executando · Fonte Aguardando Verificação</string>
+    <string name="playground_state_main_running_subtitle">GGUF principal executando; componente de projeção apenas confirmado presente, ainda não confirmado carregado ou correspondendo ao SHA-256 do manifesto</string>
+    <string name="playground_state_running_pending">Executando · Fonte Aguardando Verificação</string>
+    <string name="playground_state_running_pending_subtitle">Runtime atual usando arquivo de mesmo nome, ainda não correspondendo ao SHA-256 do manifesto</string>
+
+    <!-- Playground Actions -->
+    <string name="playground_action_download_verify">Baixar e Verificar</string>
+    <string name="playground_action_reverify">Reverificar</string>
+    <string name="playground_action_remove_error">Remover Arquivos com Erro</string>
+    <string name="playground_action_retry_download">Baixar Novamente e Verificar</string>
+    <string name="playground_action_checking_space">Verificando Espaço</string>
+    <string name="playground_action_cancel_download">Cancelar Download</string>
+    <string name="playground_action_cancel_verification">Cancelar Verificação</string>
+    <string name="playground_action_load_model">Carregar Modelo</string>
+    <string name="playground_action_loading">Carregando</string>
+    <string name="playground_action_model_running">Modelo Executando</string>
+    <string name="playground_action_remove_residual">Remover Arquivos Residuais</string>
+    <string name="playground_action_retry_space">Reverificar Espaço</string>
+    <string name="playground_action_retry_atomic">Tentar Instalação Atômica Novamente</string>
+    <string name="playground_action_retry_uninstall">Tentar Desinstalação Novamente</string>
+    <string name="playground_action_view_files">Ver Arquivos Locais</string>
+
+    <!-- Playground Source Info -->
+    <string name="playground_source_upstream_official">Upstream ... · GGUF Oficial</string>
+    <string name="playground_source_upstream_converter">Upstream ... · Conversor ...</string>
+    <string name="playground_source_huggingface_verified">Hugging Face verificado · Fornece link direto fixo</string>
+    <string name="playground_source_published">Publicado · Pode baixar diretamente</string>
+    <string name="playground_source_gitcode_verified">GitCode verificado · Instalação direta pendente LFS</string>
+    <string name="playground_source_repo_published">Repositório fonte publicado · Instalação direta ainda não disponível</string>
+    <string name="playground_source_gate_passed">Passou pelo gate de publicação · Ainda não publicado</string>
+    <string name="playground_source_included">Incluído · Ainda não pode publicar</string>
+
+    <!-- Playground Attribution -->
+    <string name="playground_attribution_harzva">Convertido por Harzva</string>
+    <string name="playground_attribution_third_party">Convertido por terceiros, preservando atribuição do conversor original</string>
+    <string name="playground_attribution_official">Publicado pelo upstream oficial</string>
+    <string name="playground_attribution_recipe_only">Apenas fornece receita de conversão</string>
+
+    <!-- Theme -->
+    <string name="theme_follow_system">Seguir Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Escuro</string>
+
+    <!-- Components -->
+    <string name="component_benchmark_progress">Progresso do Benchmark %</string>
+    <string name="component_estimating">Estimando</string>
+    <string name="component_about_seconds">Cerca de %d segundos</string>
+    <string name="component_about_minutes_seconds">Cerca de %d min %d seg</string>
+
+    <!-- Home Screen Download -->
+    <string name="home_download_standard_model">Baixar Modelo Padrão</string>
+    <string name="home_downloading_standard_model">Baixando Modelo Padrão</string>
+    <string name="home_download_paused">Download do Modelo Padrão Pausado</string>
+    <string name="home_download_failed">Falha no Download do Modelo Padrão</string>
+    <string name="home_download_complete">Modelo Padrão Baixado</string>
+    <string name="home_action_start_download">Iniciar Download</string>
+    <string name="home_action_pause_download">Pausar Download</string>
+    <string name="home_action_resume_download">Retomar Download</string>
+    <string name="home_action_retry_download">Baixar Novamente</string>
+    <string name="home_action_load_model">Carregar Modelo</string>
+    <string name="home_model_size">Cerca de 469 MB</string>
+    <string name="home_estimating_remaining">Estimando ...</string>
+    <string name="home_download_progress_preserved">Progresso do download preservado</string>
+    <string name="home_check_network">Verifique a rede para continuar</string>
+    <string name="home_file_saved">Arquivo salvo no dispositivo, ainda não carregado</string>
+    <string name="home_model_description">Qwen2.5 0.5B · Cerca de 469 MB</string>
+
+    <!-- Model Lifecycle -->
+    <string name="lifecycle_not_downloaded">Não Baixado</string>
+    <string name="lifecycle_not_downloaded_desc">Arquivo do modelo ainda não salvo no dispositivo</string>
+    <string name="lifecycle_action_download">Baixar</string>
+    <string name="lifecycle_downloading">Baixando ...%</string>
+    <string name="lifecycle_downloading_desc">Escrevendo na biblioteca de modelos do app</string>
+    <string name="lifecycle_action_pause">Pausar</string>
+    <string name="lifecycle_paused">Pausado</string>
+    <string name="lifecycle_paused_desc">Progresso do download preservado</string>
+    <string name="lifecycle_action_continue">Continuar</string>
+    <string name="lifecycle_downloaded">Baixado</string>
+    <string name="lifecycle_downloaded_desc">Arquivo no dispositivo, ainda não carregado na memória</string>
+    <string name="lifecycle_action_load">Carregar</string>
+    <string name="lifecycle_loading">Carregando</string>
+    <string name="lifecycle_loading_desc">Runtime verificando e mapeando modelo</string>
+    <string name="lifecycle_action_loading">Carregando</string>
+    <string name="lifecycle_loaded">Carregado</string>
+    <string name="lifecycle_loaded_desc">Modelo em uso pelo runtime local</string>
+    <string name="lifecycle_action_in_use">Em Uso</string>
+    <string name="lifecycle_download_failed">Falha no Download</string>
+    <string name="lifecycle_download_failed_desc">Arquivo completo do modelo não obtido</string>
+    <string name="lifecycle_action_retry_download">Baixar Novamente</string>
+    <string name="lifecycle_load_failed">Falha ao Carregar</string>
+    <string name="lifecycle_load_failed_desc">Arquivo baixado, mas o runtime falhou ao carregar</string>
+    <string name="lifecycle_action_retry_load">Tentar Carregar Novamente</string>
+
+    <!-- Benchmark Share Card -->
+    <string name="share_card_title">TuiMa</string>
+    <string name="share_card_subtitle">Pontuação de Desempenho de IA no Dispositivo</string>
+    <string name="share_card_standard_score">Pontuação Padrão ... / 1000</string>
+    <string name="share_card_ai_capability">Capacidade de IA no Dispositivo: ...</string>
+    <string name="share_card_mode_standard">Modo Padrão</string>
+    <string name="share_card_mode_stress">Modo Estresse (Não para Ranking)</string>
+    <string name="share_card_mode_quick">Modo Rápido (Apenas Pré-visualização)</string>
+    <string name="share_card_privacy">✓ Concluído no dispositivo · Conteúdo original não enviado</string>
+
+    <!-- Network Errors -->
+    <string name="error_network_timeout">Tempo limite da rede esgotado</string>
+    <string name="error_cannot_resolve_host">Não foi possível resolver o host</string>
+    <string name="error_connection_failed">Falha na conexão</string>
+    <string name="error_connection_refused">Conexão recusada</string>
+    <string name="error_connection_closed">Conexão fechada</string>
+    <string name="error_ssl_error">Erro de SSL</string>
+    <string name="error_io_error">Erro de E/S</string>
+    <string name="error_unknown_network">Erro de rede desconhecido</string>
+
+    <!-- Service Status -->
+    <string name="service_started">Serviço local iniciado</string>
+    <string name="service_loading_model">Carregando modelo</string>
+    <string name="service_model_loaded">Modelo carregado</string>
+    <string name="service_model_load_failed">Falha ao carregar modelo</string>
+    <string name="service_model_unloaded">Modelo descarregado</string>
+    <string name="service_api_reachable">API MobileCore acessível: 127.0.0.1:8080/v1</string>
+
+    <!-- Notification -->
+    <string name="notification_service_title">Serviço local de API e inferência de modelo MobileCore</string>
+    <string name="notification_service_starting">API local MobileCore iniciando</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_cancel_benchmark">Cancelar este benchmark?</string>
+    <string name="dialog_cancel_benchmark_message">Este teste não gerará pontuação.</string>
+    <string name="dialog_continue_benchmark">Continuar Benchmark</string>
+    <string name="dialog_confirm_cancel">Confirmar Cancelamento</string>
+
+    <!-- Share -->
+    <string name="share_benchmark_report">Compartilhar Relatório G2D Oxford-Pets</string>
+
+    <!-- Model Recommendations -->
+    <string name="recommendation_recommended">Recomendado</string>
+    <string name="recommendation_try">Pode Tentar</string>
+    <string name="recommendation_tight">Apertado</string>
+    <string name="recommendation_not_recommended">Não Recomendado</string>
+
+    <!-- Settings -->
+    <string name="settings_my_profile">Meu Perfil</string>
+    <string name="settings_my_profile_subtitle">Privacidade, dados locais e laboratório</string>
+    <string name="settings_privacy">Privacidade e Dados Locais</string>
+    <string name="settings_lab">Laboratório</string>
+    <string name="settings_lab_subtitle">Recursos Avançados</string>
+
+    <!-- G2D Dataset -->
+    <string name="g2d_dataset_oxford_pets">Oxford-Pets (test.txt oficial)</string>
+    <string name="g2d_dataset_preparation_message">Divisão de teste oficial bloqueada; importe o pacote de imagens Oxford-Pets, CLIP e VLM antes de iniciar.</string>
+    <string name="g2d_dataset_running_message">Inferência real no dispositivo em execução; progresso atualizado por estágios CLIP e VLM.</string>
+    <string name="g2d_dataset_report_saved">... relatório real no dispositivo salvo.</string>
+    <string name="g2d_dataset_smoke">Smoke (1 imagem por classe)</string>
+    <string name="g2d_dataset_pilot">Piloto (10 imagens por classe)</string>
+    <string name="g2d_dataset_full">Completo (3.669 conjunto de teste oficial)</string>
+
+    <!-- G2D Cifar10 -->
+    <string name="g2d_cifar10_smoke">100 imagens teste smoke</string>
+    <string name="g2d_cifar10_pilot">1.000 imagens teste piloto</string>
+    <string name="g2d_cifar10_full">10.000 imagens teste completo</string>
+
+    <!-- G2D Actions -->
+    <string name="g2d_action_start">Iniciar Validação no Dispositivo</string>
+    <string name="g2d_action_revalidate">Re-validar</string>
+    <string name="g2d_action_retry">Tentar Validação Novamente</string>
+
+    <!-- G2D Equipment Messages -->
+    <string name="g2d_equipment_ready">Pronto para teste</string>
+    <string name="g2d_equipment_preparing">Preparando equipamento</string>
+    <string name="g2d_equipment_insufficient">Equipamento insuficiente</string>
+
+    <!-- Status Messages -->
+    <string name="status_ready">Pronto</string>
+    <string name="status_loading">Carregando</string>
+    <string name="status_loaded">Carregado</string>
+    <string name="status_failed">Falhou</string>
+    <string name="status_unloaded">Descarregado</string>
+    <string name="status_scanning">Verificando</string>
+    <string name="status_indexing">Indexando</string>
+    <string name="status_searching">Pesquisando</string>
+
+    <!-- Privacy -->
+    <string name="privacy_offline运行">Executa offline · Dados ficam no dispositivo</string>
+    <string name="privacy_no_upload">MobileCore não envia fotos, consultas ou índices</string>
+    <string name="privacy_local_complete">✓ Concluído no dispositivo · Conteúdo original não enviado</string>
+</resources>
