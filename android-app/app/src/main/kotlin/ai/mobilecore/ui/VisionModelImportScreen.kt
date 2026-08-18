@@ -21,39 +21,39 @@ enum class VisionModelSlot(
     val defaultRuntime: String
 ) {
     YOLO_DETECT(
-        defaultTitle = "YOLO 目标检测",
-        taskLabel = "检测",
+        defaultTitle = "YOLO detecção de objetos",
+        taskLabel = "Verificar",
         expectedFormat = "ONNX / ORT / TFLite",
         defaultRuntime = "ONNX Runtime Mobile"
     ),
     YOLO_SEGMENT(
-        defaultTitle = "YOLO 实例分割",
-        taskLabel = "分割",
+        defaultTitle = "YOLO segmentação de instâncias",
+        taskLabel = "Segmentação",
         expectedFormat = "ONNX / ORT / TFLite",
         defaultRuntime = "ONNX Runtime Mobile"
     ),
     CLIP_RETRIEVAL(
-        defaultTitle = "CLIP 图文检索",
-        taskLabel = "图文匹配",
-        expectedFormat = "图像编码器 + 文本编码器 + tokenizer / embedding sidecar",
+        defaultTitle = "Recuperação imagem-texto CLIP",
+        taskLabel = "Correspondência imagem-texto",
+        expectedFormat = "Codificador de imagem + Codificador de texto + Tokenizer / Sidecar de embeddings",
         defaultRuntime = "ONNX Runtime Mobile"
     ),
     SMALL_VLM(
-        defaultTitle = "小型 VLM 复核",
-        taskLabel = "G2D 复核",
-        expectedFormat = "GGUF 主模型 + mmproj",
+        defaultTitle = "Revisão VLM pequeno",
+        taskLabel = "Revisão G2D",
+        expectedFormat = "Modelo principal GGUF + mmproj",
         defaultRuntime = "llama.cpp"
     )
 }
 
 enum class VisionArtifactRole(val label: String) {
-    YOLO_MODEL("模型"),
-    CLIP_IMAGE_ENCODER("图像编码器"),
-    CLIP_TEXT_ENCODER("文本编码器"),
-    CLIP_TOKENIZER("文本 tokenizer"),
-    CLIP_EMBEDDING_SIDECAR("固定标签 sidecar"),
-    VLM_MAIN_MODEL("GGUF 主模型"),
-    VLM_MMPROJ("mmproj 视觉投影")
+    YOLO_MODEL("Modelo"),
+    CLIP_IMAGE_ENCODER("Codificador de imagem"),
+    CLIP_TEXT_ENCODER("Codificador de texto"),
+    CLIP_TOKENIZER("Tokenizer de texto"),
+    CLIP_EMBEDDING_SIDECAR("Sidecar de rótulos fixos"),
+    VLM_MAIN_MODEL("Modelo principal GGUF"),
+    VLM_MMPROJ("Projeção visual mmproj")
 }
 
 data class VisionModelArtifact(
@@ -142,9 +142,9 @@ object VisionModelImportPresenter {
             readyCount = ready,
             totalCount = packages.size,
             summary = if (ready == 0) {
-                "尚无完整视觉模型包，先导入一个任务所需的全部文件。"
+                "Nenhum pacote completo de modelo visual, importe todos os arquivos necessários para uma tarefa primeiro."
             } else {
-                "$ready / ${packages.size} 个模型包文件就绪，运行前仍需逐项诊断。"
+                "$ready / ${packages.size} arquivos do pacote de modelo prontos, diagnóstico item por item ainda necessário antes da execução."
             },
             packages = packages
         )
@@ -169,15 +169,15 @@ object VisionModelImportPresenter {
             status = status,
             statusLabel = statusLabel(status),
             statusDetail = when (status) {
-                VisionPackageStatus.IMPORTING -> "正在复制到本机视觉模型目录，离开页面后可继续显示进度。"
-                VisionPackageStatus.PAUSED -> "导入已暂停，已复制的临时文件将保留。"
-                VisionPackageStatus.FAILED -> input.transfer.errorMessage.ifBlank { "导入失败，请重新选择文件。" }
+                VisionPackageStatus.IMPORTING -> "Copiando para o diretório de modelos visuais locais, progresso continuará após sair da página."
+                VisionPackageStatus.PAUSED -> "Importação pausada, arquivos temporários copiados serão mantidos."
+                VisionPackageStatus.FAILED -> input.transfer.errorMessage.ifBlank { "Falha na importação, selecione o arquivo novamente." }
                 else -> validation.detail
             },
             formatLabel = actualFormatLabel(input),
             runtimeLabel = runtime,
             accelerationLabel = accelerationLabel(runtime, input.artifacts.isNotEmpty()),
-            artifactLabels = input.artifacts.map(::artifactLabel).ifEmpty { listOf("尚未导入文件") },
+            artifactLabels = input.artifacts.map(::artifactLabel).ifEmpty { listOf("Nenhum arquivo importado") },
             progressPercent = progress,
             progressLabel = progress?.let {
                 "${formatBytes(input.transfer.bytesCopied)} / ${formatBytes(input.transfer.totalBytes)} · $it%"
@@ -193,13 +193,13 @@ object VisionModelImportPresenter {
         if (invalidArtifact != null) {
             return Validation(
                 VisionPackageStatus.INCOMPATIBLE,
-                "${invalidArtifact.fileName} 的角色或格式与此任务不匹配，请替换后再诊断。"
+                "O papel ou formato de ${invalidArtifact.fileName} não corresponde a esta tarefa, substitua e diagnostique novamente."
             )
         }
         if (input.artifacts.any { it.fileName.extensionLower() == "mnn" }) {
             return Validation(
                 VisionPackageStatus.INCOMPATIBLE,
-                "当前版本可管理 MNN 文件，但尚未接入此任务的 MNN 执行链路。"
+                "Versão atual pode gerenciar arquivos MNN, mas a cadeia de execução MNN para esta tarefa ainda não foi integrada."
             )
         }
         return when (input.slot) {
@@ -214,11 +214,11 @@ object VisionModelImportPresenter {
     private fun validateYolo(input: VisionModelPackageInput): Validation {
         val model = input.artifacts.firstOrNull { it.role == VisionArtifactRole.YOLO_MODEL }
         return if (model == null) {
-            Validation(VisionPackageStatus.MISSING_FILES, "缺少 YOLO 模型文件（ONNX / ORT / TFLite）。")
+            Validation(VisionPackageStatus.MISSING_FILES, "Arquivo do modelo YOLO ausente (ONNX / ORT / TFLite).")
         } else {
             Validation(
                 VisionPackageStatus.READY,
-                "模型文件已就绪；输入尺寸、输出张量和算子支持仍需运行诊断确认。"
+                "Arquivo do modelo pronto; tamanho de entrada, tensor de saída e suporte a operadores ainda precisam de diagnóstico em tempo de execução para confirmar."
             )
         }
     }
@@ -232,12 +232,12 @@ object VisionModelImportPresenter {
             .mapTo(linkedSetOf()) { it.fileName.lowercase(Locale.US) }
         val missingTokenizer = setOf("vocab.json", "merges.txt", "tokenizer_config.json") - tokenizerNames
         if (!hasImage) {
-            return Validation(VisionPackageStatus.MISSING_FILES, "缺少 CLIP 图像编码器。")
+            return Validation(VisionPackageStatus.MISSING_FILES, "Codificador de imagem CLIP ausente.")
         }
         if (hasText && missingTokenizer.isEmpty()) {
             return Validation(
                 VisionPackageStatus.READY,
-                "图像、文本编码器与 tokenizer 已配对，可在诊断通过后用于开放文本检索。"
+                "Codificadores de imagem e texto com tokenizer pareados, podem ser usados para busca de texto aberto após os diagnósticos passarem."
             )
         }
         if (hasText) {
@@ -249,12 +249,12 @@ object VisionModelImportPresenter {
         if (hasSidecar) {
             return Validation(
                 VisionPackageStatus.LIMITED,
-                "图像编码器与 embedding sidecar 已配对，仅支持 sidecar 内的固定标签；图文搜索仍缺文本编码器。"
+                "Codificador de imagem e sidecar de embeddings pareados, suporta apenas rótulos fixos dentro do sidecar; busca de texto ainda precisa do codificador de texto."
             )
         }
         return Validation(
             VisionPackageStatus.MISSING_FILES,
-            "缺少 CLIP 文本编码器；也可导入 JSON embedding sidecar 进行固定标签验证。"
+            "Codificador de texto CLIP ausente; pode importar sidecar de embeddings JSON para verificação de rótulos fixos."
         )
     }
 
@@ -264,14 +264,14 @@ object VisionModelImportPresenter {
         return when {
             !hasMain && !hasMmproj -> Validation(
                 VisionPackageStatus.MISSING_FILES,
-                "必须成对导入 GGUF 主模型和匹配的 mmproj 视觉投影文件。"
+                "Deve importar o modelo principal GGUF e o arquivo de projeção visual mmproj correspondente como par."
             )
 
-            !hasMain -> Validation(VisionPackageStatus.MISSING_FILES, "已有 mmproj，但缺少与之匹配的 GGUF 主模型。")
-            !hasMmproj -> Validation(VisionPackageStatus.MISSING_FILES, "已有 GGUF 主模型，但缺少匹配的 mmproj 视觉投影文件。")
+            !hasMain -> Validation(VisionPackageStatus.MISSING_FILES, "mmproj existe, mas falta o modelo principal GGUF correspondente.")
+            !hasMmproj -> Validation(VisionPackageStatus.MISSING_FILES, "Modelo principal GGUF existe, mas falta o arquivo de projeção visual mmproj correspondente.")
             else -> Validation(
                 VisionPackageStatus.READY,
-                "GGUF 主模型与 mmproj 文件已配对；架构和投影维度仍需运行诊断确认。"
+                "Modelo principal GGUF e arquivo mmproj pareados; arquitetura e dimensões de projeção ainda precisam de diagnóstico em tempo de execução para confirmar."
             )
         }
     }
@@ -326,59 +326,59 @@ object VisionModelImportPresenter {
         return when (coreExtension) {
             "onnx", "ort" -> "ONNX Runtime Mobile"
             "tflite" -> "TensorFlow Lite"
-            "mnn" -> "MNN（执行链路待接入）"
+            "mnn" -> "MNN (cadeia de execução pendente)"
             "gguf" -> "llama.cpp"
             else -> input.slot.defaultRuntime
         }
     }
 
     private fun accelerationLabel(runtime: String, hasFiles: Boolean): String {
-        val prefix = if (hasFiles) "当前默认" else "预计基线"
+        val prefix = if (hasFiles) "Padrão atual" else "Linha de base estimada"
         return when {
-            runtime.startsWith("ONNX") -> "$prefix：CPU · NNAPI/QNN/GPU 执行器未注册"
-            runtime.startsWith("TensorFlow") -> "$prefix：CPU · GPU/NNAPI delegate 未添加"
-            runtime.startsWith("llama.cpp") -> "$prefix：CPU（gpu_layers=0） · GPU/NPU 未启用"
-            else -> "执行状态待诊断 · GPU/NPU 加速未验证"
+            runtime.startsWith("ONNX") -> "$prefix: CPU · executor NNAPI/QNN/GPU não registrado"
+            runtime.startsWith("TensorFlow") -> "$prefix: CPU · delegado GPU/NNAPI não adicionado"
+            runtime.startsWith("llama.cpp") -> "$prefix: CPU (gpu_layers=0) · GPU/NPU não habilitado"
+            else -> "Status de execução aguardando diagnóstico · Aceleração GPU/NPU não verificada"
         }
     }
 
     private fun actions(status: VisionPackageStatus, hasArtifacts: Boolean): List<VisionModelActionUiModel> = when (status) {
-        VisionPackageStatus.IMPORTING -> listOf(VisionModelActionUiModel("pause", "暂停"))
+        VisionPackageStatus.IMPORTING -> listOf(VisionModelActionUiModel("pause", "Pausar"))
         VisionPackageStatus.PAUSED -> listOf(
-            VisionModelActionUiModel("resume", "继续导入"),
-            VisionModelActionUiModel("remove", "移除", destructive = true)
+            VisionModelActionUiModel("resume", "Continuar importação"),
+            VisionModelActionUiModel("remove", "Remover", destructive = true)
         )
 
         VisionPackageStatus.FAILED -> listOf(
-            VisionModelActionUiModel("retry", "重新导入"),
-            VisionModelActionUiModel("remove", "清理临时文件", destructive = true)
+            VisionModelActionUiModel("retry", "Reimportar"),
+            VisionModelActionUiModel("remove", "Limpar arquivos temporários", destructive = true)
         )
 
         VisionPackageStatus.MISSING_FILES -> listOfNotNull(
-            VisionModelActionUiModel("import", if (hasArtifacts) "补齐文件" else "导入模型包"),
-            VisionModelActionUiModel("remove", "移除", destructive = true).takeIf { hasArtifacts }
+            VisionModelActionUiModel("import", if (hasArtifacts) "Completar arquivos" else "Importar pacote de modelo"),
+            VisionModelActionUiModel("remove", "Remover", destructive = true).takeIf { hasArtifacts }
         )
 
         VisionPackageStatus.INCOMPATIBLE -> listOf(
-            VisionModelActionUiModel("replace", "替换文件"),
-            VisionModelActionUiModel("diagnose", "查看诊断")
+            VisionModelActionUiModel("replace", "Substituir arquivos"),
+            VisionModelActionUiModel("diagnose", "Ver diagnóstico")
         )
 
         VisionPackageStatus.READY,
         VisionPackageStatus.LIMITED -> listOf(
-            VisionModelActionUiModel("diagnose", "运行诊断"),
-            VisionModelActionUiModel("remove", "移除", destructive = true)
+            VisionModelActionUiModel("diagnose", "Executar diagnósticos"),
+            VisionModelActionUiModel("remove", "Remover", destructive = true)
         )
     }
 
     private fun statusLabel(status: VisionPackageStatus): String = when (status) {
-        VisionPackageStatus.READY -> "文件就绪"
-        VisionPackageStatus.LIMITED -> "固定标签就绪"
-        VisionPackageStatus.MISSING_FILES -> "缺文件"
-        VisionPackageStatus.INCOMPATIBLE -> "不兼容"
-        VisionPackageStatus.IMPORTING -> "导入中"
-        VisionPackageStatus.PAUSED -> "已暂停"
-        VisionPackageStatus.FAILED -> "导入失败"
+        VisionPackageStatus.READY -> "Arquivo pronto"
+        VisionPackageStatus.LIMITED -> "Rótulos fixos prontos"
+        VisionPackageStatus.MISSING_FILES -> "Arquivo faltando"
+        VisionPackageStatus.INCOMPATIBLE -> "Incompatível"
+        VisionPackageStatus.IMPORTING -> "Importando"
+        VisionPackageStatus.PAUSED -> "Pausado"
+        VisionPackageStatus.FAILED -> "Falha na importação"
     }
 
     private fun progressPercent(transfer: VisionImportTransfer): Int {
@@ -394,7 +394,7 @@ object VisionModelImportPresenter {
     }
 
     private fun formatBytes(bytes: Long): String {
-        if (bytes <= 0L) return "大小未知"
+        if (bytes <= 0L) return "Tamanho desconhecido"
         val mib = bytes / (1024.0 * 1024.0)
         return if (mib >= 1024.0) "%.1f GB".format(Locale.US, mib / 1024.0) else "%.0f MB".format(Locale.US, mib)
     }
@@ -489,8 +489,8 @@ class VisionModelImportScreen(context: Context) : LinearLayout(context) {
         content.addView(space(12))
         content.addView(summaryCard(model))
         content.addView(space(16))
-        content.addView(text("模型包", 18f, Palette.deepInk, Typeface.BOLD))
-        content.addView(text("文件完整不代表运行兼容；每个模型包都需要通过本机诊断。", 12f, Palette.muted))
+        content.addView(text("Pacote de modelo", 18f, Palette.deepInk, Typeface.BOLD))
+        content.addView(text("Completude dos arquivos não significa compatibilidade de runtime; cada pacote precisa de diagnósticos locais.", 12f, Palette.muted))
         content.addView(space(10))
         model.packages.forEachIndexed { index, packageModel ->
             content.addView(packageCard(packageModel, callbacks))
@@ -506,8 +506,8 @@ class VisionModelImportScreen(context: Context) : LinearLayout(context) {
         })
         addView(LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            addView(text("视觉模型", 20f, Palette.deepInk, Typeface.BOLD))
-            addView(text("导入、配对与本机兼容性诊断", 12f, Palette.muted))
+            addView(text("Modelo visual", 20f, Palette.deepInk, Typeface.BOLD))
+            addView(text("Importação, pareamento e diagnóstico de compatibilidade local", 12f, Palette.muted))
         }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
     }
 
@@ -515,11 +515,11 @@ class VisionModelImportScreen(context: Context) : LinearLayout(context) {
         orientation = LinearLayout.VERTICAL
         setPadding(dp(16), dp(15), dp(16), dp(15))
         background = rounded(Palette.mintWash, Palette.mint, 16f)
-        addView(text("${model.readyCount} / ${model.totalCount} 模型包就绪", 18f, Palette.deepInk, Typeface.BOLD))
+        addView(text("${model.readyCount} / ${model.totalCount} pacotes de modelo prontos", 18f, Palette.deepInk, Typeface.BOLD))
         addView(space(4))
         addView(text(model.summary, 13f, Palette.ink))
         addView(space(10))
-        addView(text("当前执行基线为 CPU；GPU、NNAPI、QNN 或 NPU 只有在显式接入并通过诊断后才会标记启用。", 12f, Palette.muted))
+        addView(text("Linha de execução atual é CPU; GPU, NNAPI, QNN ou NPU só serão marcados como habilitados após conexão explícita e diagnóstico.", 12f, Palette.muted))
     }
 
     private fun packageCard(model: VisionModelPackageUiModel, callbacks: VisionModelImportCallbacks): View {
@@ -532,7 +532,7 @@ class VisionModelImportScreen(context: Context) : LinearLayout(context) {
 
             addView(LinearLayout(context).apply {
                 gravity = Gravity.CENTER_VERTICAL
-                addView(IconBadgeView(context, if (model.taskLabel == "G2D 复核") "chip" else "image", accent), LinearLayout.LayoutParams(dp(40), dp(40)).apply {
+                addView(IconBadgeView(context, if (model.taskLabel == "Revisão G2D") "chip" else "image", accent), LinearLayout.LayoutParams(dp(40), dp(40)).apply {
                     marginEnd = dp(11)
                 })
                 addView(LinearLayout(context).apply {
@@ -545,9 +545,9 @@ class VisionModelImportScreen(context: Context) : LinearLayout(context) {
             addView(space(11))
             addView(text(model.statusDetail, 13f, Palette.ink))
             addView(space(10))
-            addView(metaRow("格式", model.formatLabel))
-            addView(metaRow("运行时", model.runtimeLabel))
-            addView(metaRow("加速", model.accelerationLabel))
+            addView(metaRow("Formato", model.formatLabel))
+            addView(metaRow("Runtime", model.runtimeLabel))
+            addView(metaRow("Aceleração", model.accelerationLabel))
             addView(space(8))
             model.artifactLabels.forEach { label ->
                 addView(text("• $label", 12f, Palette.muted).apply { setPadding(0, dp(2), 0, dp(2)) })
@@ -558,7 +558,7 @@ class VisionModelImportScreen(context: Context) : LinearLayout(context) {
                     progress = percent
                     progressTintList = ColorStateList.valueOf(Palette.mintDark)
                     progressBackgroundTintList = ColorStateList.valueOf(Palette.stroke)
-                    contentDescription = "${model.title} 导入进度 $percent%"
+                    contentDescription = "Progresso de importação ${model.title} $percent%"
                 }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(8)))
                 addView(space(5))
                 addView(text(model.progressLabel.orEmpty(), 12f, Palette.muted))

@@ -220,7 +220,7 @@ enum class OxfordPetsRunScale(
     val displayName: String,
     val expectedSamples: Int,
 ) {
-    SMOKE(1, "37 张冒烟（每类 1 张）", 37),
-    PILOT(10, "370 张试跑（每类 10 张）", 370),
-    FULL(null, "3,669 张官方测试集", OxfordPetsDataset.OFFICIAL_TEST_SAMPLES),
+    SMOKE(1, "37 imagens de smoke (1 por classe)", 37),
+    PILOT(10, "370 imagens de teste (10 por classe)", 370),
+    FULL(null, "3.669 imagens do conjunto de teste oficial", OxfordPetsDataset.OFFICIAL_TEST_SAMPLES),
 }

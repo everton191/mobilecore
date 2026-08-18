@@ -1,9 +1,9 @@
 package ai.mobilecore.ui
 
 enum class TuiMaThemeMode(val preferenceValue: String, val displayName: String) {
-    SYSTEM("system", "跟随系统"),
-    LIGHT("light", "浅色"),
-    DARK("dark", "深色");
+    SYSTEM("system", "Seguir sistema"),
+    LIGHT("light", "Claro"),
+    DARK("dark", "Escuro");
 
     fun next(): TuiMaThemeMode = entries[(ordinal + 1) % entries.size]
 

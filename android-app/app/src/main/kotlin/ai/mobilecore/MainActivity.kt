@@ -228,9 +228,9 @@ class MainActivity : Activity() {
     private val runtimeModelStateCompletionCallbacks = mutableListOf<() -> Unit>()
     private val runtimeModelStateResultCallbacks = mutableListOf<(Boolean) -> Unit>()
     private var g2dValidationInput = G2dValidationInput(
-        datasetName = "Oxford-Pets（官方 test.txt）",
+        datasetName = "Oxford-Pets (test.txt oficial)",
         targetSampleCount = 3_669,
-        preparationMessage = "官方测试划分已锁定；导入 Oxford-Pets 图像包、CLIP 和 VLM 后才能开始。",
+        preparationMessage = "Divisão de teste oficial bloqueada; somente começa após importação do pacote de imagens Oxford-Pets, CLIP e VLM.",
     )
     private var activeG2dRunner: OxfordPetsG2dRunner? = null
     private var benchmarkStartedAtMs = 0L
@@ -284,7 +284,7 @@ class MainActivity : Activity() {
                     modelLoadFailurePath = null
                     modelLoadFailureMessage = null
                     playgroundInstallerForModelPath(modelPath)?.markLoading()
-                    updateStatus("正在加载模型")
+                    updateStatus("Carregando")
                 }
                 ModelLoadStatusContract.STATE_LOADED -> {
                     runtimeReportsLoadedModel = true
@@ -293,7 +293,7 @@ class MainActivity : Activity() {
                     modelLoadFailurePath = null
                     modelLoadFailureMessage = null
                     reconcilePlaygroundRuntimeTruth(activeModelPath)
-                    updateStatus("模型已加载")
+                    updateStatus("Carregado")
                 }
                 ModelLoadStatusContract.STATE_FAILED -> {
                     pendingModelPath = null
@@ -306,7 +306,7 @@ class MainActivity : Activity() {
                     runtimeReportsLoadedModel = false
                     reconcilePlaygroundRuntimeTruth(null)
                     refreshRuntimeModelState()
-                    updateStatus("模型加载失败")
+                    updateStatus("Falhou")
                 }
             }
             if (currentTab in setOf(AppTab.HOME, AppTab.MODELS, AppTab.PLAYGROUND, AppTab.TEST)) {
@@ -422,7 +422,7 @@ class MainActivity : Activity() {
         galleryIndexCancellation?.cancel()
         galleryIndexCancellation = null
         releaseGallerySearchRuntime(
-            "页面已关闭，正在释放 CLIP 会话；模型文件和本机索引仍保留。",
+            "Página fechada, liberando sessão CLIP; arquivos do modelo e índice local ainda preservados.",
         )
         galleryWorker.shutdown()
         galleryThumbnailWorker.shutdownNow()
@@ -447,7 +447,7 @@ class MainActivity : Activity() {
         // boundary; the coordinator checkpoints completed vectors before returning CANCELLED.
         galleryIndexCancellation?.cancel()
         releaseGallerySearchRuntime(
-            "应用进入后台，已释放 CLIP 会话；返回相册搜索时会自动恢复。",
+            "App entrou em segundo plano, sessão CLIP liberada; será retomada automaticamente ao voltar para a busca na galeria.",
         )
         if (modelLoadReceiverRegistered) {
             unregisterReceiver(modelLoadStatusReceiver)
@@ -478,7 +478,7 @@ class MainActivity : Activity() {
             level == ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL
         if (shouldReleaseClip && (gallerySearchHost != null || galleryHostOpenInFlight)) {
             releaseGallerySearchRuntime(
-                "系统请求回收内存，已释放 CLIP 会话；模型文件和本机索引仍保留。",
+                "Sistema solicitou recuperação de memória, sessão CLIP liberada; arquivos do modelo e índice local ainda preservados.",
             )
         }
     }
@@ -550,50 +550,50 @@ class MainActivity : Activity() {
     }
 
     private fun renderModelsTab(content: LinearLayout) {
-        content.addView(buildCompactHeader("模型", "本机模型库与端侧运行状态", "cube"))
+        content.addView(buildCompactHeader("Modelo", "Biblioteca de modelos local e status do runtime no dispositivo", "cube"))
         content.addView(space(12))
         content.addView(buildStorageCard())
         content.addView(space(18))
-        content.addView(sectionTitle("可信模型广场", "来源、许可、哈希与端侧证据可追溯"))
+        content.addView(sectionTitle("Loja de Modelos Confiável", "Fonte, licença, hash e evidências no dispositivo rastreáveis"))
         content.addView(space(10))
         content.addView(buildPlaygroundBrandCard())
         content.addView(space(18))
-        content.addView(sectionTitle("社区候选", "按设备估算排序，不等同于 Playground 已验证"))
+        content.addView(sectionTitle("Candidatos da Comunidade", "Ordenados por estimativa do dispositivo, não equivalente ao Playground verificado"))
         content.addView(space(10))
         content.addView(buildFeaturedModelScopeCard())
         content.addView(space(18))
-        content.addView(sectionTitle("社区搜索 · 未验证", "从 ModelScope 查找更多 GGUF，下载前自行核实来源"))
+        content.addView(sectionTitle("Busca da Comunidade · Não Verificado", "Encontre mais GGUF no ModelScope, verifique a fonte antes de baixar"))
         content.addView(space(10))
         content.addView(buildModelScopeCatalogCard())
         content.addView(space(18))
-        content.addView(sectionTitle("运行建议", "按设备能力和历史速度排序"))
+        content.addView(sectionTitle("Sugestões de Runtime", "Ordenados por capacidade do dispositivo e velocidade histórica"))
         content.addView(space(10))
         content.addView(buildRecommendationCard())
     }
 
     private fun renderPlaygroundTab(content: LinearLayout) {
-        content.addView(buildCompactHeader("模型广场", "Mobile Model Playground", "cube"))
+        content.addView(buildCompactHeader("Loja de Modelos", "Mobile Model Playground", "cube"))
         content.addView(space(12))
         val catalog = playgroundCatalog
         if (catalog == null) {
             content.addView(
                 surfaceCard(Palette.lavender) {
-                    addView(cardHeader("目录不可用", "内置目录解析失败，未展示任何未验证来源。", "alert", Palette.lavender, "FAIL CLOSED"))
+                    addView(cardHeader("Catálogo Indisponível", "Falha ao analisar catálogo interno, nenhuma fonte não verificada exibida.", "alert", Palette.lavender, "FAIL CLOSED"))
                 }
             )
             return
         }
         content.addView(
             softInfoBlock(
-                "Playground 负责模型来源、转换者、许可、SHA-256 与证据；MobileCore 负责本机发现、加载与跑分。",
+                "Playground cuida da fonte do modelo, conversor, licença, SHA-256 e evidências; MobileCore cuida da descoberta, carregamento e benchmark local.",
                 Palette.lavender,
                 maxLines = 4,
             )
         )
         content.addView(space(10))
         content.addView(
-            chipButton("查看 Playground 项目", false) {
-                openPlaygroundUrl(catalog.sourceRepository, "无法打开 Playground 项目")
+            chipButton("Ver projeto Playground", false) {
+                openPlaygroundUrl(catalog.sourceRepository, "Não foi possível abrir o projeto Playground")
             },
             LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(42)),
         )
@@ -605,7 +605,7 @@ class MainActivity : Activity() {
     }
 
     private fun renderTestTab(content: LinearLayout) {
-        content.addView(buildCompactHeader("跑分", "本机 AI 性能测试", "play"))
+        content.addView(buildCompactHeader("Benchmark", "Teste de desempenho de IA no dispositivo", "play"))
         content.addView(space(14))
         content.addView(buildTestChatCard())
         content.addView(space(12))
@@ -613,30 +613,30 @@ class MainActivity : Activity() {
     }
 
     private fun renderResultsTab(content: LinearLayout) {
-        content.addView(buildCompactHeader("结果", "双层分数与性能解释", "gauge"))
+        content.addView(buildCompactHeader("Resultados", "Pontuações em duas camadas e explicação de desempenho", "gauge"))
         content.addView(space(18))
         content.addView(buildLatestBenchmarkResultCard())
         content.addView(space(18))
-        content.addView(sectionTitle("历史记录", "最近 10 次 v2 测试"))
+        content.addView(sectionTitle("Histórico", "Últimos 10 testes v2"))
         content.addView(buildBenchmarkHistoryCard())
     }
 
     private fun renderVisionTab(content: LinearLayout) {
-        content.addView(buildCompactHeader("视觉实验室", "OCR 与轻量视觉探针", "image"))
+        content.addView(buildCompactHeader("Laboratório Visual", "OCR e sondas visuais leves", "image"))
         content.addView(space(12))
-        content.addView(sectionTitle("视觉 OCR", "图片文字识别"))
+        content.addView(sectionTitle("OCR Visual", "Reconhecimento de texto em imagens"))
         content.addView(buildVisionHeroCard())
         content.addView(space(14))
-        content.addView(sectionTitle("模型状态", "ONNX / TFLite / MNN"))
+        content.addView(sectionTitle("Status do Modelo", "ONNX / TFLite / MNN"))
         content.addView(buildVisionModelStatusCard())
         content.addView(space(14))
-        content.addView(sectionTitle("OCR 模型", "独立视觉后端"))
+        content.addView(sectionTitle("Modelo OCR", "Backend visual independente"))
         content.addView(buildOcrModelCard())
         content.addView(space(14))
-        content.addView(sectionTitle("CLIP / 分类", "CIFAR10 / MNIST"))
+        content.addView(sectionTitle("CLIP / Classificação", "CIFAR10 / MNIST"))
         content.addView(buildVisionClassificationCard())
         content.addView(space(14))
-        content.addView(sectionTitle("识别结果", "本机处理状态"))
+        content.addView(sectionTitle("Resultado do Reconhecimento", "Status do processamento local"))
         content.addView(buildOcrResultCard())
     }
 
@@ -695,7 +695,7 @@ class MainActivity : Activity() {
         val runner = OxfordPetsG2dRunner(this)
         val readiness = runner.readiness()
         if (!readiness.optBoolean("ready")) {
-            Toast.makeText(this, "请先把 Oxford-Pets、CLIP 与 Qwen VLM 资源放入应用 G2D 目录", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Coloque os recursos Oxford-Pets, CLIP e Qwen VLM no diretório G2D do app", Toast.LENGTH_LONG).show()
             return
         }
         val reports = File(requireNotNull(getExternalFilesDir("g2d")), "reports")
@@ -710,7 +710,7 @@ class MainActivity : Activity() {
             datasetName = "Oxford-Pets（${scale.displayName}）",
             targetSampleCount = scale.expectedSamples,
             totalWorkItems = scale.expectedSamples,
-            preparationMessage = "真实端侧推理运行中；进度会按 CLIP 与 VLM 阶段更新。",
+            preparationMessage = "Inferência real no dispositivo em execução; progresso atualizado por estágios CLIP e VLM.",
         )
         renderCurrentTab()
         Thread({
@@ -733,7 +733,7 @@ class MainActivity : Activity() {
                         completedWorkItems = scale.expectedSamples,
                         totalWorkItems = scale.expectedSamples,
                         measurements = g2dMeasurements(result.report),
-                        preparationMessage = "${scale.displayName}真实端侧报告已保存。",
+                        preparationMessage = "Relatório real no dispositivo ${scale.displayName} salvo.",
                     )
                     renderCurrentTab()
                 }
@@ -799,7 +799,7 @@ class MainActivity : Activity() {
             .map { File(reports, "oxford-pets-$it.json") }
             .firstOrNull(File::isFile)
         if (file == null) {
-            Toast.makeText(this, "尚无可导出的真实测量报告", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Nenhum relatório de medição real disponível para exportação", Toast.LENGTH_SHORT).show()
             return
         }
         val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
@@ -807,7 +807,7 @@ class MainActivity : Activity() {
             type = "application/json"
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }, "分享 Oxford-Pets G2D 报告"))
+        }, "Compartilhar Relatório G2D Oxford-Pets"))
     }
 
     private fun gallerySearchActions() = object : GallerySearchActions {
@@ -831,7 +831,7 @@ class MainActivity : Activity() {
             galleryIndexCancellation?.cancel()
             Toast.makeText(
                 this@MainActivity,
-                "正在取消；已完成的向量会保存供下次续建",
+                "Cancelando; vetores concluídos serão salvos para a próxima retomada",
                 Toast.LENGTH_SHORT,
             ).show()
         }
@@ -842,7 +842,7 @@ class MainActivity : Activity() {
 
         override fun releaseSearchModels() {
             releaseGallerySearchRuntime(
-                "已手动释放 CLIP 会话；模型文件和照片索引仍保留。",
+                "Sessão CLIP liberada manualmente; arquivos do modelo e índice de fotos ainda preservados.",
             )
         }
 
@@ -870,7 +870,7 @@ class MainActivity : Activity() {
             }
             val uri = runCatching { Uri.parse(contentUri) }.getOrNull()
             if (uri?.scheme != "content" || uri.authority.isNullOrBlank()) {
-                Toast.makeText(this@MainActivity, "照片来源已失效", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Fonte da foto não mais válida", Toast.LENGTH_SHORT).show()
                 return
             }
             runCatching {
@@ -879,7 +879,7 @@ class MainActivity : Activity() {
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 })
             }.onFailure {
-                Toast.makeText(this@MainActivity, "无法打开这张照片", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "Não foi possível abrir esta foto", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -977,16 +977,16 @@ class MainActivity : Activity() {
         galleryIndexCancellation = null
         dispatchGalleryEvents(GallerySearchEvent.AccessRevoked)
         if (showToast) {
-            Toast.makeText(this, "相册访问已撤销，请重新授权后建立索引", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Acesso à galeria revogado, por favor reautorize para construir o índice", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun galleryRuntimePreflightFailure(): String? {
         if (runtimeModelStateRefreshInFlight) {
-            return "正在确认本地语言模型状态，请稍后重试。"
+            return "Confirmando status do modelo de linguagem local, por favor tente novamente mais tarde."
         }
         if (runtimeReportsLoadedModel || activeModelPath != null || pendingModelPath != null) {
-            return "为避免 CLIP 与 GGUF 同时占用内存，请先卸载或等待本地语言模型。"
+            return "Para evitar que CLIP e GGUF ocupem memória simultaneamente, por favor descarregue ou aguarde o modelo de linguagem local."
         }
         val artifacts = listOf(
             File(internalVisionModelDir(), GalleryClipArtifactSet.IMAGE_ENCODER_FILE),
@@ -1000,7 +1000,7 @@ class MainActivity : Activity() {
         if (info.lowMemory || info.availMem < requiredBytes) {
             val needMb = (requiredBytes + BYTES_PER_MB - 1L) / BYTES_PER_MB
             val availableMb = info.availMem / BYTES_PER_MB
-            return "可用内存不足：CLIP 预计需要约 ${needMb} MB，当前约 ${availableMb} MB。"
+            return "Memória disponível insuficiente: CLIP precisa de cerca de ${needMb} MB, atualmente há cerca de ${availableMb} MB."
         }
         return null
     }
@@ -1028,7 +1028,7 @@ class MainActivity : Activity() {
             if (galleryHostOpenInFlight) return
             galleryHostOpenInFlight = true
         }
-        dispatchGalleryEvents(GallerySearchEvent.ModelPreparationStarted("CLIP 双编码器"))
+        dispatchGalleryEvents(GallerySearchEvent.ModelPreparationStarted("Codificador duplo CLIP"))
         val openingGeneration = galleryRuntimeGeneration
         galleryWorker.execute {
             val opened = AndroidGallerySearchHost.open(
@@ -1141,7 +1141,7 @@ class MainActivity : Activity() {
                         galleryLastIndexFailureCode = GallerySearchFailureCode.MODEL_DIGEST_MISMATCH
                         dispatchGalleryEvents(
                             GallerySearchEvent.IndexFailed(
-                                "CLIP 模型已变化，请重新建立本机照片索引。",
+                                "Modelo CLIP alterado, recrie o índice de fotos local.",
                                 retryable = true,
                             ),
                         )
@@ -1150,7 +1150,7 @@ class MainActivity : Activity() {
                         galleryLastIndexFailureCode = GallerySearchFailureCode.INDEX_CORRUPT
                         dispatchGalleryEvents(
                             GallerySearchEvent.IndexFailed(
-                                "本机照片索引损坏，请清除后重新建立。",
+                                "Índice de fotos local corrompido, limpe e recrie.",
                                 retryable = true,
                             ),
                         )
@@ -1176,10 +1176,10 @@ class MainActivity : Activity() {
                 if (cleared) {
                     galleryLastIndexFailureCode = null
                     dispatchGalleryEvents(GallerySearchEvent.IndexCleared)
-                    Toast.makeText(this, "本机照片索引已清除", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Índice de fotos local limpo", Toast.LENGTH_SHORT).show()
                 } else {
                     dispatchGalleryEvents(
-                        GallerySearchEvent.IndexFailed("无法清除本机照片索引，请稍后重试。", retryable = true),
+                        GallerySearchEvent.IndexFailed("Índice da Galeria · Falhou", retryable = true),
                     )
                 }
             }
@@ -1275,7 +1275,7 @@ class MainActivity : Activity() {
         val host = gallerySearchHost
         if (host == null) {
             dispatchGalleryEvents(
-                GallerySearchEvent.SearchFailed(normalized, "CLIP 搜索模型尚未就绪。"),
+                GallerySearchEvent.SearchFailed(normalized, "Modelo de busca CLIP ainda não está pronto."),
             )
             return
         }
@@ -1292,8 +1292,8 @@ class MainActivity : Activity() {
                         GallerySearchResult(
                             mediaId = hit.photo.mediaId,
                             contentUri = hit.photo.contentUri,
-                            title = displayName ?: "本地照片 ${index + 1}",
-                            subtitle = "本机索引 · $format",
+                            title = displayName ?: "Foto local ${index + 1}",
+                            subtitle = "Índice local · $format",
                             similarity = hit.similarity,
                             source = GalleryResultSource.CLIP_DIRECT,
                         )
@@ -1308,26 +1308,26 @@ class MainActivity : Activity() {
     }
 
     private fun galleryFailureMessage(failure: GallerySearchFailure): String = when (failure.code) {
-        GallerySearchFailureCode.ACCESS_DENIED -> "相册访问已撤销，请重新授权后建立索引。"
+        GallerySearchFailureCode.ACCESS_DENIED -> "Acesso à galeria revogado, por favor reautorize para construir o índice"
         GallerySearchFailureCode.IMAGE_ENCODER_UNAVAILABLE ->
-            "缺少 openai-clip-vit-b16-image.onnx，请先导入视觉模型。"
+            "Arquivos do modelo CLIP não encontrados"
         GallerySearchFailureCode.TEXT_ENCODER_UNAVAILABLE ->
-            "缺少 openai-clip-vit-b16-text.onnx；固定标签 sidecar 不能用于任意文本搜索。"
+            "Arquivos do modelo CLIP não encontrados"
         GallerySearchFailureCode.TEXT_TOKENIZER_UNAVAILABLE ->
-            "缺少 vocab.json、merges.txt 或 tokenizer_config.json。"
-        GallerySearchFailureCode.MODEL_ABI_MISMATCH -> "CLIP 图像/文本编码器或 tokenizer ABI 不兼容。"
-        GallerySearchFailureCode.MODEL_LOAD_FAILED -> "CLIP 无法在当前可用内存预算内加载，请释放其他模型后重试。"
-        GallerySearchFailureCode.MODEL_DIGEST_MISMATCH -> "CLIP 模型已变化，请重新建立本机索引。"
-        GallerySearchFailureCode.INDEX_CORRUPT -> "本机照片索引损坏，请重新建立。"
-        GallerySearchFailureCode.INDEX_MISSING -> "请先为授权照片建立本机索引。"
-        GallerySearchFailureCode.MEDIA_NOT_FOUND -> "部分授权照片已被移动或删除，请重新扫描。"
-        GallerySearchFailureCode.IMAGE_DECODE_FAILED -> "有照片无法安全解码；已保留可续建的索引。"
+            "Arquivos do modelo CLIP não encontrados"
+        GallerySearchFailureCode.MODEL_ABI_MISMATCH -> "Falha ao carregar o modelo CLIP"
+        GallerySearchFailureCode.MODEL_LOAD_FAILED -> "Memória insuficiente para executar o modelo CLIP"
+        GallerySearchFailureCode.MODEL_DIGEST_MISMATCH -> "Dados do índice corrompidos"
+        GallerySearchFailureCode.INDEX_CORRUPT -> "Dados do índice corrompidos"
+        GallerySearchFailureCode.INDEX_MISSING -> "Falha ao construir o índice de fotos"
+        GallerySearchFailureCode.MEDIA_NOT_FOUND -> "Nenhuma foto disponível para indexação"
+        GallerySearchFailureCode.IMAGE_DECODE_FAILED -> "Dados do índice corrompidos"
         GallerySearchFailureCode.EMBEDDING_DIMENSION_MISMATCH,
         GallerySearchFailureCode.INVALID_EMBEDDING,
-        -> "CLIP 返回了不兼容的向量，请检查模型配对。"
-        GallerySearchFailureCode.CANCELLED -> "索引已取消；已完成的本机向量会在重试时复用。"
-        GallerySearchFailureCode.UNSUPPORTED_URI -> "只接受系统授权的 content:// 本地照片。"
-        GallerySearchFailureCode.IO_FAILED -> "本机索引写入失败，请检查可用空间后重试。"
+        -> "Falha ao carregar o modelo CLIP"
+        GallerySearchFailureCode.CANCELLED -> "Índice cancelado; vetores locais concluídos serão reutilizados na próxima tentativa."
+        GallerySearchFailureCode.UNSUPPORTED_URI -> "Nenhuma foto disponível para indexação"
+        GallerySearchFailureCode.IO_FAILED -> "Armazenamento cheio, não é possível construir o índice"
     }
 
     private fun dispatchGalleryEvents(vararg events: GallerySearchEvent) {
@@ -1421,7 +1421,7 @@ class MainActivity : Activity() {
             galleryHostOpenInFlight = true
         }
         val generation = galleryRuntimeGeneration
-        dispatchGalleryEvents(GallerySearchEvent.ModelPreparationStarted("上一 CLIP 会话释放"))
+        dispatchGalleryEvents(GallerySearchEvent.ModelPreparationStarted("Sessão CLIP anterior liberada"))
         galleryWorker.execute {
             val released = barriers.all { barrier ->
                 runCatching { barrier.get(30L, TimeUnit.SECONDS) }.isSuccess.also {
@@ -1441,7 +1441,7 @@ class MainActivity : Activity() {
                 } else {
                     dispatchGalleryEvents(
                         GallerySearchEvent.ModelPreparationFailed(
-                            "上一 CLIP 会话未能安全释放；为避免双会话，请完全重启应用后重试。",
+                            "Sessão CLIP anterior não foi liberada com segurança; para evitar duas sessões, reinicie completamente o app e tente novamente.",
                             retryable = false,
                         ),
                     )
@@ -1473,7 +1473,7 @@ class MainActivity : Activity() {
             if (wasIndexing) {
                 add(
                     GallerySearchEvent.IndexFailed(
-                        "索引已暂停；完成的向量已请求保存，可重新加载模型后续建。",
+                        "Índice pausado; vetores concluídos foram salvos, pode recarregar o modelo para continuar.",
                         retryable = true,
                     ),
                 )
@@ -1505,7 +1505,7 @@ class MainActivity : Activity() {
         }
         dispatchGalleryEvents(
             GallerySearchEvent.ModelPreparationFailed(reason, retryable = true),
-            GallerySearchEvent.IndexFailed("模型发生变化，请重新建立本机照片索引。", retryable = true),
+            GallerySearchEvent.IndexFailed("Modelo alterado, recrie o índice de fotos local.", retryable = true),
         )
     }
 
@@ -1515,13 +1515,13 @@ class MainActivity : Activity() {
             .firstOrNull { it.id == packageId }?.artifacts?.map { it.fileName }.orEmpty().toSet()
         if (artifactNames.isEmpty()) return
         AlertDialog.Builder(this)
-            .setTitle("移除模型包？")
-            .setMessage("将从应用私有目录删除 ${artifactNames.size} 个文件。此操作不会影响系统相册。")
-            .setNegativeButton("保留", null)
-            .setPositiveButton("移除") { _, _ ->
+            .setTitle("Remover pacote do modelo?")
+            .setMessage("Serão deletados ${artifactNames.size} arquivos do diretório privado do aplicativo. Esta operação não afeta o álbum do sistema.")
+            .setNegativeButton("Manter", null)
+            .setPositiveButton("Remover") { _, _ ->
                 allFiles.filter { it.name in artifactNames }.forEach(File::delete)
                 if (packageId == "clip_retrieval") {
-                    invalidateGallerySearchRuntime("视觉模型包已移除，请重新准备 CLIP 搜索模型。")
+                    invalidateGallerySearchRuntime("Pacote do modelo visual removido, prepare novamente o modelo de busca CLIP.")
                 }
                 renderCurrentTab()
             }
@@ -1529,7 +1529,7 @@ class MainActivity : Activity() {
     }
 
     private fun renderApiTab(content: LinearLayout) {
-        content.addView(buildCompactHeader("开发者接口", "本机 API 与诊断", "cloud"))
+        content.addView(buildCompactHeader("Interface de desenvolvedor", "API local e diagnósticos", "cloud"))
         content.addView(space(12))
         content.addView(buildApiEndpointCard())
         content.addView(space(14))
@@ -1541,12 +1541,12 @@ class MainActivity : Activity() {
     }
 
     private fun renderSettingsTab(content: LinearLayout) {
-        content.addView(buildCompactHeader("我的", "隐私、本机数据与实验室", "person"))
+        content.addView(buildCompactHeader("Meu Perfil", "Privacidade, dados locais e laboratório", "person"))
         content.addView(space(12))
-        content.addView(sectionTitle("我的", "隐私与本机数据"))
+        content.addView(sectionTitle("Meu Perfil", "Privacidade e Dados Locais"))
         content.addView(buildSettingsCard())
         content.addView(space(18))
-        content.addView(sectionTitle("实验室", "高级功能"))
+        content.addView(sectionTitle("Laboratório", "Recursos Avançados"))
         content.addView(buildLabAccessCard())
     }
 
@@ -1562,7 +1562,7 @@ class MainActivity : Activity() {
                     orientation = LinearLayout.VERTICAL
                     addView(label("TuiMa", 22f, Palette.mint, Typeface.BOLD).apply { letterSpacing = -0.02f })
                     addView(space(2))
-                    addView(label("端侧 AI 控制台", 11.5f, Palette.muted, Typeface.BOLD))
+                    addView(label("IA local em um vislumbre", 11.5f, Palette.muted, Typeface.BOLD))
                 },
                 LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
             )
@@ -1571,7 +1571,7 @@ class MainActivity : Activity() {
                 chip(runtimeChipText, tint(statusAccent, 0.12f), statusAccent),
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(34)).apply { marginStart = dp(10) }
             )
-            contentDescription = "TuiMa 端侧 AI 控制台，标准模型${lifecycle.statusLabel}"
+            contentDescription = "Console IA local TuiMa, modelo padrão ${lifecycle.statusLabel}"
         }
     }
 
@@ -1587,7 +1587,7 @@ class MainActivity : Activity() {
         }
         val temperature = telemetry?.batteryTemperatureCelsius?.let {
             "${"%.1f".format(Locale.US, it)}°C"
-        } ?: "检测中"
+        } ?: "Detectando"
 
         return surfaceCard(Palette.mint, gradient = true) {
             addView(
@@ -1621,14 +1621,14 @@ class MainActivity : Activity() {
             addView(space(12))
             addView(
                 LinearLayout(context).apply {
-                    addView(instrumentMetric("可用内存", availableRam, Palette.blue), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-                    addView(instrumentMetric("CPU 核心", "${profile.coreCount} 核", Palette.sky), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-                    addView(instrumentMetric("当前电量", telemetry?.let { "${it.batteryPercent}%" } ?: "检测中", Palette.mint), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-                    addView(instrumentMetric("设备温度", temperature, if ((telemetry?.batteryTemperatureCelsius ?: 0.0) >= 42.0) Palette.amber else Palette.mint), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(instrumentMetric("Memória Disponível", availableRam, Palette.blue), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(instrumentMetric("Núcleos CPU", "${profile.coreCount} núcleos", Palette.sky), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(instrumentMetric("Bateria Atual", telemetry?.let { "${it.batteryPercent}%" } ?: "Detectando", Palette.mint), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(instrumentMetric("Temperatura do Dispositivo", temperature, if ((telemetry?.batteryTemperatureCelsius ?: 0.0) >= 42.0) Palette.amber else Palette.mint), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
                 }
             )
             addView(space(12))
-            addView(label("标准模型 · ${lifecycle.supportingText}", 11.5f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
+            addView(label("Modelo padrão · ${lifecycle.supportingText}", 11.5f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
         }
     }
 
@@ -1648,12 +1648,12 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             addView(label("TODAY ON DEVICE", 10.5f, Palette.mintDark, Typeface.BOLD).apply { letterSpacing = 0.12f })
             addView(space(7))
-            addView(autoSizeSingleLineLabel("端侧 AI，一眼看清", 27f, 21f, Palette.deepInk, Typeface.BOLD))
+            addView(autoSizeSingleLineLabel("IA local em um vislumbre", 27f, 21f, Palette.deepInk, Typeface.BOLD))
             addView(space(7))
-            addView(label("模型是否可用、设备是否适合、跑分结果如何，都以本机真实状态为准。", 13f, Palette.muted, Typeface.NORMAL).apply {
+            addView(label("A disponibilidade do modelo, adequação do dispositivo e resultados do benchmark são baseados no status real local.", 13f, Palette.muted, Typeface.NORMAL).apply {
                 setLineSpacing(dp(2).toFloat(), 1f)
             })
-            contentDescription = "端侧 AI 一眼看清。模型、设备和跑分均以本机真实状态为准"
+            contentDescription = "IA local em um vislumbre. Modelo, dispositivo e benchmark baseados no status real local"
         }
     }
 
@@ -1692,7 +1692,7 @@ class MainActivity : Activity() {
                     addView(
                         LinearLayout(context).apply {
                             orientation = LinearLayout.VERTICAL
-                            addView(label("标准跑分模型", 11f, Palette.muted, Typeface.BOLD))
+                            addView(label("Modelo padrão de benchmark", 11f, Palette.muted, Typeface.BOLD))
                             addView(space(4))
                             addView(label("Qwen2.5 0.5B · Q4_K_M", 16.5f, Palette.deepInk, Typeface.BOLD).apply { maxLines = 2 })
                         },
@@ -1711,26 +1711,26 @@ class MainActivity : Activity() {
                 addView(space(16))
                 addView(thinDivider())
                 addView(space(14))
-                addView(label("最近成绩", 10.5f, Palette.muted, Typeface.BOLD))
+                addView(label("Último resultado", 10.5f, Palette.muted, Typeface.BOLD))
                 addView(space(5))
                 addView(
                     autoSizeSingleLineLabel(formatHeadlineScore(headline), 34f, 24f, Palette.blue, Typeface.BOLD),
                     LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 )
                 addView(space(5))
-                addView(label("TuiMa · 标准分 $canonical / 1000", 12f, Palette.mintDark, Typeface.BOLD).apply { maxLines = 2 })
+                addView(label("TuiMa · Pontuação padrão $canonical / 1000", 12f, Palette.mintDark, Typeface.BOLD).apply { maxLines = 2 })
             }
 
             addView(space(16))
             val actionText = when {
-                state.isRunning -> "查看跑分进度"
-                lifecycle.phase == ModelLifecyclePhase.LOADED -> if (latestScore != null) "重新跑分" else "开始标准跑分"
+                state.isRunning -> "Ver progresso do benchmark"
+                lifecycle.phase == ModelLifecyclePhase.LOADED -> if (latestScore != null) "Refazer benchmark" else "Iniciar benchmark padrão"
                 lifecycle.phase == ModelLifecyclePhase.DOWNLOADED || lifecycle.phase == ModelLifecyclePhase.LOAD_FAILED -> lifecycle.actionLabel
-                lifecycle.phase == ModelLifecyclePhase.LOADING -> "模型加载中"
-                lifecycle.phase == ModelLifecyclePhase.DOWNLOADING -> "暂停下载"
-                lifecycle.phase == ModelLifecyclePhase.PAUSED -> "继续下载"
-                lifecycle.phase == ModelLifecyclePhase.DOWNLOAD_FAILED -> "重新下载"
-                else -> "下载标准模型 · 469 MB"
+                lifecycle.phase == ModelLifecyclePhase.LOADING -> "Carregando modelo"
+                lifecycle.phase == ModelLifecyclePhase.DOWNLOADING -> "Pausar download"
+                lifecycle.phase == ModelLifecyclePhase.PAUSED -> "Continuar download"
+                lifecycle.phase == ModelLifecyclePhase.DOWNLOAD_FAILED -> "Baixar novamente"
+                else -> "Baixar modelo padrão · 469 MB"
             }
             addView(
                 pillButton(actionText, Palette.mintDark, Palette.mint) {
@@ -1765,15 +1765,15 @@ class MainActivity : Activity() {
         val telemetry = runCatching { AndroidBenchmarkTelemetry(applicationContext).sample() }.getOrNull()
         val thermalReady = telemetry?.thermalStatus?.ordinal?.let { it <= ThermalStatus.LIGHT.ordinal } ?: true
         return surfaceCard(Palette.sky) {
-            addView(label("本机准备度", 14f, Palette.deepInk, Typeface.BOLD))
+            addView(label("Preparação local", 14f, Palette.deepInk, Typeface.BOLD))
             addView(space(10))
-            addView(readinessRow("标准模型", lifecycle.statusLabel, model != null, modelLifecycleAccent(lifecycle.tone)))
+            addView(readinessRow("Modelo padrão", lifecycle.statusLabel, model != null, modelLifecycleAccent(lifecycle.tone)))
             addView(thinDivider())
-            addView(readinessRow("当前电量", telemetry?.let { "${it.batteryPercent}%" } ?: "检测中", (telemetry?.batteryPercent ?: 30) >= 30))
+            addView(readinessRow("Bateria Atual", telemetry?.let { "${it.batteryPercent}%" } ?: "Detectando", (telemetry?.batteryPercent ?: 30) >= 30))
             addView(thinDivider())
-            addView(readinessRow("设备温控", if (thermalReady) "适合跑分" else "建议冷却", thermalReady))
+            addView(readinessRow("Controle térmico do dispositivo", if (thermalReady) "Adequado para benchmark" else "Recomenda resfriamento", thermalReady))
             addView(space(8))
-            addView(label("开始跑分前还会再次校验模型完整性、存储和运行时。", 11.8f, Palette.muted, Typeface.NORMAL).apply { maxLines = 3 })
+            addView(label("Antes de iniciar o benchmark, verificará novamente integridade do modelo, armazenamento e runtime.", 11.8f, Palette.muted, Typeface.NORMAL).apply { maxLines = 3 })
         }
     }
 
@@ -1824,7 +1824,7 @@ class MainActivity : Activity() {
         )
 
         container.removeAllViews()
-        container.addView(cardHeader(model.title, "Qwen2.5 0.5B · TuiMa 标准模型", "download", Palette.mint, "本机"))
+        container.addView(cardHeader(model.title, "Qwen2.5 0.5B · Modelo padrão TuiMa", "download", Palette.mint, "Local"))
         container.addView(space(12))
         container.addView(
             ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
@@ -1832,7 +1832,7 @@ class MainActivity : Activity() {
                 progress = model.progressPercent
                 progressTintList = ColorStateList.valueOf(Palette.mintDark)
                 progressBackgroundTintList = ColorStateList.valueOf(tint(Palette.muted, 0.16f))
-                contentDescription = "标准模型下载进度 ${model.progressPercent}%"
+                contentDescription = "Progresso do download do modelo padrão ${model.progressPercent}%"
                 visibility = if (phase == StandardModelDownloadPhase.IDLE) View.GONE else View.VISIBLE
             },
             LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(8))
@@ -1911,16 +1911,16 @@ class MainActivity : Activity() {
         val snapshot = latest?.let(ResultsScreenPresenter::parse)
         return surfaceCard(Palette.lavender) {
             if (latest == null || snapshot == null) {
-                addView(cardHeader("还没有成绩", "完成一次测试后在这里查看五维表现", "gauge", Palette.lavender))
+                addView(cardHeader("Nenhum resultado ainda", "Após um teste, veja o desempenho 5 dimensões aqui", "gauge", Palette.lavender))
                 addView(space(12))
-                addView(chipButton("前往跑分", false) { setTab(AppTab.TEST) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(48)))
+                addView(chipButton("Ir para benchmark", false) { setTab(AppTab.TEST) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(48)))
             } else {
                 val insight = ResultsScreenPresenter.insight(snapshot)
-                addView(cardHeader("能力洞察 · ${insight.rating}", insight.summary, "gauge", Palette.lavender, "${snapshot.canonicalScore}/1000", Palette.mintDark))
+                addView(cardHeader("Análise de capacidade · ${insight.rating}", insight.summary, "gauge", Palette.lavender, "${snapshot.canonicalScore}/1000", Palette.mintDark))
                 addView(space(12))
                 addView(softInfoBlock(insight.recommendation, Palette.lavender, maxLines = 3))
                 addView(space(12))
-                addView(chipButton("查看五维结果  →", false) { setTab(AppTab.RESULTS) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(48)))
+                addView(chipButton("Ver resultados 5 dimensões  →", false) { setTab(AppTab.RESULTS) }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(48)))
             }
         }
     }
@@ -1931,12 +1931,12 @@ class MainActivity : Activity() {
             minimumHeight = dp(48)
             setPadding(dp(4), 0, dp(4), 0)
             addView(IconBadgeView(context, "chip", Palette.mintDark), LinearLayout.LayoutParams(dp(32), dp(32)).apply { marginEnd = dp(10) })
-            addView(label("离线运行 · 数据仅留本机", 12.5f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(label("Executa offline · Dados ficam no dispositivo", 12.5f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
             addView(label("›", 22f, Palette.muted, Typeface.NORMAL))
             isClickable = true
             isFocusable = true
             background = ripple(rounded(Color.TRANSPARENT, Color.TRANSPARENT, 7f), Palette.mint)
-            contentDescription = "离线运行，数据仅留本机。查看隐私与本机数据"
+            contentDescription = "Executa offline, dados ficam no dispositivo. Ver privacidade e dados locais"
             setOnClickListener {
                 performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                 setTab(AppTab.SETTINGS)
@@ -1952,7 +1952,7 @@ class MainActivity : Activity() {
             addView(label("Tui", latinSize, Palette.deepInk, Typeface.BOLD))
             addView(label("Ma", latinSize, Palette.blue, Typeface.BOLD))
             addView(space(if (compact) 6 else 10))
-            addView(label("推嘛", chineseSize, Palette.mintDark, Typeface.BOLD))
+            addView(label("TuiMa", chineseSize, Palette.mintDark, Typeface.BOLD))
         }
     }
 
@@ -1962,7 +1962,7 @@ class MainActivity : Activity() {
             elevation = dp(2).toFloat()
             isClickable = true
             isFocusable = true
-            contentDescription = "查看跑分结果"
+            contentDescription = "Ver resultados do benchmark"
             setOnClickListener { setTab(AppTab.RESULTS) }
             addView(
                 IconBadgeView(context, "gauge", Palette.deepInk),
@@ -2049,14 +2049,14 @@ class MainActivity : Activity() {
             .filter { it.isFile && it.extension.equals("gguf", ignoreCase = true) }
             .sumOf { it.length() }
         val storageLine = if (totalMb > 0) {
-            "模型 ${formatBytes(modelBytes)} · 可用 ${freeMb / 1024} / ${totalMb / 1024} GB"
+            "Modelo ${formatBytes(modelBytes)} · Disponível ${freeMb / 1024} / ${totalMb / 1024} GB"
         } else {
-            "模型 ${formatBytes(modelBytes)}"
+            "Modelo ${formatBytes(modelBytes)}"
         }
         val localModels = availableGgufModels()
         val activeName = localModels.firstOrNull { it.absolutePath == activeModelPath }?.nameWithoutExtension
         return surfaceCard(Palette.mint) {
-            addView(cardHeader("本机模型库", storageLine, "chip", Palette.mint, "${localModels.size} 个"))
+            addView(cardHeader("Biblioteca de modelos local", storageLine, "chip", Palette.mint, "${localModels.size} itens"))
             addView(space(12))
             addView(
                 ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
@@ -2064,21 +2064,21 @@ class MainActivity : Activity() {
                     progress = storagePercent
                     progressTintList = ColorStateList.valueOf(Palette.blue)
                     progressBackgroundTintList = ColorStateList.valueOf(tint(Palette.muted, 0.14f))
-                    contentDescription = "设备存储已使用 $storagePercent%"
+                    contentDescription = "Armazenamento do dispositivo usado $storagePercent%"
                 },
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(6))
             )
             addView(space(10))
-            addView(readinessRow("运行时", activeName?.let { "已加载 ${displayModelName(it)}" } ?: "暂无已加载模型", activeName != null))
+            addView(readinessRow("Runtime", activeName?.let { "Carregado ${displayModelName(it)}" } ?: "Nenhum modelo carregado", activeName != null))
             addView(thinDivider())
-            addView(readinessRow("本地文件", if (localModels.isEmpty()) "未下载" else "已下载 ${localModels.size} 个", localModels.isNotEmpty()))
+            addView(readinessRow("Arquivos locais", if (localModels.isEmpty()) "Não baixado" else "${localModels.size} itens baixados", localModels.isNotEmpty()))
             addView(space(10))
             addView(
-                chipButton("复制模型目录", false) {
+                chipButton("Copiar diretório de modelos", false) {
                     val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("TuiMa model directory", externalModelDir().absolutePath))
-                    Toast.makeText(this@MainActivity, "模型目录已复制", Toast.LENGTH_SHORT).show()
-                    updateStatus("模型目录已复制")
+                    Toast.makeText(this@MainActivity, "Diretório de modelos copiado", Toast.LENGTH_SHORT).show()
+                    updateStatus("Diretório de modelos copiado")
                 },
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             )
@@ -2100,25 +2100,25 @@ class MainActivity : Activity() {
             addView(
                 cardHeader(
                     "Mobile Model Playground",
-                    "移动模型适配、来源与端侧证据广场",
+                    "Adaptação de modelos móveis, fonte e evidências no dispositivo",
                     "cube",
                     Palette.lavender,
-                    if (catalog == null) "目录异常" else "${entries.size} 个",
+                    if (catalog == null) "Catálogo anômalo" else "${entries.size} itens",
                     if (catalog == null) Palette.danger else Palette.lavender,
                 )
             )
             addView(space(12))
             if (catalog == null) {
-                addView(softInfoBlock("内置目录解析失败；为避免误导，社区模型不会被标记为已验证。", Palette.danger, 3))
+                addView(softInfoBlock("Falha ao analisar catálogo interno; para evitar confusão, modelos da comunidade não serão marcados como verificados.", Palette.danger, 3))
             } else {
-                addView(readinessRow("可信来源", "固定 revision 与 SHA-256", true, Palette.lavender))
+                addView(readinessRow("Fonte confiável", "Revisão fixa e SHA-256", true, Palette.lavender))
                 addView(thinDivider())
-                addView(readinessRow("本地发现", "$installedCount / ${entries.size} 个", installedCount > 0, Palette.blue))
+                addView(readinessRow("Descoberta local", "$installedCount / ${entries.size} itens", installedCount > 0, Palette.blue))
                 addView(thinDivider())
-                addView(readinessRow("当前推荐", "$recommendedCount 个通过展示门禁", recommendedCount > 0, Palette.mintDark))
+                addView(readinessRow("Recomendação atual", "$recommendedCount aprovados no gate de exibição", recommendedCount > 0, Palette.mintDark))
                 addView(space(11))
                 addView(
-                    chipButton("打开模型广场", false) { setTab(AppTab.PLAYGROUND) },
+                    chipButton("Abrir loja de modelos", false) { setTab(AppTab.PLAYGROUND) },
                     LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(44)),
                 )
             }
@@ -2138,14 +2138,14 @@ class MainActivity : Activity() {
         )
         val accent = playgroundOriginAccent(entry.origin)
         val artifactBytes = entry.artifacts.sumOf { it.sizeBytes }
-        val declaredInputs = entry.declaredCapabilities.inputs.joinToString(" / ").ifBlank { "未声明" }
-        val declaredOutputs = entry.declaredCapabilities.outputs.joinToString(" / ").ifBlank { "未声明" }
+        val declaredInputs = entry.declaredCapabilities.inputs.joinToString(" / ").ifBlank { "Não declarado" }
+        val declaredOutputs = entry.declaredCapabilities.outputs.joinToString(" / ").ifBlank { "Não declarado" }
         val verifiedInputs = entry.verifiedCapabilities.inputs.joinToString(" / ")
         val verifiedOutputs = entry.verifiedCapabilities.outputs.joinToString(" / ")
         val verifiedCapabilityLabel = when (entry.verifiedCapabilities.status) {
             "pass" -> "$verifiedInputs → $verifiedOutputs"
-            "quality_failed" -> "$verifiedInputs → $verifiedOutputs · 质量未通过"
-            else -> "尚未实测"
+            "quality_failed" -> "$verifiedInputs → $verifiedOutputs · Qualidade não aprovada"
+            else -> "Ainda não testado"
         }
         return surfaceCard(accent) {
             addView(
@@ -2176,22 +2176,22 @@ class MainActivity : Activity() {
                 setLineSpacing(dp(2).toFloat(), 1f)
             })
             addView(space(10))
-            addView(readinessRow("声明能力", "$declaredInputs → $declaredOutputs", false, Palette.muted))
+            addView(readinessRow("Capacidade declarada", "$declaredInputs → $declaredOutputs", false, Palette.muted))
             addView(thinDivider())
             addView(
                 readinessRow(
-                    "实测能力",
+                    "Capacidade testada",
                     verifiedCapabilityLabel,
                     model.validationPassed,
                     if (model.validationPassed) Palette.mintDark else Palette.amber,
                 )
             )
             addView(thinDivider())
-            addView(readinessRow("证据门禁", model.validationLabel, model.validationPassed, if (model.validationPassed) Palette.mintDark else Palette.amber))
+            addView(readinessRow("Controle de evidências", model.validationLabel, model.validationPassed, if (model.validationPassed) Palette.mintDark else Palette.amber))
             addView(thinDivider())
-            addView(readinessRow("分发状态", model.distributionLabel, entry.distribution.published, Palette.blue))
+            addView(readinessRow("Status de distribuição", model.distributionLabel, entry.distribution.published, Palette.blue))
             addView(thinDivider())
-            addView(readinessRow("本机状态", model.localStatusLabel, false, Palette.blue))
+            addView(readinessRow("Status local", model.localStatusLabel, false, Palette.blue))
             addView(label(model.localStatusDetail, 10.8f, Palette.muted, Typeface.NORMAL).apply {
                 setPadding(dp(2), dp(5), dp(2), 0)
                 maxLines = 2
@@ -2206,7 +2206,7 @@ class MainActivity : Activity() {
                         progress = model.progressPercent
                         progressTintList = ColorStateList.valueOf(Palette.mintDark)
                         progressBackgroundTintList = ColorStateList.valueOf(tint(Palette.muted, 0.16f))
-                        contentDescription = "可信模型安装进度 ${model.progressPercent}%"
+                        contentDescription = "Progresso de instalação do modelo confiável ${model.progressPercent}%"
                     },
                     LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(7)),
                 )
@@ -2226,7 +2226,7 @@ class MainActivity : Activity() {
                 if (model.canUninstall) {
                     addView(space(7))
                     addView(
-                        chipButton("卸载模型", false) {
+                        chipButton("Desinstalar modelo", false) {
                             confirmPlaygroundUninstall(entry, installer)
                         },
                         LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(42)),
@@ -2266,14 +2266,14 @@ class MainActivity : Activity() {
             runOnUiThread {
                 if (!isFinishing && !isDestroyed) {
                     if (snapshot.phase == PlaygroundInstallPhase.INSTALLED) {
-                        updateStatus("本地模型 SHA-256 复核通过")
+                        updateStatus("Revisão SHA-256 do modelo local aprovada")
                     } else if (snapshot.phase in setOf(
                             PlaygroundInstallPhase.VERIFICATION_FAILED,
                             PlaygroundInstallPhase.SOURCE_MISMATCH,
                             PlaygroundInstallPhase.FAILED,
                         )
                     ) {
-                        updateStatus("本地模型启动复核失败")
+                        updateStatus("Falha na revisão de inicialização do modelo local")
                     }
                     if (currentTab == AppTab.PLAYGROUND) renderCurrentTab()
                 }
@@ -2314,7 +2314,7 @@ class MainActivity : Activity() {
             PlaygroundLocalPhase.VERIFYING,
             -> {
                 installer.cancel()
-                updateStatus("正在取消可信模型操作")
+                updateStatus("Cancelando operação do modelo confiável")
             }
             PlaygroundLocalPhase.INSTALLED,
             PlaygroundLocalPhase.LOAD_FAILED,
@@ -2340,14 +2340,14 @@ class MainActivity : Activity() {
     ) {
         val size = formatBytes(installer.spec.totalBytes)
         AlertDialog.Builder(this)
-            .setTitle("下载并校验 ${entry.displayName}")
+            .setTitle("Baixar e verificar ${entry.displayName}")
             .setMessage(
-                "将从清单固定的 Hugging Face revision 下载 $size 到 MobileCore 私有目录。" +
-                    "安装前会检查空间，并严格核对字节数与 SHA-256；来源：${entry.source.conversionPublisher}，" +
-                    "许可：${entry.source.license}。",
+                "Baixará $size da revisão fixa do Hugging Face para o diretório privado do MobileCore." +
+                    "O espaço será verificado antes da instalação, e bytes e SHA-256 serão rigorosamente verificados; fonte: ${entry.source.conversionPublisher}," +
+                    "Licença: ${entry.source.license}.",
             )
-            .setNegativeButton("取消", null)
-            .setPositiveButton("下载并校验") { _, _ -> startPlaygroundInstall(installer) }
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Baixar e verificar") { _, _ -> startPlaygroundInstall(installer) }
             .show()
     }
 
@@ -2356,22 +2356,22 @@ class MainActivity : Activity() {
             runOnUiThread {
                 when (snapshot.phase) {
                     PlaygroundInstallPhase.INSTALLED -> {
-                        updateStatus("模型已通过 SHA-256 校验")
-                        Toast.makeText(this, "模型已安装并校验，可选择加载", Toast.LENGTH_SHORT).show()
+                        updateStatus("Modelo aprovado na verificação SHA-256")
+                        Toast.makeText(this, "Modelo instalado e verificado, opção de carregar disponível", Toast.LENGTH_SHORT).show()
                     }
-                    PlaygroundInstallPhase.VERIFICATION_FAILED -> updateStatus("模型校验失败")
-                    PlaygroundInstallPhase.SOURCE_MISMATCH -> updateStatus("模型来源不匹配")
-                    PlaygroundInstallPhase.CANCELLED -> updateStatus("模型下载已取消")
-                    PlaygroundInstallPhase.FAILED -> updateStatus("模型下载未完成")
+                    PlaygroundInstallPhase.VERIFICATION_FAILED -> updateStatus("Falha na verificação do modelo")
+                    PlaygroundInstallPhase.SOURCE_MISMATCH -> updateStatus("Fonte do modelo incompatível")
+                    PlaygroundInstallPhase.CANCELLED -> updateStatus("Download do modelo cancelado")
+                    PlaygroundInstallPhase.FAILED -> updateStatus("Download do modelo incompleto")
                     else -> Unit
                 }
                 if (currentTab == AppTab.PLAYGROUND) renderCurrentTab()
             }
         }
         if (!handle.started) {
-            Toast.makeText(this, "已有可信模型安装任务正在运行", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Já existe uma tarefa de instalação de modelo confiável em execução", Toast.LENGTH_SHORT).show()
         } else {
-            updateStatus("正在检查模型安装空间")
+            updateStatus("Verificando espaço de instalação do modelo")
             if (currentTab == AppTab.PLAYGROUND) renderCurrentTab()
         }
     }
@@ -2380,7 +2380,7 @@ class MainActivity : Activity() {
         val modelFile = installer.primaryModelFile()
         if (modelFile == null) {
             startPlaygroundVerification(installer)
-            updateStatus("模型信任状态已失效，正在后台重新校验")
+            updateStatus("Status de confiança do modelo expirado, reverificando em segundo plano")
             return
         }
         withNotificationPermission {
@@ -2394,19 +2394,19 @@ class MainActivity : Activity() {
             runOnUiThread {
                 if (isFinishing || isDestroyed) return@runOnUiThread
                 when (snapshot.phase) {
-                    PlaygroundInstallPhase.INSTALLED -> updateStatus("模型 SHA-256 校验通过，请再次点击加载")
-                    PlaygroundInstallPhase.CANCELLED -> updateStatus("模型校验已取消")
-                    PlaygroundInstallPhase.VERIFICATION_FAILED -> updateStatus("模型校验未通过")
-                    PlaygroundInstallPhase.FAILED -> updateStatus("模型校验未完成")
+                    PlaygroundInstallPhase.INSTALLED -> updateStatus("Verificação SHA-256 do modelo aprovada, clique novamente para carregar")
+                    PlaygroundInstallPhase.CANCELLED -> updateStatus("Verificação do modelo cancelada")
+                    PlaygroundInstallPhase.VERIFICATION_FAILED -> updateStatus("Verificação do modelo não aprovada")
+                    PlaygroundInstallPhase.FAILED -> updateStatus("Verificação do modelo não concluída")
                     else -> Unit
                 }
                 if (currentTab == AppTab.PLAYGROUND) renderCurrentTab()
             }
         }
         if (!handle.started) {
-            Toast.makeText(this, "该模型已有安装或校验任务", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Este modelo já possui tarefa de instalação ou verificação", Toast.LENGTH_SHORT).show()
         } else {
-            updateStatus("正在后台校验模型 SHA-256")
+            updateStatus("Verificando SHA-256 do modelo em segundo plano")
             if (currentTab == AppTab.PLAYGROUND) renderCurrentTab()
         }
     }
@@ -2416,23 +2416,23 @@ class MainActivity : Activity() {
         installer: PlaygroundArtifactInstaller,
     ) {
         if (pendingModelPath?.let(installer::managesModelPath) == true) {
-            Toast.makeText(this, "模型仍在加载，请等待加载完成后再卸载", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Modelo ainda carregando, aguarde a conclusão para desinstalar", Toast.LENGTH_LONG).show()
             return
         }
         AlertDialog.Builder(this)
-            .setTitle(if (installer.snapshot().phase == PlaygroundInstallPhase.SOURCE_MISMATCH) "移除不匹配文件" else "卸载模型")
-            .setMessage("将仅删除 MobileCore 私有模型目录中的 ${entry.displayName}、临时文件与校验记录。")
-            .setNegativeButton("取消", null)
-            .setPositiveButton("确认移除") { _, _ -> uninstallPlaygroundModel(installer) }
+            .setTitle(if (installer.snapshot().phase == PlaygroundInstallPhase.SOURCE_MISMATCH) "Remover arquivos incompatíveis" else "Desinstalar modelo")
+            .setMessage("Serão removidos apenas ${entry.displayName}, arquivos temporários e registros de verificação do diretório privado de modelos do MobileCore.")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Confirmar remoção") { _, _ -> uninstallPlaygroundModel(installer) }
             .show()
     }
 
     private fun uninstallPlaygroundModel(installer: PlaygroundArtifactInstaller) {
-        updateStatus("正在确认当前运行模型")
+        updateStatus("Confirmando modelo em execução")
         refreshRuntimeModelStateForDestructiveAction { refreshed ->
             if (!refreshed) {
-                updateStatus("无法确认运行时状态，模型文件保持不变")
-                Toast.makeText(this, "本机服务状态不可确认，未删除任何文件", Toast.LENGTH_LONG).show()
+                updateStatus("Não foi possível confirmar o status do runtime, arquivos do modelo mantidos")
+                Toast.makeText(this, "Status do serviço local não confirmado, nenhum arquivo removido", Toast.LENGTH_LONG).show()
                 return@refreshRuntimeModelStateForDestructiveAction
             }
             uninstallPlaygroundModelAfterRefresh(installer)
@@ -2441,11 +2441,11 @@ class MainActivity : Activity() {
 
     private fun uninstallPlaygroundModelAfterRefresh(installer: PlaygroundArtifactInstaller) {
         if (pendingModelPath?.let(installer::managesModelPath) == true) {
-            Toast.makeText(this, "模型仍在加载，暂不删除文件", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Modelo ainda carregando, arquivos não serão removidos", Toast.LENGTH_LONG).show()
             return
         }
         if (runtimeReportsLoadedModel && activeModelPath == null) {
-            Toast.makeText(this, "无法唯一确认当前运行模型，文件保持不变", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Não foi possível confirmar exclusivamente o modelo em execução, arquivos mantidos", Toast.LENGTH_LONG).show()
             refreshRuntimeModelState()
             return
         }
@@ -2465,33 +2465,33 @@ class MainActivity : Activity() {
                         pendingModelPath = null
                         reconcilePlaygroundRuntimeTruth(null)
                     }
-                    updateStatus("模型已卸载")
-                    Toast.makeText(this, "模型与校验记录已移除", Toast.LENGTH_SHORT).show()
+                    updateStatus("Modelo desinstalado")
+                    Toast.makeText(this, "Modelo e registros de verificação removidos", Toast.LENGTH_SHORT).show()
                     refreshRecommendationSnapshot()
                     syncBenchmarkReadiness()
                     refreshRuntimeModelState()
                     if (currentTab in setOf(AppTab.MODELS, AppTab.PLAYGROUND)) renderCurrentTab()
                 } else {
-                    updateStatus("模型卸载失败，文件保持不变")
-                    Toast.makeText(this, "运行时或文件状态无法安全确认，未完成卸载", Toast.LENGTH_LONG).show()
+                    updateStatus("Falha ao desinstalar modelo, arquivos mantidos")
+                    Toast.makeText(this, "Status do runtime ou arquivos não confirmado com segurança, desinstalação não concluída", Toast.LENGTH_LONG).show()
                     refreshRuntimeModelState()
                 }
             },
             onError = {
-                updateStatus("本机服务不可达，模型文件保持不变")
-                Toast.makeText(this, "无法进入运行时互斥卸载，未删除任何文件", Toast.LENGTH_LONG).show()
+                updateStatus("Serviço local inacessível, arquivos do modelo mantidos")
+                Toast.makeText(this, "Não foi possível entrar na exclusão mútua do runtime, nenhum arquivo removido", Toast.LENGTH_LONG).show()
             },
         )
     }
 
     private fun playgroundSourceActionLabel(entry: PlaygroundCatalogEntry): String = when {
-        entry.distribution.mode == "huggingface_model_repo" -> "查看 Hugging Face 来源"
-        entry.distribution.repositoryUrl == null -> "查看固定来源"
-        else -> "查看发布仓库"
+        entry.distribution.mode == "huggingface_model_repo" -> "Ver fonte no Hugging Face"
+        entry.distribution.repositoryUrl == null -> "Ver fonte fixa"
+        else -> "Ver repositório de publicação"
     }
 
     private fun openPlaygroundSource(entry: PlaygroundCatalogEntry) {
-        openPlaygroundUrl(entry.distribution.repositoryUrl ?: entry.source.repository, "无法打开模型来源")
+        openPlaygroundUrl(entry.distribution.repositoryUrl ?: entry.source.repository, "Não foi possível abrir a fonte do modelo")
     }
 
     private fun openPlaygroundUrl(url: String, failureMessage: String) {
@@ -2513,14 +2513,14 @@ class MainActivity : Activity() {
             .take(6)
         val best = featuredItems.firstOrNull()
         val headerText = best?.let {
-            "${fitLabel(it, profile)} · 首推 ${it.parameterLabel} ${it.quantization}"
-        } ?: "准备推荐"
+            "${fitLabel(it, profile)} · Recomendado ${it.parameterLabel} ${it.quantization}"
+        } ?: "Preparando recomendação"
 
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             addView(
                 label(
-                    "${profile.coreCount} 核 · 可用内存 ${profile.availableRamMb}MB · $headerText",
+                    "${profile.coreCount} núcleos · Memória disponível ${profile.availableRamMb}MB · $headerText",
                     11.8f,
                     Palette.mintDark,
                     Typeface.BOLD,
@@ -2544,9 +2544,9 @@ class MainActivity : Activity() {
             addView(
                 LinearLayout(context).apply {
                     gravity = Gravity.CENTER_VERTICAL
-                    addView(cardHeader("ModelScope GGUF", "搜索、筛选并下载可运行模型", "cloud", Palette.blue), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(cardHeader("ModelScope GGUF", "Pesquisar, filtrar e baixar modelos executáveis", "cloud", Palette.blue), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
                     addView(
-                        chipButton(if (modelScopeLoading) "加载中" else "搜索", false) {
+                        chipButton(if (modelScopeLoading) "Carregando" else "Pesquisar", false) {
                             refreshModelScopeCatalog(force = true)
                         },
                         LinearLayout.LayoutParams(dp(88), dp(40))
@@ -2557,7 +2557,7 @@ class MainActivity : Activity() {
             addView(
                 EditText(context).apply {
                     setText(modelScopeSearchQuery)
-                    hint = "搜索 Qwen、Q4_K_M、0.5B..."
+                    hint = "Pesquisar Qwen, Q4_K_M, 0.5B..."
                     textSize = 14f
                     setSingleLine(true)
                     setTextColor(Palette.ink)
@@ -2609,20 +2609,20 @@ class MainActivity : Activity() {
             .take(8)
 
         modelScopeStatusText?.text = when {
-            modelScopeLoading -> "正在从 ModelScope 拉取仓库详情和 GGUF 文件列表..."
+            modelScopeLoading -> "Buscando detalhes do repositório e lista de arquivos GGUF no ModelScope..."
             visibleItems.isNotEmpty() -> {
-                val repoText = modelScopeRemoteTotal?.let { " · 搜到 $it 个仓库" } ?: ""
-                "已展开 ${modelScopeCatalog.size} 个 GGUF 文件 · 当前显示 ${visibleItems.size} 个$repoText"
+                val repoText = modelScopeRemoteTotal?.let { " · $it repositórios encontrados" } ?: ""
+                "${modelScopeCatalog.size} arquivos GGUF expandidos · Exibindo ${visibleItems.size} itens$repoText"
             }
-            modelScopeError != null -> "ModelScope 暂不可用：$modelScopeError"
-            modelScopeLoaded -> "没有匹配的 GGUF，试试 qwen / q4 / 0.5b"
-            else -> "准备加载 ModelScope 模型列表"
+            modelScopeError != null -> "ModelScope temporariamente indisponível: $modelScopeError"
+            modelScopeLoaded -> "Nenhum GGUF correspondente, tente qwen / q4 / 0.5b"
+            else -> "Preparando lista de modelos do ModelScope"
         }
 
         if (visibleItems.isEmpty()) {
             container.addView(
                 label(
-                    if (modelScopeLoading) "请稍等，正在连接 ModelScope。" else "暂无结果；可以点搜索重试。",
+                    if (modelScopeLoading) "Aguarde, conectando ao ModelScope." else "Nenhum resultado; clique em pesquisar para tentar novamente.",
                     13f,
                     Palette.muted,
                     Typeface.NORMAL
@@ -2658,7 +2658,7 @@ class MainActivity : Activity() {
         val estimatedMemoryMb = estimateMobileMemoryMb(entry)
         val fit = fitLabel(entry, profile)
         val reason = entry.recommendationReason.ifBlank {
-            "$fit · 预计内存 ${estimatedMemoryMb}MB · ${recommendationReasonFor(entry, profile)}"
+            "$fit · Memória estimada ${estimatedMemoryMb}MB · ${recommendationReasonFor(entry, profile)}"
         }
         val accent = modelLifecycleAccent(lifecycle.tone)
         val actionAccent = when (lifecycle.phase) {
@@ -2758,7 +2758,7 @@ class MainActivity : Activity() {
                     )
                 }
             )
-            contentDescription = "${entry.displayTitle}，${lifecycle.statusLabel}，$fit。点击查看详情"
+            contentDescription = "${entry.displayTitle}, ${lifecycle.statusLabel}, $fit. Clique para ver detalhes"
         }
     }
 
@@ -2775,7 +2775,7 @@ class MainActivity : Activity() {
                 parameterLabel = "270M",
                 architecture = "gemma3",
                 downloads = 0L,
-                recommendationReason = "Gemma3 超轻文本入口，适合先验证加载和对话链路。",
+                recommendationReason = "Entrada de texto ultraleve Gemma3, ideal para verificar primeiro carregamento e cadeia de diálogo.",
                 tier = "tiny"
             ),
             ModelScopeCatalogEntry(
@@ -2788,7 +2788,7 @@ class MainActivity : Activity() {
                 parameterLabel = "1B",
                 architecture = "gemma3",
                 downloads = 0L,
-                recommendationReason = "Gemma3 手机质量基线，Q4 量化更稳。",
+                recommendationReason = "Linha de base de qualidade para celular Gemma3, Q4 mais estável.",
                 tier = "phone"
             ),
             ModelScopeCatalogEntry(
@@ -2801,7 +2801,7 @@ class MainActivity : Activity() {
                 parameterLabel = "0.5B",
                 architecture = "qwen2",
                 downloads = 0L,
-                recommendationReason = "入门首选，体积小，适合第一次检测。",
+                recommendationReason = "Opção de entrada, tamanho pequeno, ideal para primeira verificação.",
                 tier = "tiny"
             ),
             ModelScopeCatalogEntry(
@@ -2814,7 +2814,7 @@ class MainActivity : Activity() {
                 parameterLabel = "0.6B",
                 architecture = "qwen3",
                 downloads = 0L,
-                recommendationReason = "最小下载包，低内存手机优先试这个。",
+                recommendationReason = "Pacote de download mínimo, teste primeiro em celulares com pouca memória.",
                 tier = "tiny"
             ),
             ModelScopeCatalogEntry(
@@ -2827,7 +2827,7 @@ class MainActivity : Activity() {
                 parameterLabel = "0.6B",
                 architecture = "qwen3",
                 downloads = 0L,
-                recommendationReason = "小模型但量化更稳，适合日常测试。",
+                recommendationReason = "Modelo pequeno mas quantização mais estável, ideal para testes diários.",
                 tier = "tiny"
             ),
             ModelScopeCatalogEntry(
@@ -2840,7 +2840,7 @@ class MainActivity : Activity() {
                 parameterLabel = "1.5B",
                 architecture = "qwen2",
                 downloads = 0L,
-                recommendationReason = "小手机可用，回答质量比 0.5B 明显更好。",
+                recommendationReason = "Dispositivos modestos podem usar, qualidade de resposta significativamente melhor que 0.5B.",
                 tier = "phone"
             ),
             ModelScopeCatalogEntry(
@@ -2853,7 +2853,7 @@ class MainActivity : Activity() {
                 parameterLabel = "1.7B",
                 architecture = "qwen3",
                 downloads = 0L,
-                recommendationReason = "参数更大但文件仍小，适合速度优先。",
+                recommendationReason = "Parâmetros maiores mas arquivo ainda pequeno, ideal para priorizar velocidade.",
                 tier = "phone"
             ),
             ModelScopeCatalogEntry(
@@ -2866,7 +2866,7 @@ class MainActivity : Activity() {
                 parameterLabel = "1.5B",
                 architecture = "qwen2",
                 downloads = 0L,
-                recommendationReason = "轻量 reasoning 体验，适合演示推理链路。",
+                recommendationReason = "Experiência de reasoning leve, ideal para demonstrar cadeia de raciocínio.",
                 tier = "phone"
             ),
             ModelScopeCatalogEntry(
@@ -2879,7 +2879,7 @@ class MainActivity : Activity() {
                 parameterLabel = "3.8B",
                 architecture = "phi3",
                 downloads = 0L,
-                recommendationReason = "中端机可尝试，质量和体积比较均衡。",
+                recommendationReason = "Dispositivos intermediários podem tentar, equilíbrio entre qualidade e tamanho.",
                 tier = "phone"
             ),
             ModelScopeCatalogEntry(
@@ -2892,7 +2892,7 @@ class MainActivity : Activity() {
                 parameterLabel = "4B",
                 architecture = "qwen3",
                 downloads = 0L,
-                recommendationReason = "高内存手机的推荐甜点位，质量更接近可用助手。",
+                recommendationReason = "Ponto ideal para dispositivos com muita memória, qualidade mais próxima de um assistente útil.",
                 tier = "tablet"
             ),
             ModelScopeCatalogEntry(
@@ -2905,7 +2905,7 @@ class MainActivity : Activity() {
                 parameterLabel = "7B",
                 architecture = "qwen2",
                 downloads = 0L,
-                recommendationReason = "旗舰机可尝试的大模型，适合展示 reasoning。",
+                recommendationReason = "Modelo grande para dispositivos flagship, ideal para demonstrar reasoning.",
                 tier = "heavy"
             ),
             ModelScopeCatalogEntry(
@@ -2918,7 +2918,7 @@ class MainActivity : Activity() {
                 parameterLabel = "8B",
                 architecture = "qwen3",
                 downloads = 0L,
-                recommendationReason = "旗舰机体验大参数量，优先看内存余量。",
+                recommendationReason = "Experimente grande quantidade de parâmetros em flagship, priorize a memória disponível.",
                 tier = "heavy"
             )
         )
@@ -3111,12 +3111,12 @@ class MainActivity : Activity() {
                 parameterLabel = "270M",
                 architecture = "gemma3",
                 downloads = 0L,
-                recommendationReason = "Gemma3 超轻文本入口，适合先验证加载和对话链路。",
+                recommendationReason = "Entrada de texto ultraleve Gemma3, ideal para verificar primeiro carregamento e cadeia de diálogo.",
                 tier = "tiny"
             ),
             ModelScopeCatalogEntry(
                 repoId = "Qwen/Qwen2.5-0.5B-Instruct-GGUF",
-                displayTitle = "千问2.5-0.5B-Instruct-GGUF",
+                displayTitle = "Qwen2.5-0.5B-Instruct-GGUF",
                 fileName = "qwen2.5-0.5b-instruct-q4_k_m.gguf",
                 filePath = "qwen2.5-0.5b-instruct-q4_k_m.gguf",
                 sizeBytes = 491400032L,
@@ -3244,21 +3244,21 @@ class MainActivity : Activity() {
         val estimated = estimateMobileMemoryMb(entry)
         val available = profile.availableRamMb.coerceAtLeast(512L)
         return when {
-            estimated <= available * 0.70 -> "推荐"
-            estimated <= available * 0.90 -> "可尝试"
-            estimated <= available -> "偏吃紧"
-            else -> "不建议"
+            estimated <= available * 0.70 -> "Recomendado"
+            estimated <= available * 0.90 -> "Pode tentar"
+            estimated <= available -> "Apertado"
+            else -> "Não recomendado"
         }
     }
 
     private fun recommendationReasonFor(entry: ModelScopeCatalogEntry, profile: DeviceProbeSnapshot): String {
         val params = modelParameterValue(entry.parameterLabel)
         return when {
-            fitLabel(entry, profile) == "不建议" -> "当前可用 RAM 偏低，建议先选 0.6B/1.5B。"
-            params >= 7.0 -> "适合高内存旗舰机，下载前确认存储和散热。"
-            params >= 4.0 -> "适合中高端手机，质量优先时选择。"
-            params >= 1.5 -> "手机端质量和速度比较平衡。"
-            else -> "适合快速验证 API、下载和加载链路。"
+            fitLabel(entry, profile) == "Não recomendado" -> "RAM disponível atualmente baixa, recomenda-se 0.6B/1.5B primeiro."
+            params >= 7.0 -> "Adequado para flagship com muita memória, verifique armazenamento e resfriamento antes de baixar."
+            params >= 4.0 -> "Adequado para dispositivos intermediários a altos, escolha quando a qualidade for prioridade."
+            params >= 1.5 -> "Equilíbrio entre qualidade e velocidade em dispositivos móveis."
+            else -> "Ideal para verificar rapidamente API, download e cadeia de carregamento."
         }
     }
 
@@ -3278,7 +3278,7 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             addView(
                 surfaceCard(Palette.mint) {
-                    addView(label("测试模式", 13f, Palette.muted, Typeface.BOLD))
+                    addView(label("Modo de teste", 13f, Palette.muted, Typeface.BOLD))
                     addView(space(10))
                     addView(
                         LinearLayout(context).apply {
@@ -3296,9 +3296,9 @@ class MainActivity : Activity() {
                     )
                     addView(space(10))
                     val modeDetail = when (activeProfile) {
-                        BenchmarkProfile.QUICK -> "快速：先看大致性能，不参与榜单。"
-                        BenchmarkProfile.STANDARD -> "标准：统一规格重复 3 次，可生成榜单成绩。"
-                        BenchmarkProfile.STRESS -> "压力：持续运行，观察温度与性能衰减。"
+                        BenchmarkProfile.QUICK -> "Rápido: ver desempenho geral, não participa do ranking."
+                        BenchmarkProfile.STANDARD -> "Padrão: especificação unificada repetida 3 vezes, gera pontuação para ranking."
+                        BenchmarkProfile.STRESS -> "Estresse: execução contínua, observa temperatura e degradação de desempenho."
                     }
                     addView(label(modeDetail, 11.8f, Palette.muted, Typeface.NORMAL).apply { maxLines = 3 })
                 }
@@ -3306,36 +3306,36 @@ class MainActivity : Activity() {
             addView(space(12))
             addView(
                 surfaceCard(Palette.lavender, gradient = true) {
-                    addView(cardHeader("本机 AI 性能测试", "统一模型、统一提示词、评分算法固定", "play", Palette.lavender, "v2"))
+                    addView(cardHeader("Teste de desempenho de IA no dispositivo", "Modelo unificado, prompt unificado, algoritmo de pontuação fixo", "play", Palette.lavender, "v2"))
                     addView(space(12))
-                    addView(buildModelLifecycleBanner(requiredBenchmarkModelLifecycle(), "Qwen2.5 0.5B 标准模型"))
+                    addView(buildModelLifecycleBanner(requiredBenchmarkModelLifecycle(), "Modelo padrão Qwen2.5 0.5B"))
                     addView(space(14))
                     addView(buildBenchmarkStatePanel(state))
                     addView(space(14))
                     when {
                         state is BenchmarkUiState.NeedsModel -> addView(
-                            pillButton("下载标准模型 · 469 MB", Palette.mintDark, Palette.mint) { downloadRequiredBenchmarkModel() },
+                            pillButton("Baixar modelo padrão · 469 MB", Palette.mintDark, Palette.mint) { downloadRequiredBenchmarkModel() },
                             LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(54))
                         )
                         state.isRunning -> {
                             addView(
-                                softInfoBlock("测试正在运行，请保持应用在前台。", Palette.sky, maxLines = 2).apply {
+                                softInfoBlock("Teste em execução, mantenha o app em primeiro plano.", Palette.sky, maxLines = 2).apply {
                                     gravity = Gravity.CENTER
-                                    contentDescription = "跑分进行中，请保持应用在前台"
+                                    contentDescription = "Benchmark em andamento, mantenha o app em primeiro plano"
                                 },
                                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                             )
                             if (state !is BenchmarkUiState.Cancelling) {
                                 addView(space(8))
-                                addView(chipButton("取消本次跑分", false) { confirmCancelBenchmark() }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(48)))
+                                addView(chipButton("Cancelar este benchmark", false) { confirmCancelBenchmark() }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(48)))
                             }
                         }
                         state is BenchmarkUiState.Completed -> addView(
-                            pillButton("查看本次结果", Palette.mintDark, Palette.mint) { setTab(AppTab.RESULTS) },
+                            pillButton("Ver resultado desta vez", Palette.mintDark, Palette.mint) { setTab(AppTab.RESULTS) },
                             LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(54))
                         )
                         else -> {
-                            val actionText = if (state is BenchmarkUiState.Blocked || state is BenchmarkUiState.Failed) "重新检测" else "开始${benchmarkProfileName(selectedBenchmarkProfile)}"
+                            val actionText = if (state is BenchmarkUiState.Blocked || state is BenchmarkUiState.Failed) "Verificar novamente" else "Iniciar ${benchmarkProfileName(selectedBenchmarkProfile)}"
                             addView(
                                 pillButton(actionText, Palette.mintDark, Palette.mint) { runBenchmark(selectedBenchmarkProfile) },
                                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(54))
@@ -3350,9 +3350,9 @@ class MainActivity : Activity() {
     private fun benchmarkProfileOption(profile: BenchmarkProfile, selected: Boolean, disabled: Boolean): View {
         val accent = if (selected) Palette.mintDark else Palette.muted
         val caption = when (profile) {
-            BenchmarkProfile.QUICK -> "预览"
-            BenchmarkProfile.STANDARD -> "3 次 · 可入榜"
-            BenchmarkProfile.STRESS -> "持续测试"
+            BenchmarkProfile.QUICK -> "Pré-visualização"
+            BenchmarkProfile.STANDARD -> "3 vezes · Elegível para ranking"
+            BenchmarkProfile.STRESS -> "Teste contínuo"
         }
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -3371,12 +3371,12 @@ class MainActivity : Activity() {
             isFocusable = true
             isEnabled = !disabled
             alpha = if (disabled && !selected) 0.52f else 1f
-            contentDescription = "${benchmarkProfileName(profile)}，$caption${if (selected) "，已选择" else ""}"
+            contentDescription = "${benchmarkProfileName(profile)}，$caption${if (selected) ", selecionado" else ""}"
             setOnClickListener {
                 selectedBenchmarkProfile = profile
                 renderCurrentTab()
             }
-            addView(autoSizeSingleLineLabel(benchmarkProfileName(profile).removeSuffix("模式"), 13.5f, 11f, accent, Typeface.BOLD))
+            addView(autoSizeSingleLineLabel(benchmarkProfileName(profile).removeSuffix("Modo"), 13.5f, 11f, accent, Typeface.BOLD))
             addView(space(4))
             addView(label(caption, 10.5f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2; gravity = Gravity.CENTER })
         }
@@ -3414,9 +3414,9 @@ class MainActivity : Activity() {
                                 orientation = LinearLayout.VERTICAL
                                 addView(label(screen.phaseLabel, 13.5f, Palette.ink, Typeface.BOLD))
                                 addView(space(7))
-                                addView(label("预计剩余 ${screen.remainingLabel}", 12f, Palette.muted, Typeface.NORMAL))
+                                addView(label("Tempo restante estimado ${screen.remainingLabel}", 12f, Palette.muted, Typeface.NORMAL))
                                 addView(space(5))
-                                addView(label("请保持应用在前台", 11.5f, Palette.mintDark, Typeface.BOLD))
+                                addView(label("Mantenha o app em primeiro plano", 11.5f, Palette.mintDark, Typeface.BOLD))
                             },
                             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                         )
@@ -3426,9 +3426,9 @@ class MainActivity : Activity() {
                 addView(
                     LinearLayout(context).apply {
                         orientation = LinearLayout.HORIZONTAL
-                        addView(liveMetricTile("电量", benchmarkLiveSnapshot.batteryPercent?.let { "$it%" } ?: "--"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(4) })
-                        addView(liveMetricTile("温度", benchmarkLiveSnapshot.temperatureCelsius?.let { "${"%.1f".format(Locale.US, it)}°C" } ?: "--"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4); marginEnd = dp(4) })
-                        addView(liveMetricTile("实时速度", benchmarkLiveSnapshot.decodeTokensPerSecond?.let { "${"%.1f".format(Locale.US, it)} tok/s" } ?: "--"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4) })
+                        addView(liveMetricTile("Bateria", benchmarkLiveSnapshot.batteryPercent?.let { "$it%" } ?: "--"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(4) })
+                        addView(liveMetricTile("Temperatura", benchmarkLiveSnapshot.temperatureCelsius?.let { "${"%.1f".format(Locale.US, it)}°C" } ?: "--"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4); marginEnd = dp(4) })
+                        addView(liveMetricTile("Velocidade em tempo real", benchmarkLiveSnapshot.decodeTokensPerSecond?.let { "${"%.1f".format(Locale.US, it)} tok/s" } ?: "--"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4) })
                     }
                 )
             }
@@ -3453,7 +3453,7 @@ class MainActivity : Activity() {
             is BenchmarkUiState.Completed -> 4
             else -> -1
         }
-        val labels = listOf("检查", "模型", "预热", "计分", "结果")
+        val labels = listOf("Verificar", "Modelo", "Aquecimento", "Pontuação", "Resultados")
         return LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             labels.forEachIndexed { index, title ->
@@ -3477,7 +3477,7 @@ class MainActivity : Activity() {
                     LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
                 )
             }
-            contentDescription = if (activeStep >= 0) "当前阶段 ${activeStep + 1}，${labels[activeStep]}" else "等待开始，共五个阶段"
+            contentDescription = if (activeStep >= 0) "Estágio atual ${activeStep + 1}, ${labels[activeStep]}" else "Aguardando início, cinco estágios no total"
         }
     }
 
@@ -3509,15 +3509,15 @@ class MainActivity : Activity() {
 
     private fun buildBenchmarkRequirementsCard(): View {
         return surfaceCard(Palette.sky) {
-            addView(label("开始前检查", 14f, Palette.deepInk, Typeface.BOLD))
+            addView(label("Verificação prévia", 14f, Palette.deepInk, Typeface.BOLD))
             addView(space(10))
-            addView(readinessRow("电量", "至少 30%", true))
+            addView(readinessRow("Bateria", "Pelo menos 30%", true))
             addView(thinDivider())
-            addView(readinessRow("温控", "保持凉爽", true))
+            addView(readinessRow("Controle térmico", "Manter fresco", true))
             addView(thinDivider())
-            addView(readinessRow("运行", "应用保持前台", true))
+            addView(readinessRow("Executar", "App em primeiro plano", true))
             addView(space(8))
-            addView(label("标准模式具备榜单资格；快速模式用于预览，压力模式观察持续性能。", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
+            addView(label("Modo padrão elegível para ranking; modo rápido para pré-visualização; modo estresse observa desempenho sustentado.", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
         }
     }
 
@@ -3543,8 +3543,8 @@ class MainActivity : Activity() {
                 LinearLayout(context).apply {
                     gravity = Gravity.CENTER_VERTICAL
                     addView(IconBadgeView(context, "cloud", Palette.blue), LinearLayout.LayoutParams(dp(42), dp(42)).apply { marginEnd = dp(12) })
-                    addView(label("本机接口", 14f, tint(Palette.ink, 0.86f), Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-                    addView(chip(label("本地令牌", 12f, Palette.mintDark, Typeface.BOLD), Palette.mintPale, Palette.mint))
+                    addView(label("Interface local", 14f, tint(Palette.ink, 0.86f), Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(chip(label("Token local", 12f, Palette.mintDark, Typeface.BOLD), Palette.mintPale, Palette.mint))
                 }
             )
             addView(space(12))
@@ -3553,15 +3553,15 @@ class MainActivity : Activity() {
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(52))
             )
             addView(space(8))
-            routeStatusText = label("请求只在本机服务内处理。", 12f, Palette.muted, Typeface.NORMAL)
+            routeStatusText = label("Solicitações processadas apenas no serviço local.", 12f, Palette.muted, Typeface.NORMAL)
             addView(routeStatusText)
         }
     }
 
     private fun buildVisionHeroCard(): View {
-        val imageName = selectedVisionImageName ?: "尚未选择图片"
+        val imageName = selectedVisionImageName ?: "Nenhuma imagem selecionada"
         return surfaceCard(Palette.sky, gradient = true) {
-            addView(cardHeader("选择图片做 OCR", "独立视觉后端，不占用 GGUF 模型库", "image", Palette.sky, "Vision"))
+            addView(cardHeader("Selecionar imagem para OCR", "Backend visual independente, não ocupa a biblioteca de modelos GGUF", "image", Palette.sky, "Vision"))
             addView(space(12))
             visionImageText = label(imageName, 13f, Palette.ink, Typeface.BOLD).apply {
                 setPadding(dp(12), dp(10), dp(12), dp(10))
@@ -3574,11 +3574,11 @@ class MainActivity : Activity() {
                 LinearLayout(context).apply {
                     orientation = LinearLayout.HORIZONTAL
                     addView(
-                        pillButton("选择图片", Palette.sky, Palette.blue) { openVisionImagePicker() },
+                        pillButton("Selecionar imagem", Palette.sky, Palette.blue) { openVisionImagePicker() },
                         LinearLayout.LayoutParams(0, dp(48), 1f).apply { marginEnd = dp(8) }
                     )
                     addView(
-                        pillButton("开始 OCR", Palette.mintDark, Palette.mint) { runOcrProbe() },
+                        pillButton("Iniciar OCR", Palette.mintDark, Palette.mint) { runOcrProbe() },
                         LinearLayout.LayoutParams(0, dp(48), 1f)
                     )
                 }
@@ -3590,7 +3590,7 @@ class MainActivity : Activity() {
         val models = scanVisionModelFiles()
         val sidecars = scanVisionSidecarFiles()
         return surfaceCard(Palette.mint) {
-            addView(cardHeader("视觉模型库", "ONNX / TFLite / MNN / sidecar", "chip", Palette.mint, "${models.size + sidecars.size} 个", Palette.mintDark))
+            addView(cardHeader("Modelos Visuais", "ONNX / TFLite / MNN / sidecar", "chip", Palette.mint, "${models.size + sidecars.size} itens", Palette.mintDark))
             addView(space(8))
             visionModelSummaryText = label(visionModelSummary(models, sidecars), 12f, Palette.muted, Typeface.NORMAL).apply {
                 maxLines = 3
@@ -3601,18 +3601,18 @@ class MainActivity : Activity() {
                 LinearLayout(context).apply {
                     orientation = LinearLayout.HORIZONTAL
                     addView(
-                        pillButton("导入模型", Palette.mintDark, Palette.mint) { openVisionModelPicker() },
+                        pillButton("Importar modelo", Palette.mintDark, Palette.mint) { openVisionModelPicker() },
                         LinearLayout.LayoutParams(0, dp(46), 1f).apply { marginEnd = dp(8) }
                     )
                     addView(
-                        pillButton("检查模型", Palette.sky, Palette.blue) { runVisionModelsProbe() },
+                        pillButton("Verificar modelo", Palette.sky, Palette.blue) { runVisionModelsProbe() },
                         LinearLayout.LayoutParams(0, dp(46), 1f)
                     )
                 }
             )
             addView(space(8))
             addView(
-                chipButton("复制视觉模型目录", false) { copyVisionModelDir() },
+                chipButton("Copiar diretório de modelos visuais", false) { copyVisionModelDir() },
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(42))
             )
             addView(space(8))
@@ -3620,14 +3620,14 @@ class MainActivity : Activity() {
             addView(space(8))
             addView(visionTaskRow("CLIP", "clip / vit ONNX encoder", "clip", Palette.sky))
             addView(space(8))
-            addView(visionTaskRow("CIFAR10", "cifar10 TFLite 小 CNN", "cifar10", Palette.blue))
+            addView(visionTaskRow("CIFAR10", "CNN pequena TFLite cifar10", "cifar10", Palette.blue))
             addView(space(8))
-            addView(visionTaskRow("MNIST", "mnist TFLite 小 CNN", "mnist", Palette.lavender))
+            addView(visionTaskRow("MNIST", "mnist TFLite pequena CNN", "mnist", Palette.lavender))
             addView(space(8))
-            addView(visionTaskRow("扩散", "MNN-Diffusion / SD1.5 资源包", "diffusion", Palette.sky))
+            addView(visionTaskRow("Difusão", "Pacote de recursos MNN-Diffusion / SD1.5", "diffusion", Palette.sky))
             addView(space(10))
             addView(
-                softInfoBlock("可导入 .onnx / .ort / .tflite / .mnn，也可导入 CLIP 的 cifar10-text-embeddings.json。", Palette.sky, maxLines = 3)
+                softInfoBlock("Pode importar .onnx / .ort / .tflite / .mnn, também pode importar cifar10-text-embeddings.json do CLIP.", Palette.sky, maxLines = 3)
             )
         }
     }
@@ -3637,42 +3637,42 @@ class MainActivity : Activity() {
         return modelRow(
             title,
             hint,
-            if (installed) "已导入" else "缺失",
+            if (installed) "Importado" else "Ausente",
             if (installed) accent else Palette.muted
         )
     }
 
     private fun buildOcrModelCard(): View {
         return surfaceCard(Palette.mint) {
-            addView(cardHeader("可用方案", "OCR 模型保持独立，不混入 LLM 目录", "image", Palette.mint, "视觉", Palette.mintDark))
+            addView(cardHeader("Soluções disponíveis", "Modelo OCR independente, não misturado no diretório LLM", "image", Palette.mint, "Visual", Palette.mintDark))
             addView(space(8))
-            addView(modelRow("RapidOCR / PP-OCR", "ONNX Runtime Mobile，适合首个 Android OCR demo", "优先", Palette.mint))
+            addView(modelRow("RapidOCR / PP-OCR", "ONNX Runtime Mobile, ideal para primeiro demo OCR Android", "Prioridade", Palette.mint))
             addView(space(8))
-            addView(modelRow("PaddleOCR 小模型", "检测 + 识别两段式，中文场景更稳", "候选", Palette.sky))
+            addView(modelRow("Modelo pequeno PaddleOCR", "Dois estágios detecção + reconhecimento, mais estável para cenários em chinês", "Candidato", Palette.sky))
             addView(space(8))
-            addView(modelRow("TrOCR tiny", "Transformer OCR，后续做文档图片评测", "研究", Palette.lavender))
+            addView(modelRow("TrOCR tiny", "OCR Transformer, futura avaliação de imagens de documento", "Pesquisa", Palette.lavender))
         }
     }
 
     private fun buildVisionClassificationCard(): View {
         return surfaceCard(Palette.blue) {
-            addView(cardHeader("图像分类", "CLIP、CIFAR10、MNIST 分开验收", "gauge", Palette.blue, "实验"))
+            addView(cardHeader("CLIP / Classificação", "CLIP, CIFAR10, MNIST verificados separadamente", "gauge", Palette.blue, "Experimento"))
             addView(space(8))
-            addView(modelRow("CLIP zero-shot", "ONNX image/text encoder，适合 CIFAR10 演示", "CIFAR10", Palette.sky))
+            addView(modelRow("CLIP zero-shot", "Codificador imagem/texto ONNX, ideal para demonstração CIFAR10", "CIFAR10", Palette.sky))
             addView(space(8))
-            addView(modelRow("CIFAR10 小 CNN", "TFLite 直接分类，适合本机图像快测", "CIFAR10", Palette.blue))
+            addView(modelRow("CNN pequena CIFAR10", "Classificação direta TFLite, ideal para teste rápido de imagens locais", "CIFAR10", Palette.blue))
             addView(space(8))
-            addView(modelRow("MNIST 小 CNN", "TFLite 更适合手写数字，不强行走 CLIP", "MNIST", Palette.lavender))
+            addView(modelRow("CNN pequena MNIST", "TFLite mais adequado para dígitos manuscritos, não forçar CLIP", "MNIST", Palette.lavender))
             addView(space(10))
             addView(
                 LinearLayout(context).apply {
                     orientation = LinearLayout.HORIZONTAL
                     addView(
-                        pillButton("测 CIFAR10", Palette.sky, Palette.blue) { runVisionClassify("cifar10") },
+                        pillButton("Testar CIFAR10", Palette.sky, Palette.blue) { runVisionClassify("cifar10") },
                         LinearLayout.LayoutParams(0, dp(46), 1f).apply { marginEnd = dp(8) }
                     )
                     addView(
-                        pillButton("测 MNIST", Palette.mintDark, Palette.mint) { runVisionClassify("mnist") },
+                        pillButton("Testar MNIST", Palette.mintDark, Palette.mint) { runVisionClassify("mnist") },
                         LinearLayout.LayoutParams(0, dp(46), 1f)
                     )
                 }
@@ -3682,9 +3682,9 @@ class MainActivity : Activity() {
 
     private fun buildOcrResultCard(): View {
         return surfaceCard(Palette.lavender) {
-            addView(cardHeader("结果", "识别文本、耗时和后端状态", "play", Palette.lavender, "本机"))
+            addView(cardHeader("Resultados", "Texto reconhecido, tempo e status do backend", "play", Palette.lavender, "Local"))
             addView(space(10))
-            visionResultText = softInfoBlock("请选择图片。OCR 引擎接入后，这里会显示识别文本和耗时。", Palette.mint, maxLines = 5)
+            visionResultText = softInfoBlock("Selecione uma imagem. Após a integração do motor OCR, o texto reconhecido e o tempo serão exibidos aqui.", Palette.mint, maxLines = 5)
             addView(visionResultText, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         }
     }
@@ -3693,15 +3693,15 @@ class MainActivity : Activity() {
         return LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             addView(
-                actionTile("复制命令", "复制示例", "chip", Palette.mint) { copyCurlExample() },
+                actionTile("Copiar comando", "Copiar exemplo", "chip", Palette.mint) { copyCurlExample() },
                 LinearLayout.LayoutParams(0, dp(126), 1f).apply { marginEnd = dp(6) }
             )
             addView(
-                actionTile("模型列表", "本机模型", "cube", Palette.sky) { runModelsProbe() },
+                actionTile("Lista de modelos", "Modelo local", "cube", Palette.sky) { runModelsProbe() },
                 LinearLayout.LayoutParams(0, dp(126), 1f).apply { marginStart = dp(6); marginEnd = dp(6) }
             )
             addView(
-                actionTile("试聊", "本机回复", "play", Palette.lavender) { runTestChat() },
+                actionTile("Testar conversa", "Resposta local", "play", Palette.lavender) { runTestChat() },
                 LinearLayout.LayoutParams(0, dp(126), 1f).apply { marginStart = dp(6) }
             )
         }
@@ -3713,25 +3713,25 @@ class MainActivity : Activity() {
             background = rounded(Palette.surface, Palette.stroke, 18f)
             elevation = dp(2).toFloat()
             setPadding(dp(16), dp(16), dp(16), dp(14))
-            addView(label("接口能力", 14f, tint(Palette.ink, 0.86f), Typeface.BOLD))
+            addView(label("Capacidade da interface", 14f, tint(Palette.ink, 0.86f), Typeface.BOLD))
             addView(space(10))
-            addView(routeRow("GET", "/v1/models", "查看本地 GGUF 模型") { runModelsProbe() })
-            addView(routeRow("POST", "/v1/chat/completions", "发送一条本机回复") { runTestChat() })
-            addView(routeRow("GET", "/metrics", "速度、首字、内存") { runMetricsProbe() })
-            addView(routeRow("GET", "/v1/benchmark/latest", "最新 TuiMa v2 报告") {
+            addView(routeRow("GET", "/v1/models", "Ver modelos GGUF locais") { runModelsProbe() })
+            addView(routeRow("POST", "/v1/chat/completions", "Enviar uma resposta local") { runTestChat() })
+            addView(routeRow("GET", "/metrics", "Velocidade, primeiro token, memória") { runMetricsProbe() })
+            addView(routeRow("GET", "/v1/benchmark/latest", "Último relatório TuiMa v2") {
                 callLocalApi("/v1/benchmark/latest", "GET", null, onResult = { status, body, _ ->
-                    routeStatusText?.text = if (status in 200..299) body.take(500) else "暂无 v2 跑分报告"
+                    routeStatusText?.text = if (status in 200..299) body.take(500) else "Nenhum relatório v2 disponível"
                 })
             })
-            addView(routeRow("GET", "/v1/recommendations", "按设备能力推荐") {
+            addView(routeRow("GET", "/v1/recommendations", "Recomendado por capacidade do dispositivo") {
                 setTab(AppTab.HOME)
             })
-            addView(routeRow("GET", "/leaderboard/local", "读取本机跑分榜") { runLocalLeaderboardProbe() })
-            addView(routeRow("GET", "/leaderboard/shared", "共享榜配置状态") { runSharedLeaderboardProbe() })
-            addView(routeRow("POST", "/leaderboard/shared", "上传本机榜记录") { runSharedLeaderboardSync() })
-            addView(routeRow("GET", "/vision/status", "视觉能力状态") { runVisionStatusProbe() })
-            addView(routeRow("GET", "/vision/models", "已导入视觉模型") { runVisionModelsProbe() })
-            addView(routeRow("POST", "/vision/diffusion", "扩散生成 readiness") { runVisionDiffusionProbe() })
+            addView(routeRow("GET", "/leaderboard/local", "Ler ranking local") { runLocalLeaderboardProbe() })
+            addView(routeRow("GET", "/leaderboard/shared", "Status de configuração do ranking compartilhado") { runSharedLeaderboardProbe() })
+            addView(routeRow("POST", "/leaderboard/shared", "Enviar registro do ranking local") { runSharedLeaderboardSync() })
+            addView(routeRow("GET", "/vision/status", "Status da capacidade visual") { runVisionStatusProbe() })
+            addView(routeRow("GET", "/vision/models", "Modelos visuais importados") { runVisionModelsProbe() })
+            addView(routeRow("POST", "/vision/diffusion", "Prontidão de geração por difusão") { runVisionDiffusionProbe() })
         }
     }
 
@@ -3741,16 +3741,16 @@ class MainActivity : Activity() {
             background = rounded(Palette.surface, Palette.stroke, 18f)
             elevation = dp(2).toFloat()
             setPadding(dp(16), dp(16), dp(16), dp(14))
-            addView(modelRow("本机处理", "跑分与模型推理默认在手机内完成", "私密", Palette.mint))
+            addView(modelRow("Processamento local", "Benchmark e inferência de modelo concluídos no celular por padrão", "Privado", Palette.mint))
             addView(thinDivider())
-            addView(modelRow("模型目录", "应用私有模型库，支持 GGUF 导入和下载", "文件", Palette.sky))
+            addView(modelRow("Diretório de modelos", "Biblioteca de modelos privada do app, suporta importação e download de GGUF", "Arquivo", Palette.sky))
             addView(thinDivider())
-            addView(modelRow("跑分记录", "最多保存 50 份 v2 报告", "本机", Palette.lavender))
+            addView(modelRow("Registro de benchmark", "Máximo de 50 relatórios v2 salvos", "Local", Palette.lavender))
             addView(thinDivider())
             addView(
                 miniListCard(
-                    title = "外观",
-                    subtitle = "跟随系统、浅色或深色显示",
+                    title = "Aparência",
+                    subtitle = "Seguir sistema, tema claro ou escuro",
                     badge = selectedThemeMode.displayName,
                     icon = "image",
                     accent = Palette.blue,
@@ -3763,12 +3763,12 @@ class MainActivity : Activity() {
     private fun buildLabAccessCard(): View {
         return surfaceCard(Palette.sky) {
             val links = listOf(
-                LabLink("本地多模态", "Omni 授权、预检与双 artifact 管理", "实验", "chip", Palette.lavender, AppTab.OMNI),
-                LabLink("本地相册搜索", "CLIP 本地召回 · G2D 复核待接入", "产品", "image", Palette.mint, AppTab.GALLERY),
-                LabLink("G2D 端侧验证", "Oxford-Pets 五种策略实测", "论文", "chip", Palette.lavender, AppTab.G2D_LAB),
-                LabLink("视觉模型管理", "YOLO、CLIP 与小型 VLM", "模型", "cube", Palette.sky, AppTab.VISION_MODELS),
-                LabLink("视觉识别", "OCR 与轻量视觉探针", "实验", "image", Palette.lavender, AppTab.VISION),
-                LabLink("开发者接口", "本机 API、服务与诊断路由", "高级", "cloud", Palette.sky, AppTab.API)
+                LabLink("Multimodal local", "Autorização Omni, pré-verificação e gerenciamento de dois artefatos", "Experimento", "chip", Palette.lavender, AppTab.OMNI),
+                LabLink("Busca na galeria local", "Recall local CLIP · Revisão G2D pendente", "Produto", "image", Palette.mint, AppTab.GALLERY),
+                LabLink("Validação G2D no dispositivo", "Teste real de cinco estratégias Oxford-Pets", "Artigo", "chip", Palette.lavender, AppTab.G2D_LAB),
+                LabLink("Gerenciamento de modelos visuais", "YOLO, CLIP e VLM pequeno", "Modelo", "cube", Palette.sky, AppTab.VISION_MODELS),
+                LabLink("Reconhecimento visual", "OCR e sondas visuais leves", "Experimento", "image", Palette.lavender, AppTab.VISION),
+                LabLink("Interface de desenvolvedor", "API local, serviços e rotas de diagnóstico", "Avançado", "cloud", Palette.sky, AppTab.API)
             )
             links.forEachIndexed { index, link ->
                 addView(miniListCard(link.title, link.subtitle, link.badge, link.icon, link.accent) { setTab(link.tab) })
@@ -3792,9 +3792,9 @@ class MainActivity : Activity() {
         val snapshot = report?.let(ResultsScreenPresenter::parse)
         if (report == null || snapshot == null) {
             return surfaceCard(Palette.lavender, gradient = true) {
-                addView(cardHeader("还没有有效成绩", "完成一次跑分后，这里会展示双层分数与五维详情", "gauge", Palette.lavender))
+                addView(cardHeader("Nenhum resultado válido ainda", "Após um benchmark, mostrará pontuações duplas e detalhes 5 dimensões", "gauge", Palette.lavender))
                 addView(space(16))
-                addView(pillButton("开始标准测试", Palette.mintDark, Palette.mint) {
+                addView(pillButton("Iniciar teste padrão", Palette.mintDark, Palette.mint) {
                     selectedBenchmarkProfile = BenchmarkProfile.STANDARD
                     setTab(AppTab.TEST)
                 }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(52)))
@@ -3810,14 +3810,14 @@ class MainActivity : Activity() {
                 LinearLayout(context).apply {
                     orientation = LinearLayout.VERTICAL
                     gravity = Gravity.CENTER_HORIZONTAL
-                    addView(label("本次测试结果", 11f, Palette.muted, Typeface.BOLD).apply { letterSpacing = 0.04f })
+                    addView(label("Resultado deste teste", 11f, Palette.muted, Typeface.BOLD).apply { letterSpacing = 0.04f })
                     addView(space(9))
                     addView(autoSizeSingleLineLabel(formatHeadlineScore(snapshot.headlineScore), 48f, 28f, Palette.blue, Typeface.BOLD).apply {
                         gravity = Gravity.CENTER
                     }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
                     addView(label("TuiMa", 16f, Palette.deepInk, Typeface.BOLD).apply { gravity = Gravity.CENTER })
                     addView(space(7))
-                    addView(label("标准分 ${snapshot.canonicalScore} / 1000", 14f, Palette.mintDark, Typeface.BOLD).apply { gravity = Gravity.CENTER })
+                    addView(label("Pontuação padrão ${snapshot.canonicalScore} / 1000", 14f, Palette.mintDark, Typeface.BOLD).apply { gravity = Gravity.CENTER })
                     addView(space(10))
                     addView(
                         chip(
@@ -3843,7 +3843,7 @@ class MainActivity : Activity() {
             addView(space(18))
             addView(buildResultInsightCard(insight))
             addView(space(18))
-            addView(label("五维表现", 14f, Palette.ink, Typeface.BOLD))
+            addView(label("Desempenho 5 dimensões", 14f, Palette.ink, Typeface.BOLD))
             addView(space(12))
             snapshot.dimensions.forEachIndexed { index, dimension ->
                 val accent = listOf(Palette.mint, Palette.sky, Palette.lavender, Palette.blue, Palette.mintDark)[index]
@@ -3854,22 +3854,22 @@ class MainActivity : Activity() {
             addView(
                 LinearLayout(context).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    addView(resultMetricTile("生成速度", "${"%.2f".format(Locale.US, snapshot.decodeTokensPerSecond)} tok/s"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(4) })
-                    addView(resultMetricTile("首字响应", "${snapshot.firstTokenMs} ms"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4); marginEnd = dp(4) })
-                    addView(resultMetricTile("峰值内存", "${snapshot.memoryPeakMb} MB"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4) })
+                    addView(resultMetricTile("Velocidade de geração", "${"%.2f".format(Locale.US, snapshot.decodeTokensPerSecond)} tok/s"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(4) })
+                    addView(resultMetricTile("Resposta do primeiro token", "${snapshot.firstTokenMs} ms"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4); marginEnd = dp(4) })
+                    addView(resultMetricTile("Memória pico", "${snapshot.memoryPeakMb} MB"), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4) })
                 }
             )
             addView(space(10))
             val temperatureText = snapshot.temperaturePeakCelsius?.let { "${"%.1f".format(Locale.US, it)}°C" } ?: "--"
-            addView(label("电量变化 ${snapshot.batteryDeltaPercent}% · 最高温度 $temperatureText · ${formatReportDate(snapshot.createdAtMs)}", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
+            addView(label("Variação da bateria ${snapshot.batteryDeltaPercent}% · Temperatura máxima $temperatureText · ${formatReportDate(snapshot.createdAtMs)}", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
             addView(space(16))
             addView(buildResultComparisonCard(comparison, customBaseline = selectedBaseline != null))
             addView(space(16))
             addView(
                 LinearLayout(context).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    addView(chipButton("分享成绩", false) { shareBenchmarkResult(report) }, LinearLayout.LayoutParams(0, dp(48), 1f).apply { marginEnd = dp(5) })
-                    addView(pillButton("再测一次", Palette.mintDark, Palette.mint) { setTab(AppTab.TEST) }, LinearLayout.LayoutParams(0, dp(48), 1f).apply { marginStart = dp(5) })
+                    addView(chipButton("Compartilhar resultado", false) { shareBenchmarkResult(report) }, LinearLayout.LayoutParams(0, dp(48), 1f).apply { marginEnd = dp(5) })
+                    addView(pillButton("Testar novamente", Palette.mintDark, Palette.mint) { setTab(AppTab.TEST) }, LinearLayout.LayoutParams(0, dp(48), 1f).apply { marginStart = dp(5) })
                 }
             )
         }
@@ -3879,13 +3879,13 @@ class MainActivity : Activity() {
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(0, 0, 0, 0)
-            addView(label("能力解读", 14f, Palette.deepInk, Typeface.BOLD))
+            addView(label("Interpretação de capacidade", 14f, Palette.deepInk, Typeface.BOLD))
             addView(space(7))
             addView(label(insight.summary, 13.5f, Palette.ink, Typeface.NORMAL).apply { maxLines = 2 })
             addView(space(10))
-            addView(readinessRow("强项", insight.strongest.joinToString("、"), true))
+            addView(readinessRow("Ponto forte", insight.strongest.joinToString("、"), true))
             addView(thinDivider())
-            addView(readinessRow("主要瓶颈", insight.bottleneck, false))
+            addView(readinessRow("Gargalo principal", insight.bottleneck, false))
             addView(space(10))
             addView(label(insight.recommendation, 12.5f, Palette.muted, Typeface.NORMAL).apply {
                 maxLines = 3
@@ -3900,14 +3900,14 @@ class MainActivity : Activity() {
                 orientation = LinearLayout.VERTICAL
                 background = rounded(tint(Palette.lavender, 0.06f), tint(Palette.lavender, 0.18f), 13f)
                 setPadding(dp(13), dp(12), dp(13), dp(12))
-                addView(label("与上次相比", 13.5f, Palette.ink, Typeface.BOLD))
+                addView(label("Em comparação com anterior", 13.5f, Palette.ink, Typeface.BOLD))
                 addView(space(4))
-                addView(label("暂无相同设备、模型、规格与模式的上一次成绩。", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
+                addView(label("Nenhum resultado anterior com mesmo dispositivo, modelo, especificação e modo.", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
             }
         }
-        val comparisonTitle = if (customBaseline) "与所选成绩相比" else "与上次相比"
+        val comparisonTitle = if (customBaseline) "Em comparação com o resultado selecionado" else "Em comparação com anterior"
         val headline = comparison.canonicalPercentDelta?.let { "$comparisonTitle ${formatSignedPercent(it)}" }
-            ?: "$comparisonTitle ${formatSignedInt(comparison.canonicalDelta)} 分"
+            ?: "$comparisonTitle ${formatSignedInt(comparison.canonicalDelta)} pontos"
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             background = rounded(tint(Palette.lavender, 0.07f), tint(Palette.lavender, 0.20f), 13f)
@@ -3915,7 +3915,7 @@ class MainActivity : Activity() {
             addView(label(headline, 14f, Palette.deepInk, Typeface.BOLD))
             addView(space(9))
             addView(comparisonRow(
-                "标准分",
+                "Pontuação padrão",
                 comparison.current.canonicalScore.toString(),
                 comparison.previous.canonicalScore.toString(),
                 formatSignedInt(comparison.canonicalDelta),
@@ -3923,7 +3923,7 @@ class MainActivity : Activity() {
             ))
             addView(space(6))
             addView(comparisonRow(
-                "生成速度",
+                "Velocidade de geração",
                 "${"%.2f".format(Locale.US, comparison.current.decodeTokensPerSecond)}",
                 "${"%.2f".format(Locale.US, comparison.previous.decodeTokensPerSecond)}",
                 comparison.speedPercentDelta?.let(::formatSignedPercent) ?: "--",
@@ -3931,7 +3931,7 @@ class MainActivity : Activity() {
             ))
             addView(space(6))
             addView(comparisonRow(
-                "首字响应",
+                "Resposta do primeiro token",
                 "${comparison.current.firstTokenMs} ms",
                 "${comparison.previous.firstTokenMs} ms",
                 comparison.firstTokenPercentDelta?.let(::formatSignedPercent) ?: "--",
@@ -3939,7 +3939,7 @@ class MainActivity : Activity() {
             ))
             addView(space(6))
             addView(comparisonRow(
-                "峰值内存",
+                "Memória pico",
                 "${comparison.current.memoryPeakMb} MB",
                 "${comparison.previous.memoryPeakMb} MB",
                 "${if (comparison.memoryDeltaMb >= 0) "+" else ""}${comparison.memoryDeltaMb} MB",
@@ -3947,24 +3947,24 @@ class MainActivity : Activity() {
             ))
             addView(space(6))
             addView(comparisonRow(
-                "最高温度",
+                "Temperatura máxima",
                 comparison.current.temperaturePeakCelsius?.let { "${"%.1f".format(Locale.US, it)}°C" } ?: "--",
                 comparison.previous.temperaturePeakCelsius?.let { "${"%.1f".format(Locale.US, it)}°C" } ?: "--",
                 comparison.temperatureDeltaCelsius?.let { "${if (it >= 0) "+" else ""}${"%.1f".format(Locale.US, it)}°C" } ?: "--",
                 comparison.temperatureDeltaCelsius?.let { comparisonDeltaColor(it, lowerIsBetter = true) } ?: Palette.muted
             ))
             addView(space(7))
-            addView(label("速度单位 tok/s；仅比较相同设备、模型、后端、规格与测试模式。", 10.8f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
+            addView(label("Unidade de velocidade tok/s; compara apenas mesmo dispositivo, modelo, backend, especificação e modo de teste.", 10.8f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
         }
     }
 
     private fun comparisonHeaderRow(): View {
         return LinearLayout(this).apply {
             gravity = Gravity.CENTER_VERTICAL
-            addView(label("指标", 10.5f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.15f))
-            addView(label("本次", 10.5f, Palette.muted, Typeface.BOLD).apply { gravity = Gravity.END }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(label("上次", 10.5f, Palette.muted, Typeface.BOLD).apply { gravity = Gravity.END }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(label("变化", 10.5f, Palette.muted, Typeface.BOLD).apply { gravity = Gravity.END }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(label("Métrica", 10.5f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1.15f))
+            addView(label("Atual", 10.5f, Palette.muted, Typeface.BOLD).apply { gravity = Gravity.END }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(label("Anterior", 10.5f, Palette.muted, Typeface.BOLD).apply { gravity = Gravity.END }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(label("Variação", 10.5f, Palette.muted, Typeface.BOLD).apply { gravity = Gravity.END }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         }
     }
 
@@ -3977,9 +3977,9 @@ class MainActivity : Activity() {
             addView(space(7))
             addView(
                 LinearLayout(context).apply {
-                    addView(comparisonValueCell("本次", current, Palette.ink), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(4) })
-                    addView(comparisonValueCell("上次", previous, Palette.muted), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4); marginEnd = dp(4) })
-                    addView(comparisonValueCell("变化", delta, deltaColor), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4) })
+                    addView(comparisonValueCell("Atual", current, Palette.ink), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginEnd = dp(4) })
+                    addView(comparisonValueCell("Anterior", previous, Palette.muted), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4); marginEnd = dp(4) })
+                    addView(comparisonValueCell("Variação", delta, deltaColor), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(4) })
                 }
             )
         }
@@ -4020,7 +4020,7 @@ class MainActivity : Activity() {
                     progress = value.coerceIn(0, maximum)
                     progressTintList = ColorStateList.valueOf(accent)
                     progressBackgroundTintList = ColorStateList.valueOf(tint(Palette.muted, 0.16f))
-                    contentDescription = "$title $value 分，满分 $maximum 分"
+                    contentDescription = "$title $value pontos, máximo $maximum pontos"
                 },
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(8))
             )
@@ -4045,7 +4045,7 @@ class MainActivity : Activity() {
         val data = BenchmarkReportStore(applicationContext).toJson(limit = 10).optJSONArray("data") ?: JSONArray()
         return surfaceCard(Palette.sky) {
             if (data.length() == 0) {
-                addView(label("暂无历史记录。完成跑分后，最近 10 次结果会保存在本机。", 13f, Palette.muted, Typeface.NORMAL).apply {
+                addView(label("Nenhum histórico. Após o benchmark, os 10 últimos resultados serão salvos no dispositivo.", 13f, Palette.muted, Typeface.NORMAL).apply {
                     setPadding(dp(8), dp(10), dp(8), dp(10))
                     maxLines = 3
                 })
@@ -4066,21 +4066,21 @@ class MainActivity : Activity() {
         val current = selectedScoredBenchmarkReport(allReports)?.let(ResultsScreenPresenter::parse)
         val baseline = current?.let { ResultsScreenPresenter.comparableByRunId(it, allReports, comparisonBaselineRunId) }
         val status = when {
-            current == null -> "先完成一次有效跑分"
-            selectingComparisonBaseline -> "请在下方点选另一条同规格成绩"
-            baseline != null -> "已选 ${formatReportDate(baseline.createdAtMs)} · 标准分 ${baseline.canonicalScore}"
-            else -> "默认自动对比上一次同规格成绩"
+            current == null -> "Complete um benchmark válido primeiro"
+            selectingComparisonBaseline -> "Selecione outro resultado abaixo"
+            baseline != null -> "Selecionado ${formatReportDate(baseline.createdAtMs)} · Pontuação padrão ${baseline.canonicalScore}"
+            else -> "Comparar automaticamente com o resultado anterior da mesma especificação"
         }
         val action = when {
-            selectingComparisonBaseline -> "取消选择"
-            baseline != null -> "更换基准"
-            else -> "选择对比基准"
+            selectingComparisonBaseline -> "Cancelar seleção"
+            baseline != null -> "Trocar referência"
+            else -> "Selecionar referência de comparação"
         }
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             background = rounded(tint(Palette.blue, 0.07f), tint(Palette.blue, 0.20f), 13f)
             setPadding(dp(13), dp(12), dp(13), dp(12))
-            addView(label("两次成绩对比", 13.5f, Palette.ink, Typeface.BOLD))
+            addView(label("Comparação de dois resultados", 13.5f, Palette.ink, Typeface.BOLD))
             addView(space(4))
             addView(label(status, 11.8f, if (selectingComparisonBaseline) Palette.mintDark else Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
             addView(space(9))
@@ -4120,12 +4120,12 @@ class MainActivity : Activity() {
         val spec = report.optJSONObject("spec") ?: JSONObject()
         val summary = report.optJSONObject("summary") ?: JSONObject()
         val valid = report.optBoolean("valid", false) && score != null
-        val title = if (valid) "${formatHeadlineScore(score?.optInt("headline") ?: 0)} TuiMa" else "未生成成绩"
+        val title = if (valid) "${formatHeadlineScore(score?.optInt("headline") ?: 0)} TuiMa" else "Nenhuma pontuação gerada"
         val detail = if (valid) {
             val backend = ResultsScreenPresenter.parse(report)?.backendLabel ?: "CPU"
             "标准分 ${score?.optInt("canonical")} / 1000 · ${profileDisplayName(spec.optString("profile"))} · $backend"
         } else {
-            "${report.optString("failure_kind", "测试未完成")} · 已完成 ${summary.optInt("completed_runs")}/${summary.optInt("measured_runs")}"
+            "${report.optString("failure_kind", "Teste não concluído")} · 已完成 ${summary.optInt("completed_runs")}/${summary.optInt("measured_runs")}"
         }
         val accent = if (valid) Palette.mint else Palette.lavender
         val selected = report.optString("run_id") == selectedResultRunId
@@ -4172,15 +4172,15 @@ class MainActivity : Activity() {
                     addView(label(formatReportDate(report.optLong("created_at_ms")), 10.5f, Palette.muted, Typeface.NORMAL))
                     if (comparisonBaseline) {
                         addView(space(4))
-                        addView(label("对比基准", 10f, Palette.mintDark, Typeface.BOLD))
+                        addView(label("Referência de comparação", 10f, Palette.mintDark, Typeface.BOLD))
                     }
                 }
             )
             contentDescription = "$title，$detail，${formatReportDate(report.optLong("created_at_ms"))}${when {
-                comparisonBaseline -> "，当前对比基准"
-                selected -> "，当前查看"
-                selectingComparisonBaseline && valid -> "，点击设为对比基准"
-                valid -> "，点击查看详情"
+                comparisonBaseline -> ", referência de comparação atual"
+                selected -> ", visualizando"
+                selectingComparisonBaseline && valid -> ", clique para definir como referência"
+                valid -> ", clique para ver detalhes"
                 else -> ""
             }}"
         }
@@ -4191,9 +4191,9 @@ class MainActivity : Activity() {
         val current = selectedScoredBenchmarkReport(allReports)?.let(ResultsScreenPresenter::parse)
         val candidate = ResultsScreenPresenter.parse(report)
         when {
-            current == null || candidate == null -> Toast.makeText(this, "缺少可比较的有效成绩", Toast.LENGTH_SHORT).show()
-            candidate.runId == current.runId -> Toast.makeText(this, "请选择另一条成绩", Toast.LENGTH_SHORT).show()
-            candidate.comparisonKey != current.comparisonKey -> Toast.makeText(this, "只能比较相同设备、模型、后端、规格和模式", Toast.LENGTH_LONG).show()
+            current == null || candidate == null -> Toast.makeText(this, "Nenhum resultado válido comparável", Toast.LENGTH_SHORT).show()
+            candidate.runId == current.runId -> Toast.makeText(this, "Selecione outro resultado", Toast.LENGTH_SHORT).show()
+            candidate.comparisonKey != current.comparisonKey -> Toast.makeText(this, "Só é possível comparar mesmo dispositivo, modelo, backend, especificação e modo", Toast.LENGTH_LONG).show()
             else -> {
                 comparisonBaselineRunId = candidate.runId
                 selectingComparisonBaseline = false
@@ -4203,16 +4203,16 @@ class MainActivity : Activity() {
     }
 
     private fun formatReportDate(createdAtMs: Long): String {
-        if (createdAtMs <= 0L) return "时间未知"
+        if (createdAtMs <= 0L) return "Tempo desconhecido"
         return SimpleDateFormat("MM-dd HH:mm", Locale.CHINA).format(Date(createdAtMs))
     }
 
     private fun formatHeadlineScore(value: Int): String = NumberFormat.getIntegerInstance(Locale.US).format(value)
 
     private fun profileDisplayName(apiName: String): String = when (apiName) {
-        BenchmarkProfile.STANDARD.apiName -> "标准"
-        BenchmarkProfile.STRESS.apiName -> "压力"
-        else -> "快速"
+        BenchmarkProfile.STANDARD.apiName -> "Padrão"
+        BenchmarkProfile.STRESS.apiName -> "Estresse"
+        else -> "Rápido"
     }
 
     private fun shareBenchmarkResult(report: JSONObject) {
@@ -4221,21 +4221,21 @@ class MainActivity : Activity() {
         runCatching {
             val file = BenchmarkShareCardRenderer.render(applicationContext, snapshot, insight)
             val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
-            val shareText = "我的手机跑出了 ${formatHeadlineScore(snapshot.headlineScore)} TuiMa，标准分 ${snapshot.canonicalScore} / 1000。"
+            val shareText = "Meu celular alcançou ${formatHeadlineScore(snapshot.headlineScore)} TuiMa, pontuação padrão ${snapshot.canonicalScore} / 1000."
             startActivity(
                 Intent.createChooser(
                     Intent(Intent.ACTION_SEND).apply {
                         type = "image/png"
                         putExtra(Intent.EXTRA_STREAM, uri)
                         putExtra(Intent.EXTRA_TEXT, shareText)
-                        clipData = ClipData.newUri(contentResolver, "TuiMa 成绩卡", uri)
+                        clipData = ClipData.newUri(contentResolver, "Cartão de resultado TuiMa", uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     },
-                    "分享 TuiMa 成绩卡"
+                    "Compartilhar cartão de resultado TuiMa"
                 )
             )
         }.onFailure {
-            Toast.makeText(this, "成绩卡生成失败，请稍后重试", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Falha ao gerar cartão de resultado, tente novamente mais tarde", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -4243,9 +4243,9 @@ class MainActivity : Activity() {
         providerStateByProvider.putIfAbsent(downloadTaskKey(modelHubItems[0]), ModelDownloadState(modelHubItems[0]))
         providerStateByProvider.putIfAbsent(downloadTaskKey(modelHubItems[1]), ModelDownloadState(modelHubItems[1]))
         return surfaceCard(Palette.mint) {
-            addView(cardHeader("模型站", "ModelScope / HuggingFace 下载队列", "download", Palette.mint, "GGUF"))
+            addView(cardHeader("Estação de modelos", "Fila de download ModelScope / HuggingFace", "download", Palette.mint, "GGUF"))
             addView(space(10))
-            val modelScopeTile = actionTile("ModelScope", "国内镜像（推荐）", "download", Palette.mintDark) {
+            val modelScopeTile = actionTile("ModelScope", "Espelho nacional (recomendado)", "download", Palette.mintDark) {
                 enqueueModelDownload(modelHubItems.first { it.provider == "ModelScope" })
             }
             val huggingFaceTile = actionTile("HuggingFace", "Qwen 0.5B", "download", Palette.blue) {
@@ -4259,14 +4259,14 @@ class MainActivity : Activity() {
             addView(space(10))
             addView(buildModelHubStatusRows())
             addView(space(10))
-            addView(label("下载到应用模型库，完成后可直接加载。", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
+            addView(label("Baixar para biblioteca de modelos do app, disponível para carregar após conclusão.", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
         }
     }
 
     private fun buildModelHubStatusRows(): View {
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            addView(label("下载状态", 13f, Palette.ink, Typeface.BOLD).apply { maxLines = 1 })
+            addView(label("Status do download", 13f, Palette.ink, Typeface.BOLD).apply { maxLines = 1 })
             addView(space(6))
             addView(buildModelHubStatusRow(modelHubItems.first { it.provider == "ModelScope" }))
             addView(space(6))
@@ -4277,10 +4277,10 @@ class MainActivity : Activity() {
     private fun buildModelHubStatusRow(item: ModelHubItem): View {
         val taskKey = downloadTaskKey(item)
         val titleText = label("${item.provider} · ${item.shortName}", 13f, Palette.ink, Typeface.BOLD)
-        val statusText = label("未下载", 12f, Palette.muted, Typeface.BOLD)
-        val messageText = label("模型文件尚未保存在本机", 12f, Palette.muted, Typeface.NORMAL)
-        val progressText = label("进度：0B / 未知 (0%)", 11f, Palette.muted, Typeface.NORMAL)
-        val cancelButton = (pillButton("暂停", Palette.sky, Palette.blue) {
+        val statusText = label("Não baixado", 12f, Palette.muted, Typeface.BOLD)
+        val messageText = label("Arquivo do modelo ainda não salvo no dispositivo", 12f, Palette.muted, Typeface.NORMAL)
+        val progressText = label("Progresso: 0B / Desconhecido (0%)", 11f, Palette.muted, Typeface.NORMAL)
+        val cancelButton = (pillButton("Pausar", Palette.sky, Palette.blue) {
             handleDownloadControl(taskKey)
         } as TextView).apply {
             visibility = View.GONE
@@ -4316,7 +4316,7 @@ class MainActivity : Activity() {
         recommendationContainer = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
         }
-        renderRecommendationPlaceholder("启动 API 后加载推荐；也可以先从模型站下载 GGUF。")
+        renderRecommendationPlaceholder("Inicie a API para carregar recomendações; ou baixe GGUF da estação de modelos primeiro.")
 
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -4326,7 +4326,7 @@ class MainActivity : Activity() {
             addView(
                 LinearLayout(context).apply {
                     gravity = Gravity.CENTER_VERTICAL
-                    addView(label("推荐模型", 14f, tint(Palette.ink, 0.86f), Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(label("Modelo recomendado", 14f, tint(Palette.ink, 0.86f), Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
                     addView(label("MobileCore", 13f, Palette.muted, Typeface.BOLD))
                 }
             )
@@ -4340,9 +4340,9 @@ class MainActivity : Activity() {
     private fun buildPreferenceControl(): View {
         val captions = LinearLayout(this).apply {
             gravity = Gravity.CENTER_VERTICAL
-            addView(label("速度优先", 11f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(label("稳定优先", 11f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(label("小模型优先", 11f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(label("Prioridade de velocidade", 11f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(label("Prioridade de estabilidade", 11f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(label("Prioridade de modelo pequeno", 11f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         }
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -4351,7 +4351,7 @@ class MainActivity : Activity() {
             addView(
                 LinearLayout(context).apply {
                     gravity = Gravity.CENTER_VERTICAL
-                    addView(label("偏好", 12f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+                    addView(label("Preferência", 12f, Palette.muted, Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
                     preferenceLabelText = label(recommendationPreference.label, 13f, Palette.mintDark, Typeface.BOLD)
                     addView(preferenceLabelText)
                 }
@@ -4369,7 +4369,7 @@ class MainActivity : Activity() {
                             updatePreferenceLabel()
                             if (fromUser) {
                                 saveRecommendationPreference(recommendationPreference)
-                                renderRecommendationPlaceholder("按${recommendationPreference.label}刷新推荐中...")
+                                renderRecommendationPlaceholder("Atualizando recomendações por ${recommendationPreference.label}...")
                                 refreshRecommendationSnapshot()
                             }
                         }
@@ -4496,13 +4496,13 @@ class MainActivity : Activity() {
     private fun buildRecentModelsCard(): View {
         val model = findPreferredGguf()
         return surfaceCard(Palette.lavender) {
-            addView(cardHeader("最近模型", "导入后可直接加载测试", "cube", Palette.lavender, "GGUF"))
+            addView(cardHeader("Modelos recentes", "Importar para carregar e testar diretamente", "cube", Palette.lavender, "GGUF"))
             addView(space(12))
             if (model != null) {
                 val lifecycle = modelLifecycle(model, model.name, null)
                 addView(modelRow(model.nameWithoutExtension, "${formatBytes(model.length())} · ${lifecycle.supportingText}", lifecycle.statusLabel, modelLifecycleAccent(lifecycle.tone)))
             } else {
-                addView(modelRow("暂无本地模型", "从模型页下载，或从文件导入 GGUF", "未下载", Palette.muted))
+                addView(modelRow("Nenhum modelo local disponível", "Baixe da página de modelos ou importe GGUF de arquivo", "Não baixado", Palette.muted))
             }
             addView(space(8))
             if (model?.name != requiredBenchmarkModelName()) {
@@ -4517,12 +4517,12 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             background = rounded(Palette.surface, Palette.stroke, 18f)
             setPadding(dp(16), dp(14), dp(16), dp(14))
-            addView(label("本机地址", 12f, Palette.muted, Typeface.BOLD))
+            addView(label("Endereço local", 12f, Palette.muted, Typeface.BOLD))
             addView(space(6))
             statusText = label("http://$serviceHost:$servicePort/v1", 14f, Palette.ink, Typeface.BOLD)
             addView(statusText)
             addView(space(4))
-            addView(label("兼容 OpenAI 格式，请求保留在本机。", 12f, Palette.muted, Typeface.NORMAL))
+            addView(label("Formato compatível com OpenAI, solicitações mantidas localmente.", 12f, Palette.muted, Typeface.NORMAL))
         }
     }
 
@@ -4550,7 +4550,7 @@ class MainActivity : Activity() {
                 Thread.sleep(300)
             }
             runOnUiThread {
-                renderRecommendationPlaceholder("推荐暂不可用，请先启动本机服务。")
+                renderRecommendationPlaceholder("Recomendação temporariamente indisponível, inicie o serviço local primeiro.")
             }
         }.start()
     }
@@ -4563,7 +4563,7 @@ class MainActivity : Activity() {
 
             recommendationContainer.removeAllViews()
             if (recommendations.length() == 0) {
-                renderRecommendationPlaceholder("已连接服务，但未检测到 GGUF。可先导入模型。")
+                renderRecommendationPlaceholder("Serviço conectado, mas nenhum GGUF detectado. Importe um modelo primeiro.")
                 return@runOnUiThread
             }
 
@@ -4576,7 +4576,7 @@ class MainActivity : Activity() {
                 val loaded = recommendation.optBoolean("loaded", false)
                 val reasonArray = recommendation.optJSONArray("reasons")
                 val reason = if (reasonArray == null || reasonArray.length() == 0) {
-                    "适合当前设备配置。"
+                    "Adequado para a configuração atual do dispositivo."
                 } else {
                     (0 until reasonArray.length()).joinToString(" · ") { idx ->
                         reasonArray.optString(idx)
@@ -4614,7 +4614,7 @@ class MainActivity : Activity() {
         providerStateByProvider[taskKey] = state
 
         if (state.isActive) {
-            Toast.makeText(this, "${item.shortName} 下载正在进行中", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Download de ${item.shortName} em andamento", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -4627,7 +4627,7 @@ class MainActivity : Activity() {
             state.failureMessage = null
             refreshModelDownloadStatus(taskKey)
             syncBenchmarkReadiness()
-            Toast.makeText(this, "${item.shortName} 已在本机", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "${item.shortName} já está no dispositivo", Toast.LENGTH_SHORT).show()
             ensureNotificationPermissionAndLoadModel(destination)
             return
         }
@@ -4649,12 +4649,12 @@ class MainActivity : Activity() {
         state.cancelRequested = false
         refreshModelDownloadStatus(taskKey)
         updateStatus(
-            if (resumeBytes > 0L) "继续下载 ${item.shortName}"
-            else "正在下载 ${item.shortName}"
+            if (resumeBytes > 0L) "Continuar download de ${item.shortName}"
+            else "Baixando ${item.shortName}"
         )
         progressHandler.removeCallbacks(progressPollRunnable)
         progressHandler.post(progressPollRunnable)
-        Toast.makeText(this, "${item.shortName} 开始下载", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Download de ${item.shortName} iniciado", Toast.LENGTH_SHORT).show()
         val thread = Thread {
             downloadModelInApp(taskKey, item, destination, state)
         }
@@ -4705,7 +4705,7 @@ class MainActivity : Activity() {
             }
 
             if (partFile.length() <= 1024 * 1024) {
-                throw IOException("下载文件过小，可能不是 GGUF 模型")
+                throw IOException("Arquivo de download muito pequeno, pode não ser modelo GGUF")
             }
             if (!partFile.renameTo(destination)) {
                 partFile.copyTo(destination, overwrite = true)
@@ -4720,8 +4720,8 @@ class MainActivity : Activity() {
             activeDownloadThreads.remove(taskKey)
             runOnUiThread {
                 refreshModelDownloadStatus(taskKey)
-                updateStatus("模型已下载：${destination.name}")
-                Toast.makeText(this, "模型已下载", Toast.LENGTH_SHORT).show()
+                updateStatus("Modelo baixado: ${destination.name}")
+                Toast.makeText(this, "Modelo baixado", Toast.LENGTH_SHORT).show()
                 ensureNotificationPermissionAndLoadModel(destination)
                 refreshRecommendationSnapshot()
                 syncBenchmarkReadiness()
@@ -4736,26 +4736,26 @@ class MainActivity : Activity() {
             } else {
                 0
             }
-            state.failureMessage = "已暂停，可继续"
+            state.failureMessage = "Pausado, pode continuar"
             state.cancelRequested = false
             activeDownloadThreads.remove(taskKey)
             runOnUiThread {
                 refreshModelDownloadStatus(taskKey)
-                updateStatus("${item.shortName} 下载已暂停")
-                Toast.makeText(this, "${item.shortName} 已暂停", Toast.LENGTH_SHORT).show()
+                updateStatus("Download de ${item.shortName} pausado")
+                Toast.makeText(this, "${item.shortName} pausado", Toast.LENGTH_SHORT).show()
                 progressEndIfNeeded()
                 if (currentTab in setOf(AppTab.MODELS, AppTab.PLAYGROUND)) renderCurrentTab()
             }
         } catch (e: Exception) {
             state.status = DownloadState.FAILED
-            state.failureMessage = "失败原因：${readableDownloadError(e)}"
+            state.failureMessage = "Motivo da falha: ${readableDownloadError(e)}"
             state.bytesDownloaded = partFile.takeIf { it.exists() }?.length()?.coerceAtLeast(0L) ?: state.bytesDownloaded
             state.cancelRequested = false
             activeDownloadThreads.remove(taskKey)
             runOnUiThread {
                 refreshModelDownloadStatus(taskKey)
-                updateStatus("模型下载失败：${readableDownloadError(e)}")
-                Toast.makeText(this, "模型下载失败", Toast.LENGTH_LONG).show()
+                updateStatus("Falha no download do modelo: ${readableDownloadError(e)}")
+                Toast.makeText(this, "Falha no download do modelo", Toast.LENGTH_LONG).show()
                 progressEndIfNeeded()
                 if (currentTab in setOf(AppTab.MODELS, AppTab.PLAYGROUND)) renderCurrentTab()
             }
@@ -4793,7 +4793,7 @@ class MainActivity : Activity() {
                     addView(
                         modelRow(
                             modelId,
-                            "适配 ${fitLabelForUi(fit)} · 评分 $scoreText",
+                            "Compatível ${fitLabelForUi(fit)} · Pontuação $scoreText",
                             fitLabelForUi(fit),
                             accent
                         ),
@@ -4801,11 +4801,11 @@ class MainActivity : Activity() {
                     )
                     if (!loaded) {
                         addView(
-                            pillButton("加载", Palette.sky, Palette.blue) {
+                            pillButton("Carregar", Palette.sky, Palette.blue) {
                                 if (modelId.isNotBlank() && modelId != "unknown") {
                                     loadRecommendedModel(modelId)
                                 } else {
-                                    Toast.makeText(this@MainActivity, "模型标识无效，无法加载", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@MainActivity, "Identificador do modelo inválido, não é possível carregar", Toast.LENGTH_SHORT).show()
                                 }
                             }.apply {
                                 gravity = Gravity.CENTER
@@ -4817,18 +4817,18 @@ class MainActivity : Activity() {
                 }
             )
             addView(space(5))
-            addView(label("预计内存 ${estimatedMemoryMb}MB · 约 $speedText tok/s", 12f, Palette.muted, Typeface.NORMAL))
+            addView(label("Memória estimada ${estimatedMemoryMb}MB · Cerca de $speedText tok/s", 12f, Palette.muted, Typeface.NORMAL))
             addView(space(2))
-            addView(label("推荐原因：$reason", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
+            addView(label("Motivo da recomendação: $reason", 12f, Palette.muted, Typeface.NORMAL).apply { maxLines = 2 })
         }
     }
 
     private fun fitLabelForUi(fit: String): String {
         return when (fit.lowercase(Locale.US)) {
-            "perfect" -> "优秀"
-            "good" -> "良好"
-            "marginal" -> "可尝试"
-            else -> "观察"
+            "perfect" -> "Excelente"
+            "good" -> "Bom"
+            "marginal" -> "Pode tentar"
+            else -> "Observar"
         }
     }
 
@@ -4843,8 +4843,8 @@ class MainActivity : Activity() {
         val progressView = providerProgressByProvider[taskKey] ?: return
         val cancelView = providerCancelByProvider[taskKey]
         val tile = providerTileByProvider[taskKey]
-        val bytesTotalText = if (state.totalBytes > 0) formatBytes(state.totalBytes) else "未知"
-        val percentText = if (state.totalBytes > 0L) "${state.percent}%" else "未知"
+        val bytesTotalText = if (state.totalBytes > 0) formatBytes(state.totalBytes) else "Desconhecido"
+        val percentText = if (state.totalBytes > 0L) "${state.percent}%" else "Desconhecido"
         titleView?.text = "${state.item.provider} · ${state.item.shortName}"
         val localFile = availableGgufModels().firstOrNull { it.name.equals(state.item.fileName, ignoreCase = true) }
         val lifecycle = modelLifecycle(localFile, state.item.fileName, state)
@@ -4859,7 +4859,7 @@ class MainActivity : Activity() {
         cancelView?.text = lifecycle.actionLabel
         cancelView?.visibility = if (lifecycle.actionEnabled) View.VISIBLE else View.GONE
         tile?.alpha = if (lifecycle.phase == ModelLifecyclePhase.DOWNLOADING) 0.6f else 1f
-        progressView.text = "进度 ${formatBytes(state.bytesDownloaded)} / $bytesTotalText · $percentText"
+        progressView.text = "Progresso ${formatBytes(state.bytesDownloaded)} / $bytesTotalText · $percentText"
         progressView.visibility = if (lifecycle.phase in setOf(
                 ModelLifecyclePhase.DOWNLOADING,
                 ModelLifecyclePhase.PAUSED,
@@ -4881,12 +4881,12 @@ class MainActivity : Activity() {
     private fun pauseModelDownload(taskKey: String) {
         val state = providerStateByProvider[taskKey] ?: return
         if (state.status != DownloadState.DOWNLOADING) {
-            Toast.makeText(this, "没有正在下载的任务", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Nenhuma tarefa em download", Toast.LENGTH_SHORT).show()
             return
         }
         state.cancelRequested = true
         state.status = DownloadState.PAUSED
-        state.failureMessage = "暂停中..."
+        state.failureMessage = "Pausando..."
         refreshModelDownloadStatus(taskKey)
         activeDownloadThreads[taskKey]?.interrupt()
     }
@@ -4910,7 +4910,7 @@ class MainActivity : Activity() {
                 val location = connection.getHeaderField("Location")
                 connection.disconnect()
                 if (location.isNullOrBlank()) {
-                    throw IOException("重定向缺少 Location")
+                    throw IOException("Redirecionamento sem Location")
                 }
                 nextUrl = URL(URL(nextUrl), location).toString()
             } else if (code in 200..299) {
@@ -4921,24 +4921,24 @@ class MainActivity : Activity() {
                 throw IOException("HTTP $code ${error ?: ""}".trim())
             }
         }
-        throw IOException("重定向过多")
+        throw IOException("Muitos redirecionamentos")
     }
 
     private fun readableDownloadError(error: Exception): String {
         return when (error) {
-            is java.net.SocketTimeoutException -> "网络超时"
-            is java.net.UnknownHostException -> "无法解析主机"
-            is java.net.ConnectException -> "连接失败"
+            is java.net.SocketTimeoutException -> "Tempo limite da rede esgotado"
+            is java.net.UnknownHostException -> "Não foi possível resolver o host"
+            is java.net.ConnectException -> "Falha na conexão"
             is IOException -> {
                 val message = error.message.orEmpty()
                 when {
-                    message.contains("下载文件过小") -> "文件校验失败"
-                    message.contains("重定向") || message.contains("Location") -> "下载链接暂不可用"
-                    message.startsWith("HTTP") -> "下载服务暂不可用"
-                    else -> "文件或网络错误"
+                    message.contains("Arquivo de download muito pequeno") -> "Falha na verificação do arquivo"
+                    message.contains("Redirecionamento") || message.contains("Location") -> "Link de download temporariamente indisponível"
+                    message.startsWith("HTTP") -> "Serviço de download temporariamente indisponível"
+                    else -> "Erro de arquivo ou rede"
                 }
             }
-            else -> "操作失败，请稍后重试"
+            else -> "Operação falhou, tente novamente mais tarde"
         }
     }
 
@@ -4988,10 +4988,10 @@ class MainActivity : Activity() {
                 runOnUiThread {
                     if (status in 200..299 && response.optBoolean("ok", false)) {
                         val modelName = response.optString("model", modelId)
-                        Toast.makeText(this@MainActivity, "已加载 $modelName", Toast.LENGTH_SHORT).show()
-                        updateStatus("模型已加载：$modelName")
+                        Toast.makeText(this@MainActivity, "Carregado $modelName", Toast.LENGTH_SHORT).show()
+                        updateStatus("Modelo carregado: $modelName")
                     } else {
-                        Toast.makeText(this@MainActivity, response.optString("error", "模型加载失败"), Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@MainActivity, response.optString("error", "Falhou"), Toast.LENGTH_LONG).show()
                     }
                     refreshRuntimeModelState()
                     refreshRecommendationSnapshot()
@@ -5000,7 +5000,7 @@ class MainActivity : Activity() {
                 runOnUiThread {
                     pendingModelPath = null
                     refreshRuntimeModelState()
-                    Toast.makeText(this@MainActivity, "模型加载失败，请确认服务已启动", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Falha ao carregar modelo, verifique se o serviço foi iniciado", Toast.LENGTH_SHORT).show()
                 }
             }
         }.start()
@@ -5109,9 +5109,9 @@ class MainActivity : Activity() {
         val queryValue: String,
         val label: String
     ) {
-        SPEED(0, "speed", "速度优先"),
-        STABILITY(1, "stability", "稳定优先"),
-        SMALL_MODEL(2, "small", "小模型优先");
+        SPEED(0, "speed", "Prioridade de velocidade"),
+        STABILITY(1, "stability", "Prioridade de estabilidade"),
+        SMALL_MODEL(2, "small", "Prioridade de modelo pequeno");
 
         companion object {
             fun fromProgress(progress: Int): RecommendationPreference {
@@ -5149,11 +5149,11 @@ class MainActivity : Activity() {
             background = rounded(Palette.surface, Color.TRANSPARENT, 0f)
             elevation = dp(8).toFloat()
             setPadding(dp(7), dp(3), dp(7), dp(3))
-            addView(navItem("首页", "home", AppTab.HOME), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(navItem("跑分", "play", AppTab.TEST), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(navItem("结果", "gauge", AppTab.RESULTS), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(navItem("模型", "cube", AppTab.MODELS), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(navItem("我的", "person", AppTab.SETTINGS), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(navItem("Início", "home", AppTab.HOME), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(navItem("Benchmark", "play", AppTab.TEST), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(navItem("Resultados", "gauge", AppTab.RESULTS), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(navItem("Modelo", "cube", AppTab.MODELS), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(navItem("Meu Perfil", "person", AppTab.SETTINGS), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         }
     }
 
@@ -5175,7 +5175,7 @@ class MainActivity : Activity() {
             )
             isClickable = true
             isFocusable = true
-            contentDescription = "$title${if (selected) "，已选择" else ""}"
+            contentDescription = "$title${if (selected) ", selecionado" else ""}"
             isSelected = selected
             setOnClickListener {
                 performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
@@ -5195,7 +5195,7 @@ class MainActivity : Activity() {
                         addView(
                             View(context).apply {
                                 background = rounded(Palette.mintDark, Color.WHITE, 5f)
-                                contentDescription = "跑分进行中"
+                                contentDescription = "Benchmark em andamento"
                             },
                             FrameLayout.LayoutParams(dp(9), dp(9), Gravity.END or Gravity.TOP)
                         )
@@ -5325,8 +5325,8 @@ class MainActivity : Activity() {
         """.trimIndent()
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         clipboard.setPrimaryClip(ClipData.newPlainText("MobileCore cURL", command))
-        routeStatusText?.text = "已复制 cURL 示例"
-        Toast.makeText(this, "cURL 已复制", Toast.LENGTH_SHORT).show()
+        routeStatusText?.text = "Exemplo cURL copiado"
+        Toast.makeText(this, "cURL copiado", Toast.LENGTH_SHORT).show()
     }
 
     private fun runModelsProbe() {
@@ -5338,9 +5338,9 @@ class MainActivity : Activity() {
             onResult = { status, body, elapsed ->
                 val count = runCatching { JSONObject(body).optJSONArray("data")?.length() ?: 0 }.getOrDefault(0)
                 val message = if (status in 200..299) {
-                    "模型列表已刷新 · $count 个 · ${elapsed}ms"
+                    "Lista de modelos atualizada · $count itens · ${elapsed}ms"
                 } else {
-                    "模型列表暂不可用"
+                    "Lista de modelos temporariamente indisponível"
                 }
                 routeStatusText?.text = message
                 updateStatus(message)
@@ -5362,11 +5362,11 @@ class MainActivity : Activity() {
                 val message = if (status in 200..299) {
                     "推理指标已刷新 · ${"%.2f".format(Locale.US, tps)} tok/s · 首字 ${firstToken}ms"
                 } else {
-                    "推理指标暂不可用"
+                    "Métricas de inferência temporariamente indisponíveis"
                 }
                 routeStatusText?.text = message
                 updateStatus(message)
-                Toast.makeText(this, "指标已刷新", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Métricas atualizadas", Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -5379,10 +5379,10 @@ class MainActivity : Activity() {
             body = null,
             onResult = { status, body, _ ->
                 val count = runCatching { JSONObject(body).optInt("count", 0) }.getOrDefault(0)
-                val message = if (status in 200..299) "本机榜已刷新 · $count 条" else "本机榜暂不可用"
+                val message = if (status in 200..299) "Ranking local atualizado · $count registros" else "Ranking local temporariamente indisponível"
                 routeStatusText?.text = message
-                updateStatus(if (status in 200..299) "本机榜已刷新" else "本机榜请求异常")
-                Toast.makeText(this, "本机榜已刷新", Toast.LENGTH_SHORT).show()
+                updateStatus(if (status in 200..299) "Ranking local atualizado" else "Exceção na solicitação do ranking local")
+                Toast.makeText(this, "Ranking local atualizado", Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -5395,11 +5395,11 @@ class MainActivity : Activity() {
             body = null,
             onResult = { status, body, _ ->
                 val sharedStatus = runCatching { JSONObject(body).optString("status", "local_only") }.getOrDefault("local_only")
-                val displayStatus = if (sharedStatus == "not_configured") "未配置" else sharedStatus
-                val message = if (status in 200..299) "共享榜已检查 · $displayStatus" else "共享榜暂不可用"
+                val displayStatus = if (sharedStatus == "not_configured") "Não configurado" else sharedStatus
+                val message = if (status in 200..299) "Ranking compartilhado verificado · $displayStatus" else "Ranking compartilhado temporariamente indisponível"
                 routeStatusText?.text = message
-                updateStatus("共享榜状态已检查")
-                Toast.makeText(this, "共享榜状态已检查", Toast.LENGTH_SHORT).show()
+                updateStatus("Status do ranking compartilhado verificado")
+                Toast.makeText(this, "Status do ranking compartilhado verificado", Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -5415,14 +5415,14 @@ class MainActivity : Activity() {
                 val sharedStatus = json?.optString("status", "unknown") ?: "unknown"
                 val uploaded = json?.optInt("uploaded", 0) ?: 0
                 val displayStatus = when (sharedStatus) {
-                    "ok" -> "已上传 $uploaded 条"
-                    "not_configured" -> "未配置"
-                    "empty" -> "暂无本机记录"
+                    "ok" -> "$uploaded registros enviados"
+                    "not_configured" -> "Não configurado"
+                    "empty" -> "Nenhum registro local"
                     else -> sharedStatus
                 }
-                val message = if (status in 200..299) "共享榜：$displayStatus" else "共享榜同步失败"
+                val message = if (status in 200..299) "Ranking compartilhado: $displayStatus" else "Falha na sincronização do ranking compartilhado"
                 routeStatusText?.text = message
-                updateStatus(if (sharedStatus == "ok") "共享榜已同步" else "共享榜未同步")
+                updateStatus(if (sharedStatus == "ok") "Ranking compartilhado sincronizado" else "Ranking compartilhado não sincronizado")
                 Toast.makeText(this, displayStatus, Toast.LENGTH_SHORT).show()
             }
         )
@@ -5437,10 +5437,10 @@ class MainActivity : Activity() {
             onResult = { status, body, _ ->
                 val json = runCatching { JSONObject(body) }.getOrNull()
                 val visionStatus = json?.optString("status", "unknown") ?: "unknown"
-                val message = if (status in 200..299) "视觉后端已检查 · $visionStatus" else "视觉后端暂不可用"
+                val message = if (status in 200..299) "Backend visual verificado · $visionStatus" else "Backend visual temporariamente indisponível"
                 routeStatusText?.text = message
-                updateStatus(if (visionStatus == "backend_not_installed") "视觉后端未安装" else "视觉后端已检查")
-                Toast.makeText(this, "视觉后端已检查", Toast.LENGTH_SHORT).show()
+                updateStatus(if (visionStatus == "backend_not_installed") "Backend visual não instalado" else "Backend visual verificado")
+                Toast.makeText(this, "Backend visual verificado", Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -5454,17 +5454,17 @@ class MainActivity : Activity() {
             onResult = { status, body, _ ->
                 val json = runCatching { JSONObject(body) }.getOrNull()
                 val count = json?.optInt("count", 0) ?: 0
-                val message = if (status in 200..299) "视觉模型已检查 · $count 个" else "视觉模型暂不可用"
+                val message = if (status in 200..299) "Modelos visuais verificados · $count itens" else "Modelos visuais temporariamente indisponíveis"
                 routeStatusText?.text = message
                 val models = scanVisionModelFiles()
                 visionModelSummaryText?.text = visionModelSummary(models)
                 visionResultText?.text = if (count > 0) {
-                    "已检测到 $count 个视觉模型。\n${visionModelSummary(models)}"
+                    "$count modelos visuais detectados.\\n${visionModelSummary(models)}"
                 } else {
-                    "未导入视觉模型。\n请放入 .onnx / .ort / .tflite / .mnn 到视觉模型目录。"
+                    "Nenhum modelo visual importado.\\nColoque .onnx / .ort / .tflite / .mnn no diretório de modelos visuais."
                 }
-                updateStatus(if (count > 0) "已检测到视觉模型" else "未导入视觉模型")
-                Toast.makeText(this, if (count > 0) "已检测到 $count 个视觉模型" else "未导入视觉模型", Toast.LENGTH_SHORT).show()
+                updateStatus(if (count > 0) "Modelos visuais detectados" else "Nenhum modelo visual importado")
+                Toast.makeText(this, if (count > 0) "$count modelos visuais detectados" else "Nenhum modelo visual importado", Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -5485,13 +5485,13 @@ class MainActivity : Activity() {
                 val json = runCatching { JSONObject(body) }.getOrNull()
                 val diffusionStatus = json?.optString("status", "unknown") ?: "unknown"
                 val message = when (diffusionStatus) {
-                    "model_missing" -> "扩散模型缺失"
-                    "runtime_not_installed" -> "扩散 runtime 未接入"
-                    "pipeline_not_implemented" -> "扩散 pipeline 未实现"
-                    "model_load_error" -> "扩散模型加载失败"
-                    else -> "扩散状态：$diffusionStatus"
+                    "model_missing" -> "Modelo de difusão ausente"
+                    "runtime_not_installed" -> "Runtime de difusão não conectado"
+                    "pipeline_not_implemented" -> "Pipeline de difusão não implementado"
+                    "model_load_error" -> "Falha ao carregar modelo de difusão"
+                    else -> "Status de difusão: $diffusionStatus"
                 }
-                routeStatusText?.text = if (status in 200..299) message else "扩散 readiness 请求失败"
+                routeStatusText?.text = if (status in 200..299) message else "Falha na solicitação de prontidão de difusão"
                 visionResultText?.text = json?.optString("message").orEmpty().ifBlank { message }
                 updateStatus(message)
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -5501,11 +5501,11 @@ class MainActivity : Activity() {
 
     private fun runTestChat() {
         if (isTestRunning) {
-            Toast.makeText(this, "测试正在运行", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Teste em execução", Toast.LENGTH_SHORT).show()
             return
         }
         isTestRunning = true
-        routeStatusText?.text = "正在启动本地 API 并发送测试请求..."
+        routeStatusText?.text = "Iniciando API local e enviando solicitação de teste..."
         ensureNotificationPermissionAndStartService()
 
         val requestBody = JSONObject().apply {
@@ -5545,14 +5545,14 @@ class MainActivity : Activity() {
                 routeStatusText?.text = if (status in 200..299) {
                     "试聊完成 · ${elapsed}ms\n${answer.take(160)}\n速度 ${"%.2f".format(Locale.US, tps)} tok/s · 首字 ${firstToken}ms · 总耗时 ${total}ms"
                 } else {
-                    "请求失败，请确认模型已加载后再试。"
+                    "Falha na solicitação, verifique se o modelo foi carregado e tente novamente."
                 }
-                updateStatus(if (status in 200..299) "测试完成 · ${elapsed}ms" else "测试失败")
+                updateStatus(if (status in 200..299) "Teste concluído · ${elapsed}ms" else "Teste falhou")
             },
             onError = {
                 isTestRunning = false
-                routeStatusText?.text = "测试失败，请确认本机服务已启动，并且模型可加载。"
-                updateStatus("测试失败")
+                routeStatusText?.text = "Teste falhou, verifique se o serviço local foi iniciado e o modelo pode ser carregado."
+                updateStatus("Teste falhou")
             }
         )
     }
@@ -5715,7 +5715,7 @@ class MainActivity : Activity() {
     private fun downloadRequiredBenchmarkModel() {
         val item = modelHubItems.firstOrNull { it.fileName == requiredBenchmarkModelName() }
         if (item == null) {
-            Toast.makeText(this, "标准模型下载项暂不可用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Item de download do modelo padrão temporariamente indisponível", Toast.LENGTH_SHORT).show()
             return
         }
         enqueueModelDownload(item)
@@ -5753,7 +5753,7 @@ class MainActivity : Activity() {
 
     private fun runBenchmark(profile: BenchmarkProfile) {
         if (benchmarkUiStateMachine.state.isRunning) {
-            Toast.makeText(this, "TuiMa 跑分正在运行", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Benchmark TuiMa em execução", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -5768,16 +5768,16 @@ class MainActivity : Activity() {
                 BenchmarkUiEvent.Failed(
                     profile,
                     BenchmarkFailureKind.MODEL_INVALID,
-                    "跑分清单校验失败，当前构建不可计分。"
+                    "Falha na verificação da lista de benchmark, compilação atual não pontuável."
                 )
             )
             return
         }
         val model = availableGgufModels().firstOrNull { it.name == manifest.model.fileName }
         if (model == null) {
-            dispatchBenchmarkUi(BenchmarkUiEvent.Failed(profile, BenchmarkFailureKind.MODEL_INVALID, "缺少标准模型 ${manifest.model.fileName}。"))
+            dispatchBenchmarkUi(BenchmarkUiEvent.Failed(profile, BenchmarkFailureKind.MODEL_INVALID, "Modelo padrão ${manifest.model.fileName} ausente."))
             dispatchBenchmarkUi(BenchmarkUiEvent.ReadinessChanged(manifest.model.fileName))
-            updateStatus("缺少 TuiMa 标准模型")
+            updateStatus("Modelo padrão TuiMa ausente")
             return
         }
 
@@ -5787,7 +5787,7 @@ class MainActivity : Activity() {
             val deviceProfile = probeDeviceProfile()
             val spec = BenchmarkSpecV2.forProfile(profile, threads = deviceProfile.coreCount.coerceAtMost(6))
             val galleryRelease = releaseGallerySearchRuntime(
-                "跑分需要加载 GGUF，已释放 CLIP 会话；照片索引仍保留。",
+                "Benchmark precisa carregar GGUF, sessão CLIP liberada; índice de fotos preservado.",
             )
             startServiceInForeground()
 
@@ -5798,7 +5798,7 @@ class MainActivity : Activity() {
                     ) {
                         throw BenchmarkRunException(
                             BenchmarkFailureKind.RUNTIME_UNAVAILABLE,
-                            "无法安全释放 CLIP 内存，跑分已取消。",
+                            "Não foi possível liberar memória CLIP com segurança, benchmark cancelado.",
                         )
                     }
                     val health = localApiRequestBlocking(
@@ -5857,12 +5857,12 @@ class MainActivity : Activity() {
                     if (loadResult.status !in 200..299) {
                         throw BenchmarkRunException(
                             BenchmarkFailureKind.MODEL_INVALID,
-                            "模型加载失败 ${loadResult.status}: ${loadResult.body.take(180)}"
+                            "Falha ao carregar modelo ${loadResult.status}: ${loadResult.body.take(180)}"
                         )
                     }
                     val loadJson = JSONObject(loadResult.body)
                     if (!loadJson.optBoolean("ok", false)) {
-                        throw BenchmarkRunException(BenchmarkFailureKind.MODEL_INVALID, "标准模型加载失败")
+                        throw BenchmarkRunException(BenchmarkFailureKind.MODEL_INVALID, "Falha ao carregar modelo padrão")
                     }
                     activeModelPath = model.absolutePath
                     runtimeReportsLoadedModel = true
@@ -5986,15 +5986,15 @@ class MainActivity : Activity() {
                                 BenchmarkUiEvent.Failed(
                                     profile,
                                     summary.failureKind ?: BenchmarkFailureKind.METRICS_INCOMPLETE,
-                                    "跑分无效，已完成 ${summary.completedRuns}/${summary.measuredRuns} 次计分。"
+                                    "Benchmark inválido, concluído ${summary.completedRuns}/${summary.measuredRuns} medições."
                                 )
                             )
                         } else {
                             dispatchBenchmarkUi(BenchmarkUiEvent.Finished(profile, score.headlineScore, score.canonicalScore))
                             transitionToResultsAfterBenchmark()
                         }
-                        routeStatusText?.text = if (score != null) "跑分完成 · ${score.headlineScore} TuiMa" else "跑分无效"
-                        updateStatus(if (score != null) "TuiMa ${score.headlineScore}" else "跑分无效")
+                        routeStatusText?.text = if (score != null) "Benchmark concluído · ${score.headlineScore} TuiMa" else "Benchmark inválido"
+                        updateStatus(if (score != null) "TuiMa ${score.headlineScore}" else "Benchmark inválido")
                         refreshRecommendationSnapshot()
                     }
                 } catch (e: Throwable) {
@@ -6035,12 +6035,12 @@ class MainActivity : Activity() {
                                     profile,
                                     failureKind,
                                     e.message?.takeIf { it.isNotBlank() }
-                                        ?: "TuiMa 跑分失败，请稍后重试。"
+                                        ?: "Benchmark TuiMa falhou, tente novamente mais tarde."
                                 )
                             )
                         }
-                        routeStatusText?.text = "TuiMa 跑分失败"
-                        updateStatus("TuiMa 跑分失败")
+                        routeStatusText?.text = "Benchmark TuiMa falhou"
+                        updateStatus("Benchmark TuiMa falhou")
                     }
                 }
             }.start()
@@ -6058,12 +6058,12 @@ class MainActivity : Activity() {
             )
         } catch (e: SocketTimeoutException) {
             RuntimeBridge.cancel()
-            throw BenchmarkRunException(BenchmarkFailureKind.TIMEOUT, "推理超时", e)
+            throw BenchmarkRunException(BenchmarkFailureKind.TIMEOUT, "Tempo limite de inferência", e)
         }
         if (result.status !in 200..299) {
             throw BenchmarkRunException(
                 BenchmarkFailureKind.RUNTIME_UNAVAILABLE,
-                "推理请求失败 ${result.status}: ${result.body.take(160)}"
+                "Falha na solicitação de inferência ${result.status}: ${result.body.take(160)}"
             )
         }
         return JSONObject(result.body)
@@ -6089,7 +6089,7 @@ class MainActivity : Activity() {
 
     private fun cancelBenchmark() {
         if (!benchmarkUiStateMachine.state.isRunning) {
-            Toast.makeText(this, "当前没有跑分任务", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Nenhuma tarefa de benchmark em andamento", Toast.LENGTH_SHORT).show()
             return
         }
         benchmarkCancellationRequested = true
@@ -6100,45 +6100,45 @@ class MainActivity : Activity() {
     private fun confirmCancelBenchmark() {
         if (!benchmarkUiStateMachine.state.isRunning) return
         AlertDialog.Builder(this)
-            .setTitle("取消本次跑分？")
-            .setMessage("本次测试不会生成成绩，已经完成的诊断数据仍会保存在本机。")
-            .setNegativeButton("继续跑分", null)
-            .setPositiveButton("确认取消") { _, _ -> cancelBenchmark() }
+            .setTitle("Cancelar este benchmark?")
+            .setMessage("Este teste não gerará pontuação.")
+            .setNegativeButton("Continuar Benchmark", null)
+            .setPositiveButton("Confirmar Cancelamento") { _, _ -> cancelBenchmark() }
             .show()
     }
 
     private fun throwIfBenchmarkCancelled() {
         if (benchmarkCancellationRequested) {
-            throw BenchmarkRunException(BenchmarkFailureKind.CANCELLED, "跑分已取消")
+            throw BenchmarkRunException(BenchmarkFailureKind.CANCELLED, "Benchmark cancelado")
         }
     }
 
     private fun benchmarkProfileName(profile: BenchmarkProfile): String = when (profile) {
-        BenchmarkProfile.QUICK -> "快速模式"
-        BenchmarkProfile.STANDARD -> "标准模式"
-        BenchmarkProfile.STRESS -> "压力模式"
+        BenchmarkProfile.QUICK -> "Modo rápido"
+        BenchmarkProfile.STANDARD -> "Modo padrão"
+        BenchmarkProfile.STRESS -> "Modo estresse"
     }
 
     private fun preflightReasonLabel(reason: BenchmarkPreflightReason): String = when (reason) {
-        BenchmarkPreflightReason.BATTERY_TOO_LOW -> "电量低于 30% 或无法读取"
-        BenchmarkPreflightReason.DEVICE_CHARGING -> "请断开充电"
-        BenchmarkPreflightReason.THERMAL_TOO_HIGH -> "设备温度过高"
-        BenchmarkPreflightReason.STORAGE_TOO_LOW -> "存储空间不足"
-        BenchmarkPreflightReason.MODEL_INVALID -> "标准模型校验失败"
-        BenchmarkPreflightReason.PROMPT_INVALID -> "提示词校验失败"
-        BenchmarkPreflightReason.RUNTIME_UNAVAILABLE -> "本机推理服务不可用"
-        BenchmarkPreflightReason.BENCHMARK_ALREADY_RUNNING -> "已有跑分任务"
+        BenchmarkPreflightReason.BATTERY_TOO_LOW -> "Bateria abaixo de 30% ou ilegível"
+        BenchmarkPreflightReason.DEVICE_CHARGING -> "Desconecte o carregador"
+        BenchmarkPreflightReason.THERMAL_TOO_HIGH -> "Temperatura do dispositivo muito alta"
+        BenchmarkPreflightReason.STORAGE_TOO_LOW -> "Espaço de armazenamento insuficiente"
+        BenchmarkPreflightReason.MODEL_INVALID -> "Verificação do modelo padrão falhou"
+        BenchmarkPreflightReason.PROMPT_INVALID -> "Verificação do prompt falhou"
+        BenchmarkPreflightReason.RUNTIME_UNAVAILABLE -> "Serviço de inferência local indisponível"
+        BenchmarkPreflightReason.BENCHMARK_ALREADY_RUNNING -> "Já existe tarefa de benchmark"
     }
 
     private fun preflightRecoveryLabel(reason: BenchmarkPreflightReason): String = when (reason) {
-        BenchmarkPreflightReason.BATTERY_TOO_LOW -> "将电量充至 30% 以上，再断开充电器"
-        BenchmarkPreflightReason.DEVICE_CHARGING -> "断开充电器，等待电量状态稳定"
-        BenchmarkPreflightReason.THERMAL_TOO_HIGH -> "锁屏静置几分钟，等待设备降温"
-        BenchmarkPreflightReason.STORAGE_TOO_LOW -> "释放至少 512 MB 加标准模型体积的空间"
-        BenchmarkPreflightReason.MODEL_INVALID -> "重新下载标准模型，确保文件完整"
-        BenchmarkPreflightReason.PROMPT_INVALID -> "当前构建的测试资源异常，请重新安装"
-        BenchmarkPreflightReason.RUNTIME_UNAVAILABLE -> "关闭占用资源的应用后重新检测"
-        BenchmarkPreflightReason.BENCHMARK_ALREADY_RUNNING -> "等待当前跑分结束或先取消"
+        BenchmarkPreflightReason.BATTERY_TOO_LOW -> "Carregue a bateria acima de 30%, depois desconecte o carregador"
+        BenchmarkPreflightReason.DEVICE_CHARGING -> "Desconecte o carregador, aguarde o estado da bateria estabilizar"
+        BenchmarkPreflightReason.THERMAL_TOO_HIGH -> "Trave a tela e aguarde alguns minutos para o dispositivo resfriar"
+        BenchmarkPreflightReason.STORAGE_TOO_LOW -> "Libere pelo menos 512 MB mais o tamanho do modelo padrão"
+        BenchmarkPreflightReason.MODEL_INVALID -> "Baixe novamente o modelo padrão, garantindo que o arquivo esteja completo"
+        BenchmarkPreflightReason.PROMPT_INVALID -> "Recursos de teste da compilação atual anômalos, reinstale"
+        BenchmarkPreflightReason.RUNTIME_UNAVAILABLE -> "Feche apps que estejam usando recursos e verifique novamente"
+        BenchmarkPreflightReason.BENCHMARK_ALREADY_RUNNING -> "Aguarde o benchmark atual terminar ou cancele primeiro"
     }
 
     private fun localApiRequestBlocking(
@@ -6176,7 +6176,7 @@ class MainActivity : Activity() {
                 lastError = e
             }
         }
-        throw lastError ?: IOException("本机接口请求失败")
+        throw lastError ?: IOException("Falha na solicitação da interface local")
     }
 
     private fun callLocalApi(
@@ -6188,8 +6188,8 @@ class MainActivity : Activity() {
         onResult: (Int, String, Long) -> Unit,
         onError: (Exception) -> Unit = {
             runOnUiThread {
-                routeStatusText?.text = "本机接口请求失败"
-                Toast.makeText(this, "API 请求失败", Toast.LENGTH_SHORT).show()
+                routeStatusText?.text = "Falha na solicitação da interface local"
+                Toast.makeText(this, "Falha na solicitação API", Toast.LENGTH_SHORT).show()
             }
         }
     ) {
@@ -6222,7 +6222,7 @@ class MainActivity : Activity() {
                     lastError = e
                 }
             }
-            runOnUiThread { onError(lastError ?: IOException("本机接口请求失败")) }
+            runOnUiThread { onError(lastError ?: IOException("Falha na solicitação da interface local")) }
         }.start()
     }
 
@@ -6235,13 +6235,13 @@ class MainActivity : Activity() {
             OmniLifecycleAction.REFRESH -> refreshOmniLifecycleStatus()
             OmniLifecycleAction.INSTALL -> showOmniInstallConsentDialog()
             OmniLifecycleAction.CANCEL -> performOmniLifecycleRequest(
-                actionLabel = "取消安装",
+                actionLabel = "Cancelar instalação",
                 path = "/mobilecore/omni/cancel",
                 body = "{}",
                 readTimeoutMs = 45_000,
             )
             OmniLifecycleAction.VERIFY -> performOmniLifecycleRequest(
-                actionLabel = "校验 artifact",
+                actionLabel = "Verificar artifact",
                 path = "/mobilecore/omni/verify",
                 body = "{}",
                 readTimeoutMs = 300_000,
@@ -6249,7 +6249,7 @@ class MainActivity : Activity() {
             OmniLifecycleAction.LOAD -> {
                 val loadOmni = {
                     performOmniLifecycleRequest(
-                        actionLabel = "加载多模态模型",
+                        actionLabel = "Carregar modelo multimodal",
                         path = "/mobilecore/omni/load",
                         body = JSONObject()
                             .put("context_length", 4096)
@@ -6259,7 +6259,7 @@ class MainActivity : Activity() {
                     )
                 }
                 val release = releaseGallerySearchRuntime(
-                    "正在加载 Omni GGUF，已释放 CLIP 会话以避免内存叠加。",
+                    "Carregando Omni GGUF, sessão CLIP liberada para evitar sobreposição de memória.",
                 )
                 if (release == null) {
                     loadOmni()
@@ -6269,7 +6269,7 @@ class MainActivity : Activity() {
                         runOnUiThread {
                             if (released) loadOmni() else Toast.makeText(
                                 this,
-                                "无法安全释放 CLIP，已取消 Omni 加载",
+                                "Não foi possível liberar CLIP com segurança, carregamento Omni cancelado",
                                 Toast.LENGTH_LONG,
                             ).show()
                         }
@@ -6297,7 +6297,7 @@ class MainActivity : Activity() {
                         omniLifecycleSnapshot.copy(
                             serviceReachable = true,
                             failureCode = "request_failed",
-                            failureMessage = "状态响应无法解析",
+                            failureMessage = "Resposta de status não pode ser analisada",
                         )
                     }
                 } else {
@@ -6320,7 +6320,7 @@ class MainActivity : Activity() {
         body: String,
         readTimeoutMs: Int = 15_000,
     ) {
-        updateStatus("正在$actionLabel")
+        updateStatus("Executando $actionLabel")
         callLocalApi(
             path = path,
             method = "POST",
@@ -6333,16 +6333,16 @@ class MainActivity : Activity() {
                         omniLifecycleSnapshot.copy(
                             serviceReachable = true,
                             failureCode = "request_failed",
-                            failureMessage = "操作完成，但状态响应无法解析",
+                            failureMessage = "Operação concluída, mas resposta de status não pode ser analisada",
                         )
                     }
                 } else {
                     OmniLifecyclePresenter.withApiFailure(omniLifecycleSnapshot, responseBody)
                 }
-                updateStatus(if (status in 200..299) "$actionLabel 已提交" else "$actionLabel 未完成")
+                updateStatus(if (status in 200..299) "$actionLabel enviado" else "$actionLabel não concluído")
                 Toast.makeText(
                     this,
-                    if (status in 200..299) "$actionLabel 已提交" else OmniLifecyclePresenter.present(omniLifecycleSnapshot).statusDetail,
+                    if (status in 200..299) "$actionLabel enviado" else OmniLifecyclePresenter.present(omniLifecycleSnapshot).statusDetail,
                     Toast.LENGTH_LONG,
                 ).show()
                 renderOmniLifecycleIfVisible()
@@ -6354,8 +6354,8 @@ class MainActivity : Activity() {
                     failureCode = null,
                     failureMessage = null,
                 )
-                updateStatus("$actionLabel 失败：本机服务不可达")
-                Toast.makeText(this, "$actionLabel 失败，本机服务不可达", Toast.LENGTH_LONG).show()
+                updateStatus("$actionLabel falhou: serviço local inacessível")
+                Toast.makeText(this, "$actionLabel falhou, serviço local inacessível", Toast.LENGTH_LONG).show()
                 renderOmniLifecycleIfVisible()
             },
         )
@@ -6376,29 +6376,29 @@ class MainActivity : Activity() {
         val model = OmniLifecyclePresenter.present(omniLifecycleSnapshot)
         val installAllowed = omniLifecycleSnapshot.resourcesSufficient && omniLifecycleSnapshot.wifiConnected
         if (!installAllowed) {
-            Toast.makeText(this, "设备条件尚未通过，请先重新检查", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Condições do dispositivo não aprovadas, verifique novamente", Toast.LENGTH_LONG).show()
             refreshOmniLifecycleStatus()
             return
         }
         val consent = CheckBox(this).apply {
-            text = "我已阅读来源与许可说明，同意本次仅通过 Wi-Fi 下载约 3.39 GiB 到 MobileCore 私有目录。"
+            text = "Li as instruções de fonte e licença, e concordo em baixar cerca de 3,39 GiB apenas via Wi-Fi para o diretório privado do MobileCore."
             setTextColor(Palette.ink)
             textSize = 13f
             setPadding(dp(4), dp(6), dp(4), dp(6))
-            contentDescription = "明确同意本次 Omni 模型下载"
+            contentDescription = "Concordar explicitamente com o download do modelo Omni"
         }
         val message = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), 0, dp(20), 0)
             addView(label(
-                "发布者是 ggml-org，不是 Qwen 官方 GGUF。许可标识为 ${omniLifecycleSnapshot.licenseId}，状态为“来源声明，未做法律审查”。下载包含 Q4_K_M 主模型和 Q8_0 mmproj；每个文件都必须通过固定字节数和 SHA-256 校验。",
+                "O publicador é ggml-org, não o GGUF oficial do Qwen. A licença é ${omniLifecycleSnapshot.licenseId}, status 'declaração de fonte, sem revisão legal'. O download inclui o modelo principal Q4_K_M e Q8_0 mmproj; cada arquivo deve passar na verificação de bytes fixos e SHA-256.",
                 13f,
                 Palette.ink,
                 Typeface.NORMAL,
             ).apply { setLineSpacing(0f, 1.16f) })
             addView(space(10))
             addView(label(
-                "内存：${model.memoryLabel}\n存储：${model.storageLabel}\n网络：${model.wifiLabel}",
+                "Memória: ${model.memoryLabel}\\nArmazenamento: ${model.storageLabel}\\nRede: ${model.wifiLabel}",
                 12f,
                 Palette.muted,
                 Typeface.NORMAL,
@@ -6407,11 +6407,11 @@ class MainActivity : Activity() {
             addView(consent)
         }
         val dialog = AlertDialog.Builder(this)
-            .setTitle("安装本地多模态模型？")
+            .setTitle("Instalar modelo multimodal local?")
             .setView(message)
-            .setNegativeButton("取消", null)
-            .setNeutralButton("查看来源", null)
-            .setPositiveButton("同意并开始", null)
+            .setNegativeButton("Cancelar", null)
+            .setNeutralButton("Ver fonte", null)
+            .setPositiveButton("Concordar e iniciar", null)
             .create()
         dialog.setOnShowListener {
             val positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -6421,7 +6421,7 @@ class MainActivity : Activity() {
                 if (!consent.isChecked) return@setOnClickListener
                 dialog.dismiss()
                 performOmniLifecycleRequest(
-                    actionLabel = "Omni 安装",
+                    actionLabel = "Instalação Omni",
                     path = "/mobilecore/omni/install",
                     body = JSONObject()
                         .put("explicit_consent", true)
@@ -6438,12 +6438,12 @@ class MainActivity : Activity() {
 
     private fun showOmniUninstallDialog() {
         AlertDialog.Builder(this)
-            .setTitle("卸载本地多模态模型？")
-            .setMessage("将先卸载运行时，再删除这组固定主模型、mmproj、临时文件和校验记录。MobileCode 的对话与证据不会被修改。")
-            .setNegativeButton("保留", null)
-            .setPositiveButton("卸载") { _, _ ->
+            .setTitle("Desinstalar modelo multimodal local?")
+            .setMessage("Primeiro desinstalará o runtime, depois excluirá este conjunto de modelo principal fixo, mmproj, arquivos temporários e registros de verificação. Conversas e evidências do MobileCode não serão modificadas.")
+            .setNegativeButton("Manter", null)
+            .setPositiveButton("Desinstalar") { _, _ ->
                 performOmniLifecycleRequest(
-                    actionLabel = "卸载多模态模型",
+                    actionLabel = "Desinstalar modelo multimodal",
                     path = "/mobilecore/omni/uninstall",
                     body = "{}",
                     readTimeoutMs = 60_000,
@@ -6496,7 +6496,7 @@ class MainActivity : Activity() {
                 startGalleryIndex()
             } else {
                 handleGalleryAccessRevoked(showToast = false)
-                Toast.makeText(this, "未获得照片访问权限，未建立任何索引", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Permissão de acesso a fotos não concedida, nenhum índice criado", Toast.LENGTH_LONG).show()
             }
             return
         }
@@ -6509,17 +6509,17 @@ class MainActivity : Activity() {
             val wasWaitingForBenchmark = benchmarkUiStateMachine.state is BenchmarkUiState.Checking
             val waitingProfile = benchmarkUiStateMachine.state.profile
             pendingAfterNotificationPermission = null
-            updateStatus("通知权限未授予，无法启动前台服务")
+            updateStatus("Permissão de notificação não concedida, não foi possível iniciar serviço em primeiro plano")
             if (wasWaitingForBenchmark) {
                 dispatchBenchmarkUi(
                     BenchmarkUiEvent.Failed(
                         waitingProfile,
                         BenchmarkFailureKind.RUNTIME_UNAVAILABLE,
-                        "需要通知权限才能在跑分期间保持本机服务运行。"
+                        "Permissão de notificação necessária para manter o serviço local em execução durante o benchmark."
                     )
                 )
             }
-            Toast.makeText(this, "请允许通知权限后再启动服务", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Permita a permissão de notificação antes de iniciar o serviço", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -6542,7 +6542,7 @@ class MainActivity : Activity() {
         // the already-promoted local API service receives a refresh request.
         // MobileCoreService promotes itself in onCreate/onStartCommand.
         startService(intent)
-        updateStatus("本机服务已启动")
+        updateStatus("Serviço local iniciado")
         refreshRecommendationSnapshot()
     }
 
@@ -6553,8 +6553,8 @@ class MainActivity : Activity() {
         activeModelPath = null
         pendingModelPath = null
         reconcilePlaygroundRuntimeTruth(null)
-        updateStatus("本机服务已停止")
-        renderRecommendationPlaceholder("服务已停止，请重启 API 后刷新推荐。")
+        updateStatus("Modelo descarregado")
+        renderRecommendationPlaceholder("Serviço parado, reinicie a API e atualize as recomendações.")
     }
 
     private fun openGgufPicker() {
@@ -6603,14 +6603,14 @@ class MainActivity : Activity() {
         val destination = File(internalVisionImageDir(), safeName)
         selectedVisionImageName = safeName
         selectedVisionImagePath = null
-        visionImageText?.text = "正在导入 $safeName..."
-        visionResultText?.text = "正在复制图片到本机视觉工作区..."
-        updateStatus("正在导入图片")
+        visionImageText?.text = "Importando $safeName..."
+        visionResultText?.text = "Copiando imagem para o workspace visual local..."
+        updateStatus("Importando imagem")
 
         Thread {
             try {
                 contentResolver.openInputStream(uri).use { input ->
-                    requireNotNull(input) { "无法打开所选图片" }
+                    requireNotNull(input) { "Não foi possível abrir a imagem selecionada" }
                     FileOutputStream(destination).use { output ->
                         input.copyTo(output)
                     }
@@ -6618,18 +6618,18 @@ class MainActivity : Activity() {
                 runOnUiThread {
                     selectedVisionImagePath = destination.absolutePath
                     visionImageText?.text = "${destination.name} · ${formatBytes(destination.length())}"
-                    visionResultText?.text = "图片已导入。点击开始 OCR 或分类按钮进行本机检查。"
-                    updateStatus("图片已导入")
+                    visionResultText?.text = "Imagem importada. Clique em iniciar OCR ou classificação para verificação local."
+                    updateStatus("Imagem importada")
                 }
             } catch (e: Exception) {
                 if (destination.exists()) destination.delete()
                 runOnUiThread {
                     selectedVisionImageName = null
                     selectedVisionImagePath = null
-                    visionImageText?.text = "图片导入失败"
-                    visionResultText?.text = "图片导入失败。请换一张本机图片重试。"
-                    updateStatus("图片导入失败")
-                    Toast.makeText(this, "图片导入失败", Toast.LENGTH_SHORT).show()
+                    visionImageText?.text = "Falha na importação da imagem"
+                    visionResultText?.text = "Falha na importação da imagem. Tente outra imagem local."
+                    updateStatus("Falha na importação da imagem")
+                    Toast.makeText(this, "Falha na importação da imagem", Toast.LENGTH_SHORT).show()
                 }
             }
         }.start()
@@ -6640,19 +6640,19 @@ class MainActivity : Activity() {
         val safeName = sanitizeVisionModelFileName(displayName)
         val destination = File(internalVisionModelDir(), safeName)
         val temporary = File(internalVisionModelDir(), ".$safeName.${UUID.randomUUID()}.part")
-        visionResultText?.text = "正在导入视觉模型：$safeName"
-        updateStatus("正在导入视觉模型")
+        visionResultText?.text = "Importando modelo visual: $safeName"
+        updateStatus("Importando modelo visual")
 
         Thread {
             try {
                 contentResolver.openInputStream(uri).use { input ->
-                    requireNotNull(input) { "无法打开所选视觉模型" }
+                    requireNotNull(input) { "Não foi possível abrir o modelo visual selecionado" }
                     FileOutputStream(temporary).use { output ->
                         input.copyTo(output)
                         output.fd.sync()
                     }
                 }
-                require(temporary.length() > 0L) { "视觉模型文件为空" }
+                require(temporary.length() > 0L) { "Arquivo do modelo visual vazio" }
                 Files.move(
                     temporary.toPath(),
                     destination.toPath(),
@@ -6661,20 +6661,20 @@ class MainActivity : Activity() {
                 )
                 runOnUiThread {
                     if (isGalleryClipArtifactName(destination.name)) {
-                        invalidateGallerySearchRuntime("CLIP 模型文件已更新，请重新准备并建立照片索引。")
+                        invalidateGallerySearchRuntime("Arquivo do modelo CLIP atualizado, prepare novamente e crie o índice de fotos.")
                     }
                     visionModelSummaryText?.text = visionModelSummary()
-                    visionResultText?.text = "${destination.name} 已导入 · ${formatBytes(destination.length())}\n点击检查模型刷新后端状态。"
-                    Toast.makeText(this, "视觉模型已导入", Toast.LENGTH_SHORT).show()
-                    updateStatus("视觉模型已导入")
+                    visionResultText?.text = "${destination.name} importado · ${formatBytes(destination.length())}\\nClique para verificar o modelo e atualizar o status do backend."
+                    Toast.makeText(this, "Modelo visual importado", Toast.LENGTH_SHORT).show()
+                    updateStatus("Modelo visual importado")
                     if (currentTab == AppTab.VISION || currentTab == AppTab.VISION_MODELS) renderCurrentTab()
                 }
             } catch (e: Exception) {
                 temporary.delete()
                 runOnUiThread {
-                    visionResultText?.text = "视觉模型导入失败。支持 ONNX / ORT / TFLite / MNN / JSON / TXT / GGUF / mmproj。"
-                    Toast.makeText(this, "视觉模型导入失败", Toast.LENGTH_SHORT).show()
-                    updateStatus("视觉模型导入失败")
+                    visionResultText?.text = "Falha na importação do modelo visual. Suporta ONNX / ORT / TFLite / MNN / JSON / TXT / GGUF / mmproj."
+                    Toast.makeText(this, "Falha na importação do modelo visual", Toast.LENGTH_SHORT).show()
+                    updateStatus("Falha na importação do modelo visual")
                 }
             }
         }.start()
@@ -6684,11 +6684,11 @@ class MainActivity : Activity() {
         val imageName = selectedVisionImageName
         val imagePath = selectedVisionImagePath
         if (selectedVisionImageUri == null || imageName.isNullOrBlank() || imagePath.isNullOrBlank()) {
-            visionResultText?.text = "请先选择一张图片。"
-            Toast.makeText(this, "请先选择图片", Toast.LENGTH_SHORT).show()
+            visionResultText?.text = "Selecione uma imagem primeiro."
+            Toast.makeText(this, "Selecione uma imagem primeiro", Toast.LENGTH_SHORT).show()
             return
         }
-        visionResultText?.text = "正在检查 OCR 引擎..."
+        visionResultText?.text = "Verificando motor OCR..."
         ensureNotificationPermissionAndStartService()
         callLocalApi(
             path = "/vision/ocr",
@@ -6706,16 +6706,16 @@ class MainActivity : Activity() {
                     val width = it.optInt("width", 0)
                     val height = it.optInt("height", 0)
                     val bytes = it.optLong("size_bytes", 0L)
-                    if (width > 0 && height > 0) "图片 ${width}x${height} · ${formatBytes(bytes)}" else "图片 ${formatBytes(bytes)}"
-                } ?: "图片已读取"
+                    if (width > 0 && height > 0) "Imagem ${width}x${height} · ${formatBytes(bytes)}" else "Imagem ${formatBytes(bytes)}"
+                } ?: "Imagem lida"
                 val message = when (backendStatus) {
-                    "ok" -> json?.optString("text").orEmpty().ifBlank { "未识别到文字" }
-                    "invalid_image" -> json?.optString("message", "图片无法读取。") ?: "图片无法读取。"
-                    "backend_not_installed" -> "OCR 引擎未安装。建议先接 RapidOCR / PP-OCR（ONNX Runtime Mobile）。"
-                    else -> json?.optString("message", "OCR 暂不可用，请稍后重试。") ?: "OCR 暂不可用，请稍后重试。"
+                    "ok" -> json?.optString("text").orEmpty().ifBlank { "Nenhum texto reconhecido" }
+                    "invalid_image" -> json?.optString("message", "Não foi possível ler a imagem.") ?: "Não foi possível ler a imagem."
+                    "backend_not_installed" -> "Motor OCR não instalado. Recomenda-se conectar RapidOCR / PP-OCR (ONNX Runtime Mobile)."
+                    else -> json?.optString("message", "OCR temporariamente indisponível, tente novamente mais tarde.") ?: "OCR temporariamente indisponível, tente novamente mais tarde."
                 }
-                visionResultText?.text = "$imageLine\n$message\n\n耗时 ${elapsed}ms"
-                updateStatus(if (backendStatus == "ok") "OCR 完成" else "OCR 引擎未安装")
+                visionResultText?.text = "$imageLine\\n$message\\n\\nTempo ${elapsed}ms"
+                updateStatus(if (backendStatus == "ok") "OCR concluído" else "Motor OCR não instalado")
             }
         )
     }
@@ -6724,12 +6724,12 @@ class MainActivity : Activity() {
         val imageName = selectedVisionImageName
         val imagePath = selectedVisionImagePath
         if (selectedVisionImageUri == null || imageName.isNullOrBlank() || imagePath.isNullOrBlank()) {
-            visionResultText?.text = "请先选择一张图片。"
-            Toast.makeText(this, "请先选择图片", Toast.LENGTH_SHORT).show()
+            visionResultText?.text = "Selecione uma imagem primeiro."
+            Toast.makeText(this, "Selecione uma imagem primeiro", Toast.LENGTH_SHORT).show()
             return
         }
         val displayDataset = if (dataset == "mnist") "MNIST" else "CIFAR10"
-        visionResultText?.text = "正在检查 $displayDataset 分类引擎..."
+        visionResultText?.text = "Verificando motor de classificação $displayDataset..."
         ensureNotificationPermissionAndStartService()
         callLocalApi(
             path = "/vision/classify",
@@ -6748,25 +6748,25 @@ class MainActivity : Activity() {
                     val width = it.optInt("width", 0)
                     val height = it.optInt("height", 0)
                     val bytes = it.optLong("size_bytes", 0L)
-                    if (width > 0 && height > 0) "图片 ${width}x${height} · ${formatBytes(bytes)}" else "图片 ${formatBytes(bytes)}"
-                } ?: "图片已读取"
+                    if (width > 0 && height > 0) "Imagem ${width}x${height} · ${formatBytes(bytes)}" else "Imagem ${formatBytes(bytes)}"
+                } ?: "Imagem lida"
                 val message = when (backendStatus) {
                     "ok" -> {
-                        val label = json?.optString("label").orEmpty().ifBlank { "未知类别" }
+                        val label = json?.optString("label").orEmpty().ifBlank { "Categoria desconhecida" }
                         val confidence = json?.optDouble("confidence", 0.0) ?: 0.0
                         "$displayDataset：$label · 置信度 ${"%.2f".format(Locale.US, confidence)}"
                     }
-                    "invalid_image" -> json?.optString("message", "图片无法读取。") ?: "图片无法读取。"
+                    "invalid_image" -> json?.optString("message", "Não foi possível ler a imagem.") ?: "Não foi possível ler a imagem."
                     "model_missing" -> json?.optString("message").orEmpty()
-                        .ifBlank { "请先导入 $displayDataset 对应的 TFLite/ONNX 模型。" }
+                        .ifBlank { "Importe primeiro o modelo TFLite/ONNX correspondente a $displayDataset." }
                     "text_embeddings_missing" -> json?.optString("message").orEmpty()
-                        .ifBlank { "CLIP 已就绪，但缺少 CIFAR10 文本 embedding sidecar。" }
+                        .ifBlank { "CLIP pronto, mas sidecar de embedding de texto CIFAR10 ausente." }
                     "unsupported_model_shape", "model_load_error", "inference_error" -> json?.optString("message").orEmpty()
-                        .ifBlank { "$displayDataset 分类模型暂不可用。" }
-                    else -> json?.optString("message", "分类暂不可用，请稍后重试。") ?: "分类暂不可用，请稍后重试。"
+                        .ifBlank { "Modelo de classificação $displayDataset temporariamente indisponível." }
+                    else -> json?.optString("message", "Classificação temporariamente indisponível, tente novamente mais tarde.") ?: "Classificação temporariamente indisponível, tente novamente mais tarde."
                 }
-                visionResultText?.text = "$imageLine\n$message\n\n耗时 ${elapsed}ms"
-                updateStatus(if (backendStatus == "ok") "分类完成" else "分类需要模型")
+                visionResultText?.text = "$imageLine\\n$message\\n\\nTempo ${elapsed}ms"
+                updateStatus(if (backendStatus == "ok") "Classificação concluída" else "Classificação requer modelo")
             }
         )
     }
@@ -6777,33 +6777,33 @@ class MainActivity : Activity() {
         val destination = File(internalModelDir(), safeName)
         val catalog = playgroundCatalog
         if (catalog == null || PlaygroundManagedArtifactPolicy.isManagedFileName(catalog, safeName)) {
-            updateStatus("导入已拒绝：文件名属于 Playground 受管路径")
-            Toast.makeText(this, "该文件名由可信模型安装器管理，不能用普通导入覆盖", Toast.LENGTH_LONG).show()
+            updateStatus("Importação rejeitada: nome do arquivo pertence ao caminho gerenciado do Playground")
+            Toast.makeText(this, "Este nome de arquivo é gerenciado pelo instalador de modelos confiáveis, não pode ser sobrescrito por importação comum", Toast.LENGTH_LONG).show()
             return
         }
         if (destination.exists()) {
-            updateStatus("导入已拒绝：同名模型已存在")
-            Toast.makeText(this, "同名模型已存在；普通导入不会覆盖本机文件", Toast.LENGTH_LONG).show()
+            updateStatus("Importação rejeitada: modelo com mesmo nome já existe")
+            Toast.makeText(this, "Modelo com mesmo nome já existe; importação comum não sobrescreverá arquivos locais", Toast.LENGTH_LONG).show()
             return
         }
         val temporary = File(internalModelDir(), ".$safeName.${UUID.randomUUID()}.import")
 
-        updateStatus("正在导入模型：$safeName")
+        updateStatus("Importando modelo: $safeName")
         Thread {
             try {
                 contentResolver.openInputStream(uri).use { input ->
-                    requireNotNull(input) { "无法打开所选文件" }
+                    requireNotNull(input) { "Não foi possível abrir o arquivo selecionado" }
                     AtomicGgufImport.copy(input, temporary, destination)
                 }
                 runOnUiThread {
-                    Toast.makeText(this, "模型已导入", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Modelo importado", Toast.LENGTH_SHORT).show()
                     ensureNotificationPermissionAndLoadModel(destination)
                 }
             } catch (e: Exception) {
                 temporary.delete()
                 runOnUiThread {
-                    updateStatus("模型导入失败")
-                    Toast.makeText(this, "GGUF 导入失败；原文件未被覆盖", Toast.LENGTH_SHORT).show()
+                    updateStatus("Falha na importação do modelo")
+                    Toast.makeText(this, "Falha na importação do GGUF; arquivo original não foi sobrescrito", Toast.LENGTH_SHORT).show()
                 }
             }
         }.start()
@@ -6818,8 +6818,8 @@ class MainActivity : Activity() {
     private fun loadFirstModel() {
         val model = findPreferredGguf()
         if (model == null) {
-            updateStatus("未找到 GGUF 模型")
-            Toast.makeText(this, "请先导入 GGUF 模型", Toast.LENGTH_SHORT).show()
+            updateStatus("Modelo GGUF não encontrado")
+            Toast.makeText(this, "Importe primeiro um modelo GGUF", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -6828,18 +6828,18 @@ class MainActivity : Activity() {
 
     private fun startServiceWithModel(model: File) {
         val release = releaseGallerySearchRuntime(
-            "正在加载 GGUF，已释放 CLIP 会话以避免两个模型同时占用内存。",
+            "Carregando GGUF, sessão CLIP liberada para evitar que dois modelos ocupem memória simultaneamente.",
         )
         if (release != null) {
-            updateStatus("正在释放视觉模型内存")
+            updateStatus("Liberando memória do modelo visual")
             Thread {
                 val released = runCatching { release.get(30L, TimeUnit.SECONDS) }.isSuccess
                 runOnUiThread {
                     if (released) {
                         startServiceWithModelAfterGalleryRelease(model)
                     } else {
-                        updateStatus("视觉模型内存释放失败，未加载 GGUF")
-                        Toast.makeText(this, "无法安全释放 CLIP，已取消模型加载", Toast.LENGTH_LONG).show()
+                        updateStatus("Falha ao liberar memória do modelo visual, GGUF não carregado")
+                        Toast.makeText(this, "Não foi possível liberar CLIP com segurança, carregamento do modelo cancelado", Toast.LENGTH_LONG).show()
                     }
                 }
             }.start()
@@ -6862,7 +6862,7 @@ class MainActivity : Activity() {
             putExtra("modelPath", model.absolutePath)
         }
         startService(intent)
-        updateStatus("正在加载模型：${model.name}")
+        updateStatus("Carregando modelo: ${model.name}")
         if (currentTab in setOf(AppTab.HOME, AppTab.MODELS, AppTab.PLAYGROUND, AppTab.TEST)) renderCurrentTab()
     }
 
@@ -6972,7 +6972,7 @@ class MainActivity : Activity() {
         sidecars: List<File> = scanVisionSidecarFiles()
     ): String {
         if (models.isEmpty() && sidecars.isEmpty()) {
-            return "还没有导入视觉模型。可导入 ONNX / ORT / TFLite / MNN，CLIP 可配 JSON，VLM 需 GGUF + mmproj。"
+            return "Nenhum modelo visual importado. Você pode importar ONNX / ORT / TFLite / MNN, CLIP pode configurar JSON, VLM precisa de GGUF + mmproj."
         }
         val groups = models.groupingBy { inferVisionTask(it.name) }.eachCount()
         val modelSummary = groups.entries
@@ -6988,8 +6988,8 @@ class MainActivity : Activity() {
         val directory = internalVisionModelDir().absolutePath
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         clipboard.setPrimaryClip(ClipData.newPlainText("MobileCore vision models", directory))
-        visionResultText?.text = "视觉模型目录已复制。"
-        Toast.makeText(this, "视觉模型目录已复制", Toast.LENGTH_SHORT).show()
+        visionResultText?.text = "Diretório de modelos visuais copiado."
+        Toast.makeText(this, "Diretório de modelos visuais copiado", Toast.LENGTH_SHORT).show()
     }
 
     private fun resolveDisplayName(uri: Uri): String? {
@@ -7040,16 +7040,16 @@ class MainActivity : Activity() {
         if (::statusText.isInitialized) statusText.text = message
         if (::runtimeChipText.isInitialized) {
             runtimeChipText.text = when {
-                message.contains("服务已启动") -> "本机服务已启动"
-                message.contains("正在加载模型") -> "正在加载模型"
-                message.contains("正在下载") || message.startsWith("Downloading") -> "正在下载模型"
-                message.contains("已下载") || message.startsWith("Downloaded") -> "模型已下载"
-                message.contains("模型已加载") -> "模型已加载"
-                message.contains("加载失败") -> "加载失败"
-                message.contains("服务已停止") -> "服务已停止"
-                message.contains("未找到 GGUF") -> "需要模型"
-                message.contains("失败") -> "需要处理"
-                else -> "本机服务"
+                message.contains("Serviço iniciado") -> "Serviço local iniciado"
+                message.contains("Carregando") -> "Carregando"
+                message.contains("Baixando") || message.startsWith("Downloading") -> "Baixando modelo"
+                message.contains("Baixado") || message.startsWith("Downloaded") -> "Modelo baixado"
+                message.contains("Carregado") -> "Carregado"
+                message.contains("Falha ao carregar") -> "Falha ao carregar"
+                message.contains("Serviço parado") -> "Serviço parado"
+                message.contains("GGUF não encontrado") -> "Precisa de modelo"
+                message.contains("Falhou") -> "Precisa de processamento"
+                else -> "Serviço local"
             }
         }
     }

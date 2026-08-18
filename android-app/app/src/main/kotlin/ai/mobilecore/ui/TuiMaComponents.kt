@@ -51,7 +51,7 @@ class TuiMaCircularProgressView(context: Context) : View(context) {
     var progress: Int = 0
         set(value) {
             field = value.coerceIn(0, 100)
-            contentDescription = "跑分总进度 ${field}%"
+            contentDescription = "Progresso total do benchmark ${field}%"
             invalidate()
         }
 
@@ -68,11 +68,11 @@ class TuiMaCircularProgressView(context: Context) : View(context) {
 }
 
 fun formatRemainingDuration(milliseconds: Long?): String {
-    if (milliseconds == null || milliseconds <= 0L) return "正在估算"
+    if (milliseconds == null || milliseconds <= 0L) return "Estimando"
     val seconds = (milliseconds + 999L) / 1000L
     return when {
-        seconds < 60L -> "约 ${seconds} 秒"
-        else -> "约 ${seconds / 60L} 分 ${seconds % 60L} 秒"
+        seconds < 60L -> "Cerca de ${seconds} segundos"
+        else -> "Cerca de ${seconds / 60L} min ${seconds % 60L} seg"
     }
 }
 

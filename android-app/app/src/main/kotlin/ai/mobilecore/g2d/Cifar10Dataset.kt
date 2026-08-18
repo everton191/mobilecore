@@ -107,9 +107,9 @@ class Cifar10Dataset private constructor(
 }
 
 enum class Cifar10RunScale(val perClass: Int, val displayName: String) {
-    SMOKE(perClass = 10, displayName = "100 张 smoke test"),
-    PILOT(perClass = 100, displayName = "1,000 张 pilot test"),
-    FULL(perClass = 1_000, displayName = "10,000 张完整测试"),
+    SMOKE(perClass = 10, displayName = "100 imagens de teste smoke"),
+    PILOT(perClass = 100, displayName = "1.000 imagens de teste piloto"),
+    FULL(perClass = 1_000, displayName = "10.000 imagens de teste completo"),
 }
 
 data class G2dDatasetSpec(

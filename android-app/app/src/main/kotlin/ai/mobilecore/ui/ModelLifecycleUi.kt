@@ -55,33 +55,33 @@ object ModelLifecyclePresenter {
         }
         return when (phase) {
             ModelLifecyclePhase.NOT_DOWNLOADED -> ModelLifecycleUiModel(
-                phase, "未下载", "模型文件尚未保存在本机", "下载", true, ModelLifecycleTone.NEUTRAL,
+                phase, "Não baixado", "Arquivo do modelo ainda não salvo no dispositivo", "Baixar", true, ModelLifecycleTone.NEUTRAL,
             )
             ModelLifecyclePhase.DOWNLOADING -> ModelLifecycleUiModel(
                 phase,
-                "下载中 ${progressPercent.coerceIn(0, 100)}%",
-                "正在写入应用模型库",
-                "暂停",
+                "Baixando ${progressPercent.coerceIn(0, 100)}%",
+                "Escrevendo na biblioteca de modelos do app",
+                "Pausar",
                 true,
                 ModelLifecycleTone.PROGRESS,
             )
             ModelLifecyclePhase.PAUSED -> ModelLifecycleUiModel(
-                phase, "已暂停", "下载进度已保留", "继续", true, ModelLifecycleTone.WARNING,
+                phase, "Pausado", "Progresso do download preservado", "Continuar", true, ModelLifecycleTone.WARNING,
             )
             ModelLifecyclePhase.DOWNLOADED -> ModelLifecycleUiModel(
-                phase, "已下载", "文件已在本机，尚未加载到内存", "加载", true, ModelLifecycleTone.READY,
+                phase, "Baixado", "Arquivo no dispositivo, ainda não carregado na memória", "Carregar", true, ModelLifecycleTone.READY,
             )
             ModelLifecyclePhase.LOADING -> ModelLifecycleUiModel(
-                phase, "加载中", "运行时正在校验并映射模型", "加载中", false, ModelLifecycleTone.PROGRESS,
+                phase, "Carregando", "O runtime está verificando e mapeando o modelo", "Carregando", false, ModelLifecycleTone.PROGRESS,
             )
             ModelLifecyclePhase.LOADED -> ModelLifecycleUiModel(
-                phase, "已加载", "模型正在本机运行时中使用", "使用中", false, ModelLifecycleTone.ACTIVE,
+                phase, "Carregado", "Modelo sendo usado pelo runtime local", "Em uso", false, ModelLifecycleTone.ACTIVE,
             )
             ModelLifecyclePhase.DOWNLOAD_FAILED -> ModelLifecycleUiModel(
-                phase, "下载失败", "未获得完整模型文件", "重新下载", true, ModelLifecycleTone.ERROR,
+                phase, "Falha no download", "Arquivo completo do modelo não obtido", "Baixar novamente", true, ModelLifecycleTone.ERROR,
             )
             ModelLifecyclePhase.LOAD_FAILED -> ModelLifecycleUiModel(
-                phase, "加载失败", "文件已下载，但运行时未能加载", "重试加载", true, ModelLifecycleTone.ERROR,
+                phase, "Falha ao carregar", "Arquivo baixado, mas o runtime falhou ao carregar", "Tentar carregar novamente", true, ModelLifecycleTone.ERROR,
             )
         }
     }

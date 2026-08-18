@@ -82,21 +82,21 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
         orientation = LinearLayout.VERTICAL
 
         addView(TextView(context).apply {
-            text = "本地视觉搜索"
+            text = "Busca visual local"
             textSize = 12f
             setTextColor(Palette.mintDark)
             setTypeface(typeface, Typeface.BOLD)
             letterSpacing = 0.08f
         })
         addView(TextView(context).apply {
-            text = "一句话，搜索本地相册"
+            text = "Uma frase, pesquisar na galeria local"
             textSize = 27f
             setTextColor(Palette.deepInk)
             setTypeface(typeface, Typeface.BOLD)
             setPadding(0, dp(5), 0, dp(7))
         })
         addView(TextView(context).apply {
-            text = "当前由 CLIP 在本机按余弦相似度召回；G2D 小模型复核将在后续版本启用。"
+            text = "Atualmente o CLIP faz recall local por similaridade cosseno; revisão G2D com modelo pequeno será habilitada em versão futura."
             textSize = 14f
             setTextColor(Palette.ink)
             setLineSpacing(0f, 1.18f)
@@ -133,7 +133,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
         }
         heading.addView(IconBadgeView(
             context,
-            if (status.eyebrow.startsWith("相册")) "image" else "chip",
+            if (status.eyebrow.startsWith("Galeria")) "image" else "chip",
             if (status.isSuccess) Palette.mintDark else Palette.blue,
         ), LinearLayout.LayoutParams(dp(38), dp(38)))
         heading.addView(LinearLayout(context).apply {
@@ -171,7 +171,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
                 progressTintList = ColorStateList.valueOf(Palette.mintDark)
                 indeterminateTintList = ColorStateList.valueOf(Palette.mintDark)
                 progressBackgroundTintList = ColorStateList.valueOf(Palette.stroke)
-                contentDescription = status.progressPercent?.let { "进度 $it%" } ?: "正在处理"
+                contentDescription = status.progressPercent?.let { "Progresso $it%" } ?: "Processando"
             }, LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 dp(8),
@@ -220,9 +220,9 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
         actions: GallerySearchActions,
     ): View = LinearLayout(context).apply {
         orientation = LinearLayout.VERTICAL
-        addView(sectionEyebrow("自然语言检索"))
+        addView(sectionEyebrow("Busca em linguagem natural"))
         addView(TextView(context).apply {
-            text = "你想找什么？"
+            text = "O que você está procurando?"
             textSize = 21f
             setTextColor(Palette.deepInk)
             setTypeface(typeface, Typeface.BOLD)
@@ -251,7 +251,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
                 radiusDp = 13f,
             )
             setPadding(dp(15), 0, dp(15), 0)
-            contentDescription = "照片搜索描述"
+            contentDescription = "Descrição de busca de fotos"
             setOnEditorActionListener { _, actionId, _ ->
                 if (
                     actionId == EditorInfo.IME_ACTION_SEARCH &&
@@ -292,7 +292,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
 
         if (model.query.isNotBlank()) {
             addView(TextView(context).apply {
-                text = "清除搜索"
+                text = "Limpar busca"
                 textSize = 13f
                 setTextColor(Palette.blue)
                 gravity = Gravity.CENTER
@@ -320,7 +320,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
         thumbnailBinder: GalleryThumbnailBinder?,
     ): View = LinearLayout(context).apply {
         orientation = LinearLayout.VERTICAL
-        addView(sectionEyebrow(if (model.results.isEmpty()) "搜索结果" else "本机召回"))
+        addView(sectionEyebrow(if (model.results.isEmpty()) "Resultados da busca" else "Recall local"))
         addView(TextView(context).apply {
             text = model.resultTitle
             textSize = 21f
@@ -339,7 +339,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
             addView(ProgressBar(context).apply {
                 isIndeterminate = true
                 indeterminateTintList = ColorStateList.valueOf(Palette.mintDark)
-                contentDescription = "正在搜索本机照片"
+                contentDescription = "Pesquisando fotos locais"
             }, LinearLayout.LayoutParams(dp(42), dp(42)).apply {
                 gravity = Gravity.CENTER_HORIZONTAL
                 topMargin = dp(16)
@@ -373,7 +373,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
             ))
             addView(TextView(context).apply {
-                text = "CLIP 直出表示按余弦相似度排序，不代表通过校准阈值；只有标记为 G2D 复核的结果才经过小模型判别。"
+                text = "Saída direta CLIP significa ordenação por similaridade cosseno, não passagem pelo limiar de calibração; apenas resultados marcados como revisão G2D foram discriminados pelo modelo pequeno."
                 textSize = 12f
                 setTextColor(Palette.muted)
                 setLineSpacing(0f, 1.16f)
@@ -390,7 +390,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
         orientation = LinearLayout.VERTICAL
         isClickable = true
         isFocusable = true
-        contentDescription = "第 ${result.rank} 个结果，${result.title}，${result.scoreLabel}，${result.sourceLabel}"
+        contentDescription = "Resultado ${result.rank}, ${result.title}, ${result.scoreLabel}, ${result.sourceLabel}"
         background = rounded(Palette.surface, Palette.stroke, 13f)
         setPadding(dp(8), dp(8), dp(8), dp(11))
         setOnClickListener { actions.openGalleryResult(result.mediaId, result.contentUri) }
@@ -402,7 +402,7 @@ class GallerySearchScreen(context: Context) : LinearLayout(context) {
                 10f,
             )
             addView(TextView(context).apply {
-                text = "照片 ${result.rank}"
+                text = "Foto ${result.rank}"
                 textSize = 13f
                 setTextColor(Palette.muted)
                 gravity = Gravity.CENTER

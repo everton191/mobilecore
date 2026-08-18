@@ -34,30 +34,30 @@ object HomeScreenPresenter {
         }
         val remainingMs = estimateRemainingMs(bytesDownloaded, totalBytes, startedAtMs, startedBytes, nowMs)
         val title = when (phase) {
-            StandardModelDownloadPhase.IDLE -> "下载标准模型"
-            StandardModelDownloadPhase.DOWNLOADING -> "正在下载标准模型"
-            StandardModelDownloadPhase.PAUSED -> "标准模型下载已暂停"
-            StandardModelDownloadPhase.FAILED -> "标准模型下载失败"
-            StandardModelDownloadPhase.COMPLETE -> "标准模型已下载"
+            StandardModelDownloadPhase.IDLE -> "Baixar modelo padrão"
+            StandardModelDownloadPhase.DOWNLOADING -> "Baixando modelo padrão"
+            StandardModelDownloadPhase.PAUSED -> "Download do modelo padrão pausado"
+            StandardModelDownloadPhase.FAILED -> "Falha no download do modelo padrão"
+            StandardModelDownloadPhase.COMPLETE -> "Modelo padrão baixado"
         }
         val action = when (phase) {
-            StandardModelDownloadPhase.IDLE -> "开始下载"
-            StandardModelDownloadPhase.DOWNLOADING -> "暂停下载"
-            StandardModelDownloadPhase.PAUSED -> "继续下载"
-            StandardModelDownloadPhase.FAILED -> "重新下载"
-            StandardModelDownloadPhase.COMPLETE -> "加载模型"
+            StandardModelDownloadPhase.IDLE -> "Iniciar download"
+            StandardModelDownloadPhase.DOWNLOADING -> "Pausar download"
+            StandardModelDownloadPhase.PAUSED -> "Continuar download"
+            StandardModelDownloadPhase.FAILED -> "Baixar novamente"
+            StandardModelDownloadPhase.COMPLETE -> "Carregar modelo"
         }
         return StandardModelDownloadUiModel(
             phase = phase,
             title = title,
             progressPercent = percent,
-            progressLabel = "${formatBytes(bytesDownloaded)} / ${if (totalBytes > 0L) formatBytes(totalBytes) else "约 469 MB"}",
+            progressLabel = "${formatBytes(bytesDownloaded)} / ${if (totalBytes > 0L) formatBytes(totalBytes) else "Cerca de 469 MB"}",
             remainingLabel = when (phase) {
-                StandardModelDownloadPhase.DOWNLOADING -> "预计剩余 ${formatRemainingDuration(remainingMs)}"
-                StandardModelDownloadPhase.PAUSED -> "已保留下载进度"
-                StandardModelDownloadPhase.FAILED -> "检查网络后可继续"
-                StandardModelDownloadPhase.COMPLETE -> "文件已保存到本机，尚未加载"
-                StandardModelDownloadPhase.IDLE -> "Qwen2.5 0.5B · 约 469 MB"
+                StandardModelDownloadPhase.DOWNLOADING -> "Tempo restante estimado ${formatRemainingDuration(remainingMs)}"
+                StandardModelDownloadPhase.PAUSED -> "Progresso de download mantido"
+                StandardModelDownloadPhase.FAILED -> "Verifique a rede para continuar"
+                StandardModelDownloadPhase.COMPLETE -> "Arquivo salvo no dispositivo, ainda não carregado"
+                StandardModelDownloadPhase.IDLE -> "Qwen2.5 0.5B · Cerca de 469 MB"
             },
             actionLabel = action,
             actionEnabled = true

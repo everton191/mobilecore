@@ -9,10 +9,10 @@ enum class PlaygroundArtifactOrigin(
     val wireValue: String,
     val displayLabel: String,
 ) {
-    HARZVA("converted_by_harzva", "Harzva 转换"),
-    THIRD_PARTY("third_party_conversion", "第三方转换"),
-    UPSTREAM("upstream_native", "上游官方"),
-    RECIPE("recipe_only", "仅配方");
+    HARZVA("converted_by_harzva", "Convertido por Harzva"),
+    THIRD_PARTY("third_party_conversion", "Conversão de terceiros"),
+    UPSTREAM("upstream_native", "Upstream oficial"),
+    RECIPE("recipe_only", "Apenas receita");
 
     companion object {
         fun fromWireValue(value: String): PlaygroundArtifactOrigin =
