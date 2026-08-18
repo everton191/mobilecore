@@ -13,8 +13,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        submodules: recursive
+
+    - name: Bootstrap llama.cpp
+      run: bash android-app/scripts/bootstrap-llama.sh
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
